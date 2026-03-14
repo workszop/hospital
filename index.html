@@ -12,6 +12,26 @@
   <div class="flex flex-col space-y-8 p-6 max-w-6xl mx-auto">
     <h1 class="text-2xl font-bold text-center">Hospital RAG System Simulator</h1>
     
+    <!-- Documents Visual Representation Accordion -->
+    <div class="bg-white p-4 rounded-lg shadow-lg">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold">Medical Knowledge Documents</h2>
+        <div class="flex space-x-2 flex-nowrap">
+          <button id="embedDocumentsButton" class="whitespace-nowrap px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 flex items-center">
+            <i data-lucide="vector" class="h-4 w-4 mr-1"></i>
+            Generate Vectors
+          </button>
+          <button id="toggleAccordionButton" class="whitespace-nowrap px-3 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 flex items-center">
+            <i data-lucide="eye" class="h-4 w-4 mr-1"></i>
+            Toggle View
+          </button>
+        </div>
+      </div>
+      <div id="docVisualContainer" class="mt-4 grid grid-cols-2 gap-4">
+        <div class="text-gray-500 italic col-span-2">Medical documents have not been embedded yet.</div>
+      </div>
+    </div>
+
     <!-- Query Input -->
     <div class="w-full p-4 bg-gray-50 rounded-lg">
       <label for="queryInput" class="block text-sm font-medium mb-2">Clinical Information Query:</label>
@@ -32,46 +52,26 @@
       </div>
       <div class="flex flex-wrap gap-2 mt-3">
         <span class="text-sm text-gray-600">Try:</span>
-        <button 
+        <button
           class="sampleQuery px-3 py-1 text-xs bg-blue-100 hover:bg-blue-200 rounded"
           data-query="What is the standard protocol for treating acute myocardial infarction?">
           Myocardial infarction protocol
         </button>
-        <button 
+        <button
           class="sampleQuery px-3 py-1 text-xs bg-blue-100 hover:bg-blue-200 rounded"
           data-query="What are the first-line antibiotics for community-acquired pneumonia?">
           Pneumonia antibiotics
         </button>
-        <button 
+        <button
           class="sampleQuery px-3 py-1 text-xs bg-blue-100 hover:bg-blue-200 rounded"
           data-query="What is the recommended blood pressure target for diabetic patients?">
           Diabetic BP targets
         </button>
-        <button 
+        <button
           class="sampleQuery px-3 py-1 text-xs bg-blue-100 hover:bg-blue-200 rounded"
           data-query="What is the weather today?">
           Weather (irrelevant)
         </button>
-      </div>
-    </div>
-
-    <!-- Documents Visual Representation Accordion -->
-    <div class="bg-white p-4 rounded-lg shadow-lg">
-      <div class="flex items-center justify-between">
-        <h2 class="text-lg font-bold">Medical Knowledge Documents</h2>
-        <div class="flex space-x-2 flex-nowrap">
-          <button id="embedDocumentsButton" class="whitespace-nowrap px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 flex items-center">
-            <i data-lucide="vector" class="h-4 w-4 mr-1"></i>
-            Generate Vectors
-          </button>
-          <button id="toggleAccordionButton" class="whitespace-nowrap px-3 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 flex items-center">
-            <i data-lucide="eye" class="h-4 w-4 mr-1"></i>
-            Toggle View
-          </button>
-        </div>
-      </div>
-      <div id="docVisualContainer" class="mt-4 grid grid-cols-2 gap-4">
-        <div class="text-gray-500 italic col-span-2">Medical documents have not been embedded yet.</div>
       </div>
     </div>
     
