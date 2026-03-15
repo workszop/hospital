@@ -1,967 +1,933 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MedVector AI — Intelligent Clinical Decision Support</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest/dist/lucide.min.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
-          colors: {
-            brand: {
-              50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc',
-              400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca',
-              800: '#3730a3', 900: '#312e81', 950: '#1e1b4b',
-            }
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    * { font-family: 'Inter', system-ui, sans-serif; }
-    .gradient-text {
-      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .hero-gradient {
-      background: radial-gradient(ellipse 80% 60% at 50% -20%, rgba(99,102,241,0.15) 0%, transparent 70%),
-                  radial-gradient(ellipse 60% 50% at 80% 50%, rgba(139,92,246,0.08) 0%, transparent 60%);
-    }
-    .glass {
-      background: rgba(255,255,255,0.7);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-    .glow-border {
-      box-shadow: 0 0 0 1px rgba(99,102,241,0.1), 0 4px 24px rgba(99,102,241,0.08);
-    }
-    .feature-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(99,102,241,0.12);
-    }
-    .feature-card { transition: all 0.2s ease; }
-    .nav-blur {
-      background: rgba(255,255,255,0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
-    }
-    .float-anim { animation: float 6s ease-in-out infinite; }
-    .dot-pattern {
-      background-image: radial-gradient(rgba(99,102,241,0.08) 1px, transparent 1px);
-      background-size: 24px 24px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedVector AI — Evidence-based answers in milliseconds</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/lucide.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#FFF8F0;
+  --dark:#1a1a2e;
+  --red:#FF6B6B;
+  --yellow:#FFD93D;
+  --green:#6BCB77;
+  --blue:#4D96FF;
+  --purple:#C77DFF;
+  --indigo:#6366f1;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Nunito',system-ui,sans-serif;
+  background:var(--cream);
+  color:var(--dark);
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── HEADER ── */
+.site-header{
+  position:sticky;top:0;z-index:100;
+  background:var(--cream);
+  border-bottom:3px solid var(--dark);
+  padding:14px 24px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.logo-lockup{display:flex;align-items:center;gap:10px}
+.logo-icon{
+  width:38px;height:38px;
+  background:var(--indigo);
+  border:3px solid var(--dark);border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:2px 2px 0 var(--dark);
+  color:#fff;
+}
+.logo-name{font-size:1.2rem;font-weight:900;letter-spacing:-.02em}
+.nav-cta{
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--blue);color:#fff;
+  border:3px solid var(--dark);border-radius:14px;
+  padding:9px 20px;font-size:14px;font-weight:800;
+  font-family:inherit;cursor:pointer;text-decoration:none;
+  box-shadow:4px 4px 0 var(--dark);
+  transition:transform .12s,box-shadow .12s;
+}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:4px 6px 0 var(--dark)}
+.nav-cta:active{transform:translateY(2px);box-shadow:2px 2px 0 var(--dark)}
+
+/* ── HERO ── */
+.hero{
+  max-width:900px;margin:0 auto;
+  padding:72px 40px 80px;
+  text-align:center;
+}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--green);
+  border:3px solid var(--dark);border-radius:99px;
+  padding:6px 16px;font-size:13px;font-weight:800;
+  box-shadow:3px 3px 0 var(--dark);
+  margin-bottom:24px;
+}
+.hero-title{
+  font-size:clamp(2.4rem,5vw,3.6rem);
+  font-weight:900;
+  line-height:1.1;
+  letter-spacing:-.03em;
+  margin-bottom:16px;
+}
+.hero-title em{
+  font-style:normal;
+  background:var(--blue);
+  color:#fff;
+  padding:2px 12px;
+  border-radius:10px;
+  border:3px solid var(--dark);
+  display:inline-block;
+  transform:rotate(-1deg);
+}
+.hero-subtitle{
+  font-size:1.15rem;font-weight:700;
+  color:#555;line-height:1.6;
+  margin-bottom:12px;max-width:600px;margin-left:auto;margin-right:auto;
+}
+.hero-sub2{
+  font-size:1rem;font-weight:700;
+  color:#888;line-height:1.5;
+  margin-bottom:32px;max-width:520px;margin-left:auto;margin-right:auto;
+}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.btn-primary{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--blue);color:#fff;
+  border:3px solid var(--dark);border-radius:16px;
+  padding:16px 30px;font-size:16px;font-weight:900;
+  font-family:inherit;cursor:pointer;text-decoration:none;
+  box-shadow:5px 5px 0 var(--dark);
+  transition:transform .12s,box-shadow .12s;
+}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:5px 8px 0 var(--dark)}
+.btn-primary:active{transform:translateY(2px);box-shadow:2px 2px 0 var(--dark)}
+.btn-secondary{
+  display:inline-flex;align-items:center;gap:8px;
+  background:#fff;color:var(--dark);
+  border:3px solid var(--dark);border-radius:16px;
+  padding:16px 24px;font-size:16px;font-weight:800;
+  font-family:inherit;cursor:pointer;text-decoration:none;
+  box-shadow:5px 5px 0 var(--dark);
+  transition:transform .12s,box-shadow .12s;
+}
+.btn-secondary:hover{transform:translateY(-3px);box-shadow:5px 8px 0 var(--dark)}
+.btn-secondary:active{transform:translateY(2px);box-shadow:2px 2px 0 var(--dark)}
+.progress-bar{
+  height:8px;background:var(--dark);border-radius:99px;overflow:hidden;
+  border:2.5px solid var(--dark);margin-top:32px;max-width:300px;
+  margin-left:auto;margin-right:auto;
+}
+.progress-bar-fill{
+  height:100%;
+  background:linear-gradient(90deg,var(--red),var(--yellow),var(--green),var(--blue));
+  background-size:300% 100%;
+  animation:barShift 4s linear infinite;
+  border-radius:99px;width:72%;
+}
+@keyframes barShift{0%{background-position:0% 50%}100%{background-position:300% 50%}}
+
+/* ── PITCH ── */
+.pitch{
+  background:var(--dark);
+  padding:64px 40px;
+  text-align:center;
+}
+.pitch-inner{max-width:700px;margin:0 auto}
+.pitch h2{
+  font-size:clamp(1.6rem,3.5vw,2.4rem);
+  font-weight:900;color:#fff;
+  line-height:1.3;margin-bottom:16px;
+}
+.pitch h2 mark{
+  background:var(--yellow);color:var(--dark);
+  padding:2px 10px;border-radius:8px;
+}
+.pitch p{
+  font-size:1.1rem;font-weight:700;
+  color:rgba(255,255,255,.65);
+  line-height:1.7;margin-bottom:20px;
+}
+.dots{display:flex;justify-content:center;gap:8px;margin-top:8px}
+.dot{width:12px;height:12px;border-radius:50%;border:2.5px solid rgba(255,255,255,.3)}
+.dot:nth-child(1){background:var(--red)}
+.dot:nth-child(2){background:var(--yellow)}
+.dot:nth-child(3){background:var(--green)}
+.dot:nth-child(4){background:var(--blue)}
+
+/* ── FEATURES ── */
+.features{padding:80px 40px;max-width:1100px;margin:0 auto}
+.section-label{
+  display:inline-flex;align-items:center;gap:6px;
+  border:3px solid var(--dark);border-radius:99px;
+  padding:6px 16px;font-size:13px;font-weight:800;
+  box-shadow:3px 3px 0 var(--dark);
+  margin-bottom:20px;
+}
+.label-green{background:var(--green)}
+.label-red{background:var(--red);color:#fff}
+.label-blue{background:var(--blue);color:#fff}
+.label-yellow{background:var(--yellow)}
+.section-title{
+  font-size:clamp(1.8rem,3.5vw,2.6rem);
+  font-weight:900;letter-spacing:-.03em;
+  margin-bottom:48px;
+}
+.features-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:20px;
+}
+.feat-card{
+  background:#fff;
+  border:3px solid var(--dark);border-radius:20px;
+  padding:28px 28px 30px;
+  box-shadow:5px 5px 0 var(--dark);
+  transition:transform .15s,box-shadow .15s;
+}
+.feat-card:hover{transform:translateY(-4px);box-shadow:5px 9px 0 var(--dark)}
+.feat-card h3{font-size:1.1rem;font-weight:900;margin-bottom:8px}
+.feat-card p{font-size:.93rem;font-weight:700;color:#666;line-height:1.6}
+.feat-icon{
+  width:44px;height:44px;border-radius:14px;
+  border:3px solid var(--dark);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:14px;
+  box-shadow:2px 2px 0 var(--dark);
+}
+
+/* ── DEMO SECTION ── */
+.demo-section{padding:80px 40px;max-width:1200px;margin:0 auto}
+.demo-outer{
+  background:var(--yellow);
+  border:3px solid var(--dark);border-radius:28px;
+  padding:56px 32px 40px;
+  box-shadow:8px 8px 0 var(--dark);
+  position:relative;
+}
+.demo-label{
+  position:absolute;top:-18px;left:50%;transform:translateX(-50%);
+  background:var(--dark);color:#fff;
+  border:3px solid var(--dark);border-radius:99px;
+  padding:8px 24px;font-size:14px;font-weight:900;
+  letter-spacing:.05em;text-transform:uppercase;
+  white-space:nowrap;
+  display:flex;align-items:center;gap:8px;
+}
+.demo-label .pulse-dot{
+  width:10px;height:10px;border-radius:50%;
+  background:var(--green);
+  border:2px solid rgba(255,255,255,.4);
+  animation:pulse-glow 2s ease-in-out infinite;
+}
+@keyframes pulse-glow{
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.6;transform:scale(1.3)}
+}
+.demo-inner{
+  background:#fff;
+  border:3px solid var(--dark);border-radius:20px;
+  padding:24px;
+  box-shadow:4px 4px 0 var(--dark);
+}
+.demo-note{
+  margin-top:20px;text-align:center;
+  font-size:13px;font-weight:800;color:rgba(0,0,0,.45);
+}
+
+/* ── App-specific styles inside demo ── */
+.app-card{
+  background:#fff;
+  border:3px solid var(--dark);border-radius:16px;
+  padding:20px;
+  box-shadow:4px 4px 0 var(--dark);
+  margin-bottom:16px;
+}
+.app-card:last-child{margin-bottom:0}
+.app-card-label{
+  font-size:.95rem;font-weight:900;
+  margin-bottom:12px;display:flex;align-items:center;gap:8px;
+}
+.app-icon{
+  width:32px;height:32px;border-radius:10px;
+  border:2.5px solid var(--dark);
+  display:inline-flex;align-items:center;justify-content:center;
+  box-shadow:2px 2px 0 var(--dark);
+  flex-shrink:0;
+}
+.app-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  border:3px solid var(--dark);border-radius:12px;
+  padding:8px 16px;font-size:13px;font-weight:800;
+  font-family:inherit;cursor:pointer;
+  box-shadow:3px 3px 0 var(--dark);
+  transition:transform .12s,box-shadow .12s;
+}
+.app-btn:hover{transform:translateY(-2px);box-shadow:3px 5px 0 var(--dark)}
+.app-btn:active{transform:translateY(1px);box-shadow:1px 1px 0 var(--dark)}
+.app-btn-indigo{background:var(--indigo);color:#fff}
+.app-btn-green{background:var(--green);color:var(--dark)}
+.app-btn-blue{background:var(--blue);color:#fff}
+.app-btn-white{background:#fff;color:var(--dark)}
+.app-btn-red{background:var(--red);color:#fff}
+.app-input{
+  flex:1;padding:10px 14px;font-size:14px;font-weight:700;
+  font-family:inherit;
+  border:3px solid var(--dark);border-radius:12px;
+  outline:none;background:#fff;
+  box-shadow:inset 2px 2px 0 rgba(0,0,0,.06);
+  transition:box-shadow .15s;
+}
+.app-input:focus{box-shadow:0 0 0 3px rgba(99,102,241,.25),inset 2px 2px 0 rgba(0,0,0,.06)}
+.sample-chip{
+  display:inline-flex;align-items:center;
+  background:var(--cream);
+  border:2.5px solid var(--dark);border-radius:99px;
+  padding:5px 12px;font-size:12px;font-weight:800;
+  cursor:pointer;
+  box-shadow:2px 2px 0 var(--dark);
+  transition:transform .1s,box-shadow .1s;
+  font-family:inherit;
+}
+.sample-chip:hover{transform:translateY(-1px);box-shadow:2px 3px 0 var(--dark)}
+.sample-chip:active{transform:translateY(1px);box-shadow:1px 1px 0 var(--dark)}
+.sample-chip-gray{background:#eee}
+
+/* Pipeline boxes */
+.pipe-box{
+  padding:14px;
+  border:3px solid var(--dark);border-radius:14px;
+  background:#fff;
+  box-shadow:3px 3px 0 var(--dark);
+  width:220px;flex-shrink:0;
+  transition:transform .2s,box-shadow .2s,background .2s;
+}
+.pipe-box.active{
+  background:var(--blue);color:#fff;
+  transform:translateY(-3px);
+  box-shadow:3px 6px 0 var(--dark);
+}
+.pipe-box.active .pipe-step-text{color:rgba(255,255,255,.7)}
+.pipe-box.active .pipe-content{background:rgba(255,255,255,.2);color:#fff}
+.pipe-box-wide{width:100%}
+.pipe-label{font-size:.85rem;font-weight:900;display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.pipe-content{
+  font-size:11px;font-weight:700;
+  padding:8px;border-radius:10px;
+  background:var(--cream);
+  height:100px;overflow-y:auto;
+}
+.pipe-step-text{font-size:11px;font-weight:700;color:#888;margin-top:6px}
+.pipe-arrow{
+  font-size:20px;font-weight:900;color:var(--dark);
+  display:flex;align-items:center;flex-shrink:0;
+  padding-top:24px;
+}
+
+/* Document cards in accordion */
+.doc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.doc-card-app{
+  padding:12px;
+  border:2.5px solid var(--dark);border-radius:14px;
+  font-size:12px;font-weight:700;
+  box-shadow:2px 2px 0 var(--dark);
+  display:flex;flex-direction:column;gap:4px;
+}
+.doc-tag{
+  display:inline-flex;
+  background:#fff;border:2px solid var(--dark);border-radius:99px;
+  padding:2px 8px;font-size:10px;font-weight:800;
+  box-shadow:1px 1px 0 var(--dark);
+}
+
+/* ── HOW IT WORKS ── */
+.how{padding:80px 40px;max-width:1100px;margin:0 auto}
+.steps-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:20px;
+}
+.step-card{
+  display:flex;flex-direction:column;gap:14px;
+  padding:28px;
+  background:#fff;
+  border:3px solid var(--dark);border-radius:20px;
+  box-shadow:5px 5px 0 var(--dark);
+}
+.step-num{
+  width:48px;height:48px;
+  border-radius:14px;border:3px solid var(--dark);
+  background:var(--dark);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;font-weight:900;
+  box-shadow:3px 3px 0 rgba(0,0,0,.15);
+}
+.step-card h3{font-size:1.05rem;font-weight:900}
+.step-card p{font-size:.9rem;font-weight:700;color:#666;line-height:1.6}
+
+/* ── CTA ── */
+.cta-section{padding:80px 40px;text-align:center}
+.cta-inner{
+  max-width:680px;margin:0 auto;
+  background:var(--blue);
+  border:3px solid var(--dark);border-radius:28px;
+  padding:56px 40px 48px;
+  box-shadow:8px 8px 0 var(--dark);
+}
+.cta-inner h2{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:900;color:#fff;margin-bottom:12px}
+.cta-inner p{font-size:1.05rem;font-weight:700;color:rgba(255,255,255,.7);margin-bottom:32px;line-height:1.6}
+.cta-buttons{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.chip-row{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-bottom:32px}
+.chip{
+  display:inline-flex;align-items:center;gap:5px;
+  background:#fff;
+  border:2.5px solid var(--dark);border-radius:99px;
+  padding:6px 14px;font-size:13px;font-weight:800;
+  box-shadow:2px 2px 0 var(--dark);
+}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--dark);color:rgba(255,255,255,.5);
+  padding:36px 40px;
+  border-top:3px solid rgba(255,255,255,.1);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:16px;
+}
+.footer-logo{display:flex;align-items:center;gap:8px}
+.footer-icon{
+  width:30px;height:30px;background:var(--indigo);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;color:#fff;
+}
+.footer-logo span{font-size:1rem;font-weight:900;color:#fff}
+.footer-links{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.footer-links a{color:rgba(255,255,255,.5);text-decoration:none;font-size:13px;font-weight:700;transition:color .15s}
+.footer-links a:hover{color:#fff}
+.footer-copy{font-size:12px;font-weight:700}
+
+/* ── RESPONSIVE ── */
+@media(max-width:760px){
+  .hero{padding:48px 20px 56px}
+  .pitch{padding:48px 20px}
+  .features{padding:56px 20px}
+  .demo-section{padding:56px 20px}
+  .demo-outer{padding:48px 16px 32px}
+  .demo-inner{padding:16px}
+  .how{padding:56px 20px}
+  .cta-section{padding:56px 20px}
+  .cta-inner{padding:40px 24px 36px}
+  footer{flex-direction:column;align-items:flex-start;padding:28px 20px}
+  .pipe-box{width:100%}
+  .pipeline-row{flex-direction:column!important;align-items:stretch!important}
+  .pipe-arrow{transform:rotate(90deg);justify-content:center;padding:0}
+  .doc-grid{grid-template-columns:1fr}
+}
+</style>
 </head>
-<body class="bg-white text-gray-900 antialiased">
+<body>
 
-  <!-- Navbar -->
-  <nav class="nav-blur fixed top-0 w-full z-50 border-b border-gray-100">
-    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-      <div class="flex items-center space-x-2">
-        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-purple-500 flex items-center justify-center">
-          <i data-lucide="activity" class="h-4 w-4 text-white"></i>
-        </div>
-        <span class="text-lg font-bold tracking-tight">MedVector<span class="gradient-text"> AI</span></span>
-      </div>
-      <div class="hidden md:flex items-center space-x-8 text-sm font-medium text-gray-600">
-        <a href="#features" class="hover:text-brand-600 transition-colors">Features</a>
-        <a href="#demo" class="hover:text-brand-600 transition-colors">Live Demo</a>
-        <a href="#how-it-works" class="hover:text-brand-600 transition-colors">How It Works</a>
-      </div>
-      <div class="flex items-center space-x-3">
-        <a href="#demo" class="px-4 py-2 text-sm font-medium text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors shadow-sm">
-          Try Demo
-        </a>
-      </div>
+<!-- HEADER -->
+<header class="site-header">
+  <div class="logo-lockup">
+    <div class="logo-icon"><i data-lucide="activity" style="width:20px;height:20px"></i></div>
+    <span class="logo-name">MedVector AI</span>
+  </div>
+  <a href="#demo" class="nav-cta">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 9-14 9V3z"/></svg>
+    Try Demo
+  </a>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">RAG-powered clinical search</div>
+  <h1 class="hero-title">Evidence-based answers<br><em>in milliseconds</em></h1>
+  <p class="hero-subtitle">MedVector AI uses retrieval-augmented generation to surface the most relevant clinical guidelines instantly.</p>
+  <p class="hero-sub2">No more digging through PDFs. Ask a question, get an evidence-backed answer grounded in real guidelines.</p>
+  <div class="hero-actions">
+    <a href="#demo" class="btn-primary">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 9-14 9V3z"/></svg>
+      Try the demo
+    </a>
+    <a href="#how-it-works" class="btn-secondary">How it works</a>
+  </div>
+  <div class="progress-bar"><div class="progress-bar-fill"></div></div>
+</section>
+
+<!-- PITCH -->
+<section class="pitch">
+  <div class="pitch-inner">
+    <h2>No guesswork. No outdated <mark>textbooks</mark>.<br>Just real guidelines.</h2>
+    <p>Semantic vector search captures clinical meaning, not just keywords. Ask naturally and get precisely relevant, evidence-backed protocols in seconds.</p>
+    <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="section-label label-green">Features</div>
+  <h2 class="section-title">Built for clinical workflows,<br>nothing you don't need.</h2>
+  <div class="features-grid">
+    <div class="feat-card">
+      <div class="feat-icon" style="background:var(--blue);color:#fff"><i data-lucide="zap" style="width:20px;height:20px"></i></div>
+      <h3>Semantic Search</h3>
+      <p>Vector embeddings capture clinical meaning, not just keywords. Ask naturally and get precisely relevant guidelines.</p>
     </div>
-  </nav>
-
-  <!-- Hero Section -->
-  <section class="hero-gradient pt-32 pb-20 relative overflow-hidden">
-    <div class="absolute inset-0 dot-pattern opacity-50"></div>
-    <div class="max-w-4xl mx-auto px-6 text-center relative">
-      <div class="inline-flex items-center px-3 py-1 rounded-full bg-brand-50 border border-brand-200 text-brand-700 text-xs font-medium mb-6">
-        <span class="w-1.5 h-1.5 rounded-full bg-green-500 mr-2 animate-pulse"></span>
-        Now in Private Beta
-      </div>
-      <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight leading-tight mb-6">
-        Evidence-based answers<br/>
-        <span class="gradient-text">in milliseconds.</span>
-      </h1>
-      <p class="text-lg md:text-xl text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed">
-        MedVector AI uses retrieval-augmented generation to surface the most relevant clinical guidelines instantly. No more digging through PDFs.
-      </p>
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-        <a href="#demo" class="px-8 py-3 text-sm font-semibold text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors shadow-lg shadow-brand-500/25">
-          Try the Live Demo
-        </a>
-        <a href="#how-it-works" class="px-8 py-3 text-sm font-semibold text-gray-700 bg-white border border-gray-200 rounded-lg hover:border-gray-300 hover:bg-gray-50 transition-colors">
-          See How It Works
-        </a>
-      </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:var(--purple);color:#fff"><i data-lucide="shield-check" style="width:20px;height:20px"></i></div>
+      <h3>Evidence-Backed</h3>
+      <p>Every response is grounded in real clinical guidelines from ACC/AHA, IDSA/ATS, ADA, and other authoritative sources.</p>
     </div>
-  </section>
-
-  <!-- Trusted By / Social Proof -->
-  <section class="py-12 border-b border-gray-100">
-    <div class="max-w-5xl mx-auto px-6">
-      <p class="text-center text-xs font-semibold text-gray-400 uppercase tracking-widest mb-6">Trusted by leading health systems</p>
-      <div class="flex items-center justify-center space-x-12 opacity-40">
-        <span class="text-xl font-bold text-gray-400">Mayo Clinic</span>
-        <span class="text-xl font-bold text-gray-400">Johns Hopkins</span>
-        <span class="text-xl font-bold text-gray-400">Kaiser</span>
-        <span class="text-xl font-bold text-gray-400">Cleveland Clinic</span>
-      </div>
+    <div class="feat-card">
+      <div class="feat-icon" style="background:var(--green);color:var(--dark)"><i data-lucide="gauge" style="width:20px;height:20px"></i></div>
+      <h3>Sub-Second Retrieval</h3>
+      <p>Optimized vector similarity search delivers the right documents before you finish reading the question.</p>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Features Grid -->
-  <section id="features" class="py-24">
-    <div class="max-w-6xl mx-auto px-6">
-      <div class="text-center mb-16">
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">Built for clinical workflows</h2>
-        <p class="text-gray-500 text-lg max-w-xl mx-auto">Everything clinicians need to access evidence-based guidelines at the point of care.</p>
-      </div>
-      <div class="grid md:grid-cols-3 gap-6">
-        <div class="feature-card p-6 rounded-2xl border border-gray-100 bg-white">
-          <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center mb-4">
-            <i data-lucide="zap" class="h-5 w-5 text-blue-600"></i>
-          </div>
-          <h3 class="font-semibold text-lg mb-2">Semantic Search</h3>
-          <p class="text-sm text-gray-500 leading-relaxed">Vector embeddings capture clinical meaning, not just keywords. Ask naturally and get precisely relevant guidelines.</p>
-        </div>
-        <div class="feature-card p-6 rounded-2xl border border-gray-100 bg-white">
-          <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center mb-4">
-            <i data-lucide="shield-check" class="h-5 w-5 text-purple-600"></i>
-          </div>
-          <h3 class="font-semibold text-lg mb-2">Evidence-Backed</h3>
-          <p class="text-sm text-gray-500 leading-relaxed">Every response is grounded in real clinical guidelines from ACC/AHA, IDSA/ATS, ADA, and other authoritative sources.</p>
-        </div>
-        <div class="feature-card p-6 rounded-2xl border border-gray-100 bg-white">
-          <div class="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center mb-4">
-            <i data-lucide="gauge" class="h-5 w-5 text-green-600"></i>
-          </div>
-          <h3 class="font-semibold text-lg mb-2">Sub-Second Retrieval</h3>
-          <p class="text-sm text-gray-500 leading-relaxed">Optimized vector similarity search delivers the right documents before you finish reading the question.</p>
-        </div>
-      </div>
+<!-- DEMO -->
+<section class="demo-section" id="demo">
+  <div style="text-align:center;margin-bottom:48px">
+    <div class="section-label label-blue">Live Demo</div>
+    <h2 class="section-title">See it in action</h2>
+  </div>
+
+  <div class="demo-outer">
+    <div class="demo-label">
+      <span class="pulse-dot"></span>
+      Interactive Demo — Try It Yourself
     </div>
-  </section>
 
-  <!-- Live Demo Section -->
-  <section id="demo" class="py-24 bg-gray-50/50 dot-pattern">
-    <div class="max-w-6xl mx-auto px-6">
-      <div class="text-center mb-12">
-        <div class="inline-flex items-center px-3 py-1 rounded-full bg-green-50 border border-green-200 text-green-700 text-xs font-medium mb-4">
-          <span class="w-1.5 h-1.5 rounded-full bg-green-500 mr-2 animate-pulse"></span>
-          Interactive Demo
-        </div>
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">See it in action</h2>
-        <p class="text-gray-500 text-lg max-w-xl mx-auto">Walk through the full RAG pipeline step by step, or run it all at once.</p>
-      </div>
-
-      <!-- App Container -->
-      <div class="max-w-6xl mx-auto space-y-6">
-
-        <!-- Documents Visual Representation Accordion -->
-        <div class="bg-white p-5 rounded-2xl glow-border">
-          <div class="flex items-center justify-between">
-            <h2 class="text-base font-semibold flex items-center gap-2">
-              <div class="w-7 h-7 rounded-lg bg-indigo-50 flex items-center justify-center">
-                <i data-lucide="library" class="h-3.5 w-3.5 text-indigo-600"></i>
-              </div>
-              Medical Knowledge Documents
-            </h2>
-            <div class="flex space-x-2 flex-nowrap">
-              <button id="embedDocumentsButton" class="whitespace-nowrap px-4 py-2 text-sm font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors flex items-center shadow-sm">
-                <i data-lucide="sparkles" class="h-3.5 w-3.5 mr-1.5"></i>
-                Generate Vectors
-              </button>
-              <button id="toggleAccordionButton" class="whitespace-nowrap px-4 py-2 text-sm font-medium bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors flex items-center">
-                <i data-lucide="eye" class="h-3.5 w-3.5 mr-1.5"></i>
-                Toggle View
-              </button>
-            </div>
+    <div class="demo-inner">
+      <!-- Documents Accordion -->
+      <div class="app-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+          <div class="app-card-label">
+            <span class="app-icon" style="background:#eef2ff;color:var(--indigo)"><i data-lucide="library" style="width:16px;height:16px"></i></span>
+            Medical Knowledge Documents
           </div>
-          <div id="docVisualContainer" class="mt-4 grid grid-cols-2 gap-4">
-            <div class="text-gray-400 italic col-span-2 text-sm">Medical documents have not been embedded yet.</div>
-          </div>
-        </div>
-
-        <!-- Query Input -->
-        <div class="bg-white p-5 rounded-2xl glow-border">
-          <label for="queryInput" class="block text-sm font-semibold mb-3 flex items-center gap-2">
-            <div class="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center">
-              <i data-lucide="search" class="h-3.5 w-3.5 text-blue-600"></i>
-            </div>
-            Clinical Information Query
-          </label>
-          <div class="flex space-x-2">
-            <input id="queryInput" type="text" value="What is the standard protocol for treating acute myocardial infarction?" class="flex-1 px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-400 transition-all" placeholder="Type your clinical question here...">
-            <button id="runSimulationButton" class="px-5 py-2.5 text-sm font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors flex items-center shadow-sm">
-              <i data-lucide="play" class="h-3.5 w-3.5 mr-1.5"></i>
-              Run Simulation
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button id="embedDocumentsButton" class="app-btn app-btn-indigo">
+              <i data-lucide="sparkles" style="width:14px;height:14px"></i> Generate Vectors
             </button>
-            <button id="nextStepButton" class="px-5 py-2.5 text-sm font-medium bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center shadow-sm">
-              <i data-lucide="arrow-right" class="h-3.5 w-3.5 mr-1.5"></i>
-              Next Step
-            </button>
-            <button id="resetButton" class="px-5 py-2.5 text-sm font-medium bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors flex items-center">
-              <i data-lucide="rotate-ccw" class="h-3.5 w-3.5 mr-1.5"></i>
-              Reset
-            </button>
-          </div>
-          <div class="flex flex-wrap gap-2 mt-3">
-            <span class="text-xs text-gray-400 font-medium">Suggestions:</span>
-            <button class="sampleQuery px-3 py-1 text-xs font-medium bg-brand-50 text-brand-700 hover:bg-brand-100 rounded-full transition-colors" data-query="What is the standard protocol for treating acute myocardial infarction?">
-              Myocardial infarction protocol
-            </button>
-            <button class="sampleQuery px-3 py-1 text-xs font-medium bg-brand-50 text-brand-700 hover:bg-brand-100 rounded-full transition-colors" data-query="What are the first-line antibiotics for community-acquired pneumonia?">
-              Pneumonia antibiotics
-            </button>
-            <button class="sampleQuery px-3 py-1 text-xs font-medium bg-brand-50 text-brand-700 hover:bg-brand-100 rounded-full transition-colors" data-query="What is the recommended blood pressure target for diabetic patients?">
-              Diabetic BP targets
-            </button>
-            <button class="sampleQuery px-3 py-1 text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-full transition-colors" data-query="What is the weather today?">
-              Weather (irrelevant)
+            <button id="toggleAccordionButton" class="app-btn app-btn-white">
+              <i data-lucide="eye" style="width:14px;height:14px"></i> Toggle View
             </button>
           </div>
         </div>
+        <div id="docVisualContainer" class="doc-grid">
+          <div style="grid-column:1/-1;color:#888;font-style:italic;font-size:13px;font-weight:700;padding:8px 0">Medical documents have not been embedded yet.</div>
+        </div>
+      </div>
 
-        <!-- RAG Flow Visualization -->
-        <div class="bg-white rounded-2xl glow-border p-6">
-          <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-5 flex items-center gap-2">
-            <i data-lucide="workflow" class="h-4 w-4"></i>
-            RAG Pipeline
-          </h3>
-          <div class="flex flex-col items-center space-y-6">
-            <!-- Document Store -->
-            <div class="flex items-center justify-center w-full">
-              <div id="documentStoreBox" class="relative p-4 border-2 rounded-xl w-full border-gray-200 bg-white transition-all duration-300">
-                <div class="absolute -top-3 left-3 bg-white px-2 font-medium text-xs text-gray-500 uppercase tracking-wide">
-                  Vector Database (Pre-indexed)
-                </div>
-                <div class="flex items-center space-x-2 mb-2">
-                  <i data-lucide="database" class="text-brand-600"></i>
-                  <span class="font-semibold text-sm">Clinical Guidelines & Studies</span>
-                </div>
-                <div id="documentStoreContent" class="text-xs h-32 overflow-y-auto"></div>
-              </div>
-            </div>
+      <!-- Query Input -->
+      <div class="app-card">
+        <div class="app-card-label">
+          <span class="app-icon" style="background:#dbeafe;color:var(--blue)"><i data-lucide="search" style="width:16px;height:16px"></i></span>
+          Clinical Information Query
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <input id="queryInput" type="text" value="What is the standard protocol for treating acute myocardial infarction?" class="app-input" placeholder="Type your clinical question here...">
+          <button id="runSimulationButton" class="app-btn app-btn-blue">
+            <i data-lucide="play" style="width:14px;height:14px"></i> Run
+          </button>
+          <button id="nextStepButton" class="app-btn app-btn-green">
+            <i data-lucide="arrow-right" style="width:14px;height:14px"></i> Next Step
+          </button>
+          <button id="resetButton" class="app-btn app-btn-red">
+            <i data-lucide="rotate-ccw" style="width:14px;height:14px"></i> Reset
+          </button>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;align-items:center">
+          <span style="font-size:12px;font-weight:800;color:#888">Try:</span>
+          <button class="sampleQuery sample-chip" data-query="What is the standard protocol for treating acute myocardial infarction?">Myocardial infarction</button>
+          <button class="sampleQuery sample-chip" data-query="What are the first-line antibiotics for community-acquired pneumonia?">Pneumonia antibiotics</button>
+          <button class="sampleQuery sample-chip" data-query="What is the recommended blood pressure target for diabetic patients?">Diabetic BP targets</button>
+          <button class="sampleQuery sample-chip sample-chip-gray" data-query="What is the weather today?">Weather (irrelevant)</button>
+        </div>
+      </div>
 
-            <!-- Query Phase Components -->
-            <div class="flex items-start justify-between w-full space-x-4">
-              <!-- Clinical Query -->
-              <div id="customerQueryBox" class="p-4 border-2 rounded-xl w-60 border-gray-200 bg-white transition-all duration-300">
-                <div class="flex items-center space-x-2 mb-2">
-                  <i data-lucide="stethoscope" class="text-blue-600"></i>
-                  <span class="font-semibold text-sm">Clinical Query</span>
-                </div>
-                <div id="customerQueryContent" class="text-sm p-2 border border-gray-100 rounded-lg bg-gray-50/50 h-28 overflow-y-auto"></div>
-                <div class="mt-2 text-xs text-gray-400">
-                  Step 1: Clinician submits medical question
-                </div>
-              </div>
+      <!-- RAG Pipeline -->
+      <div class="app-card">
+        <div class="app-card-label">
+          <span class="app-icon" style="background:#fef3c7;color:var(--dark)"><i data-lucide="workflow" style="width:16px;height:16px"></i></span>
+          RAG Pipeline
+        </div>
 
-              <div class="flex items-center pt-12">
-                <i data-lucide="chevron-right" class="text-gray-300"></i>
-              </div>
+        <!-- Vector Database -->
+        <div id="documentStoreBox" class="pipe-box pipe-box-wide" style="margin-bottom:16px">
+          <div class="pipe-label"><i data-lucide="database" style="width:16px;height:16px;color:var(--blue)"></i> Vector Database (Pre-indexed)</div>
+          <div id="documentStoreContent" class="pipe-content" style="height:120px"></div>
+        </div>
 
-              <!-- Embedding Model -->
-              <div id="embeddingModelBox" class="p-4 border-2 rounded-xl w-60 border-gray-200 bg-white transition-all duration-300">
-                <div class="flex items-center space-x-2 mb-2">
-                  <i data-lucide="cpu" class="text-purple-600"></i>
-                  <span class="font-semibold text-sm">Embedding Model</span>
-                </div>
-                <div class="text-sm">
-                  <div class="mb-2 text-xs text-gray-500 font-medium">Query Vector:</div>
-                  <div id="embeddingModelContent" class="p-2 bg-gray-50/50 rounded-lg text-xs italic h-28 border border-gray-100">
-                    Waiting for query to process...
-                  </div>
-                </div>
-                <div class="mt-2 text-xs text-gray-400">
-                  Step 2: Convert clinical query to semantic vector
-                </div>
-              </div>
-
-              <div class="flex items-center pt-12">
-                <i data-lucide="chevron-right" class="text-gray-300"></i>
-              </div>
-
-              <!-- Retriever -->
-              <div id="retrieverBox" class="p-4 border-2 rounded-xl w-60 border-gray-200 bg-white transition-all duration-300">
-                <div class="flex items-center space-x-2 mb-2">
-                  <i data-lucide="search" class="text-green-600"></i>
-                  <span class="font-semibold text-sm">Retriever</span>
-                </div>
-                <div class="text-sm">
-                  <div class="mb-1 text-xs text-gray-500 font-medium">Retrieved Medical Documents:</div>
-                  <div id="retrieverContent" class="h-28 overflow-y-auto">
-                    <div class="p-2 bg-gray-50/50 rounded-lg text-xs italic border border-gray-100">
-                      Waiting for embedding...
-                    </div>
-                  </div>
-                </div>
-                <div class="mt-2 text-xs text-gray-400">
-                  Step 3: Find relevant clinical guidelines
-                </div>
-              </div>
-
-              <div class="flex items-center pt-12">
-                <i data-lucide="chevron-right" class="text-gray-300"></i>
-              </div>
-
-              <!-- Response Generator -->
-              <div id="responseGeneratorBox" class="p-4 border-2 rounded-xl w-60 border-gray-200 bg-white transition-all duration-300">
-                <div class="flex items-center space-x-2 mb-2">
-                  <i data-lucide="file-text" class="text-rose-600"></i>
-                  <span class="font-semibold text-sm">Response Generator</span>
-                </div>
-                <div id="responseGeneratorContent" class="text-sm h-28 overflow-y-auto">
-                  <div class="p-2 bg-gray-50/50 rounded-lg text-xs italic border border-gray-100">
-                    Waiting for retrieval...
-                  </div>
-                </div>
-                <div class="mt-2 text-xs text-gray-400">
-                  Step 4: Generate evidence-based answer
-                </div>
-              </div>
-            </div>
+        <!-- Pipeline Row -->
+        <div class="pipeline-row" style="display:flex;align-items:flex-start;gap:12px;overflow-x:auto">
+          <div id="customerQueryBox" class="pipe-box">
+            <div class="pipe-label"><i data-lucide="stethoscope" style="width:16px;height:16px;color:var(--blue)"></i> Clinical Query</div>
+            <div id="customerQueryContent" class="pipe-content"></div>
+            <div class="pipe-step-text">Step 1: Submit question</div>
+          </div>
+          <div class="pipe-arrow">&rarr;</div>
+          <div id="embeddingModelBox" class="pipe-box">
+            <div class="pipe-label"><i data-lucide="cpu" style="width:16px;height:16px;color:var(--purple)"></i> Embedding Model</div>
+            <div id="embeddingModelContent" class="pipe-content" style="font-style:italic">Waiting for query...</div>
+            <div class="pipe-step-text">Step 2: Vectorize query</div>
+          </div>
+          <div class="pipe-arrow">&rarr;</div>
+          <div id="retrieverBox" class="pipe-box">
+            <div class="pipe-label"><i data-lucide="search" style="width:16px;height:16px;color:var(--green)"></i> Retriever</div>
+            <div id="retrieverContent" class="pipe-content" style="font-style:italic">Waiting for embedding...</div>
+            <div class="pipe-step-text">Step 3: Find documents</div>
+          </div>
+          <div class="pipe-arrow">&rarr;</div>
+          <div id="responseGeneratorBox" class="pipe-box">
+            <div class="pipe-label"><i data-lucide="file-text" style="width:16px;height:16px;color:var(--red)"></i> Response Generator</div>
+            <div id="responseGeneratorContent" class="pipe-content" style="font-style:italic">Waiting for retrieval...</div>
+            <div class="pipe-step-text">Step 4: Generate answer</div>
           </div>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- How It Works -->
-  <section id="how-it-works" class="py-24">
-    <div class="max-w-4xl mx-auto px-6">
-      <div class="text-center mb-16">
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">How MedVector AI works</h2>
-        <p class="text-gray-500 text-lg">Four steps from question to evidence-based answer.</p>
-      </div>
-      <div class="grid md:grid-cols-2 gap-6">
-        <div class="flex gap-4 p-6 rounded-2xl border border-gray-100">
-          <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">1</div>
-          <div>
-            <h3 class="font-semibold mb-1">Document Indexing</h3>
-            <p class="text-sm text-gray-500">Medical literature and clinical guidelines are embedded using a semantic vectorizer and stored in a vector database.</p>
-          </div>
-        </div>
-        <div class="flex gap-4 p-6 rounded-2xl border border-gray-100">
-          <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 font-bold text-sm">2</div>
-          <div>
-            <h3 class="font-semibold mb-1">Query Understanding</h3>
-            <p class="text-sm text-gray-500">The clinician's question is converted into a semantic vector that captures clinical meaning, not just keywords.</p>
-          </div>
-        </div>
-        <div class="flex gap-4 p-6 rounded-2xl border border-gray-100">
-          <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center text-green-600 font-bold text-sm">3</div>
-          <div>
-            <h3 class="font-semibold mb-1">Evidence Retrieval</h3>
-            <p class="text-sm text-gray-500">Vector similarity search finds the most contextually relevant medical documents from the knowledge base.</p>
-          </div>
-        </div>
-        <div class="flex gap-4 p-6 rounded-2xl border border-gray-100">
-          <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center text-rose-600 font-bold text-sm">4</div>
-          <div>
-            <h3 class="font-semibold mb-1">Response Generation</h3>
-            <p class="text-sm text-gray-500">AI combines retrieved evidence with the clinical query to generate an evidence-based, specific response.</p>
-          </div>
-        </div>
-      </div>
-      <div class="mt-8 p-4 rounded-xl bg-amber-50 border border-amber-100 text-sm text-amber-800">
-        <strong>Note:</strong> If the question is outside the system's knowledge base (e.g., a non-medical question), the system will indicate that it has no relevant documents to provide an answer.
-      </div>
+    <div class="demo-note">This demo runs entirely in your browser. No data is sent to any server.</div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how-it-works">
+  <div class="section-label label-red">How it works</div>
+  <h2 class="section-title">Index &middot; Embed &middot; Retrieve &middot; Answer</h2>
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-num">1</div>
+      <h3>Document Indexing</h3>
+      <p>Medical literature and clinical guidelines are embedded using a semantic vectorizer and stored in a vector database.</p>
     </div>
-  </section>
-
-  <!-- CTA Section -->
-  <section class="py-24 bg-gray-950 text-white relative overflow-hidden">
-    <div class="absolute inset-0 opacity-30 dot-pattern"></div>
-    <div class="max-w-3xl mx-auto px-6 text-center relative">
-      <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">Ready to transform clinical decision-making?</h2>
-      <p class="text-gray-400 text-lg mb-10 max-w-xl mx-auto">Join the private beta and give your clinical team instant access to evidence-based answers.</p>
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-        <a href="#demo" class="px-8 py-3 text-sm font-semibold text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors shadow-lg shadow-brand-500/25">
-          Request Early Access
-        </a>
-        <a href="#how-it-works" class="px-8 py-3 text-sm font-semibold text-gray-300 border border-gray-700 rounded-lg hover:border-gray-600 hover:text-white transition-colors">
-          Learn More
-        </a>
-      </div>
+    <div class="step-card">
+      <div class="step-num">2</div>
+      <h3>Query Understanding</h3>
+      <p>The clinician's question is converted into a semantic vector that captures clinical meaning, not just keywords.</p>
     </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="py-12 border-t border-gray-100">
-    <div class="max-w-6xl mx-auto px-6">
-      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-        <div class="flex items-center space-x-2">
-          <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-brand-500 to-purple-500 flex items-center justify-center">
-            <i data-lucide="activity" class="h-3.5 w-3.5 text-white"></i>
-          </div>
-          <span class="text-sm font-bold tracking-tight">MedVector AI</span>
-        </div>
-        <div class="flex items-center space-x-6 text-sm text-gray-400">
-          <a href="#" class="hover:text-gray-600 transition-colors">Privacy</a>
-          <a href="#" class="hover:text-gray-600 transition-colors">Terms</a>
-          <a href="#" class="hover:text-gray-600 transition-colors">HIPAA Compliance</a>
-          <a href="#" class="hover:text-gray-600 transition-colors">Contact</a>
-        </div>
-        <p class="text-xs text-gray-400">2026 MedVector AI. For demonstration purposes only.</p>
-      </div>
+    <div class="step-card">
+      <div class="step-num">3</div>
+      <h3>Evidence Retrieval</h3>
+      <p>Vector similarity search finds the most contextually relevant medical documents from the knowledge base.</p>
     </div>
-  </footer>
+    <div class="step-card">
+      <div class="step-num">4</div>
+      <h3>Response Generation</h3>
+      <p>AI combines retrieved evidence with the clinical query to generate an evidence-based, specific response.</p>
+    </div>
+  </div>
+  <div style="margin-top:24px;padding:16px 20px;background:var(--yellow);border:3px solid var(--dark);border-radius:14px;box-shadow:3px 3px 0 var(--dark);font-size:.9rem;font-weight:700;color:var(--dark)">
+    <strong>Note:</strong> If the question is outside the system's knowledge base (e.g., a non-medical question), the system will indicate that it has no relevant documents to provide an answer.
+  </div>
+</section>
 
-  <!-- JavaScript -->
-  <script>
-    // Global state variables and simulation steps:
-    // Step 0: Document Indexing, Step 1: Clinical Query, Step 2: Query Embedding,
-    // Step 3: Document Retrieval, Step 4: Response Generation, Step 5: Reset.
-    let currentStep = 0;
-    let isRunning = false;
-    let query = document.getElementById('queryInput').value;
-    let queryEmbedding = null;
-    let retrievedDocs = [];
-    let generatedResponse = '';
-    let indexedDocuments = [];
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <div class="chip-row">
+      <div class="chip">Private Beta</div>
+      <div class="chip">HIPAA Ready</div>
+      <div class="chip">No Setup</div>
+    </div>
+    <h2>Ready to transform clinical decisions?</h2>
+    <p>Join the private beta and give your clinical team instant access to evidence-based answers.</p>
+    <div class="cta-buttons">
+      <a href="#demo" class="btn-primary" style="background:#fff;color:var(--dark)">Request Early Access</a>
+      <a href="#how-it-works" class="btn-secondary" style="background:transparent;color:#fff;border-color:#fff">Learn More</a>
+    </div>
+  </div>
+</section>
 
-    // Medical knowledge documents (pre-defined)
-    const documents = [
-      {
-        id: 1,
-        title: "ACC/AHA Guidelines - Acute Myocardial Infarction Management",
-        text: "For acute myocardial infarction (AMI), immediate treatment protocol includes: 1) Administer 162-325 mg of aspirin, 2) Perform ECG within 10 minutes of arrival, 3) Start dual antiplatelet therapy with aspirin plus P2Y12 inhibitor, 4) Consider anticoagulation with unfractionated heparin or low molecular weight heparin, 5) Assess eligibility for reperfusion therapy (PCI preferred if available within 90 minutes, or fibrinolysis if PCI isn't available within 120 minutes).",
-        specialty: "cardiology",
-        category: "emergency",
-        embedding: [0.9, 0.2, 0.3, 0.1]
-      },
-      {
-        id: 2,
-        title: "Heart Failure Management Guidelines",
-        text: "For heart failure with reduced ejection fraction (HFrEF), first-line therapy includes ACE inhibitors or ARBs, beta-blockers, and mineralocorticoid receptor antagonists. For patients with persistent symptoms, consider adding sacubitril/valsartan (ARNI), SGLT2 inhibitors, or ivabradine. Diuretics should be used for symptom relief but do not improve mortality. Regular monitoring of renal function, potassium, and volume status is essential.",
-        specialty: "cardiology",
-        category: "chronic",
-        embedding: [0.7, 0.3, 0.1, 0.2]
-      },
-      {
-        id: 3,
-        title: "IDSA/ATS Guidelines - Community-Acquired Pneumonia",
-        text: "For outpatient treatment of community-acquired pneumonia in previously healthy adults, a macrolide (azithromycin, clarithromycin) or doxycycline is recommended. For patients with comorbidities or risk factors for drug-resistant pathogens, a respiratory fluoroquinolone (levofloxacin, moxifloxacin) or combination of beta-lactam plus macrolide is preferred. Hospitalized patients should receive either a respiratory fluoroquinolone or a combination of beta-lactam plus macrolide.",
-        specialty: "infectious disease",
-        category: "treatment",
-        embedding: [0.1, 0.8, 0.2, 0.4]
-      },
-      {
-        id: 4,
-        title: "Sepsis Management - Surviving Sepsis Campaign",
-        text: "For sepsis and septic shock, implement the following within 1 hour: 1) Measure lactate level, 2) Obtain blood cultures before antibiotic administration, 3) Administer broad-spectrum antibiotics, 4) Begin rapid administration of 30 ml/kg crystalloid for hypotension or lactate ≥4 mmol/L, 5) Apply vasopressors if hypotension persists during or after fluid resuscitation. Reassess and reevaluate antimicrobial therapy daily for potential de-escalation.",
-        specialty: "critical care",
-        category: "emergency",
-        embedding: [0.2, 0.7, 0.3, 0.5]
-      },
-      {
-        id: 5,
-        title: "ADA Standards of Care - Diabetes Blood Pressure Targets",
-        text: "For most patients with diabetes, the American Diabetes Association recommends a blood pressure target of <140/90 mmHg. For individuals at higher risk of cardiovascular disease, a stricter target of <130/80 mmHg may be appropriate if it can be achieved safely. First-line antihypertensive therapy should include an ACE inhibitor or ARB, particularly for patients with albuminuria. Multiple medications are often required to achieve blood pressure targets.",
-        specialty: "endocrinology",
-        category: "chronic",
-        embedding: [0.3, 0.4, 0.8, 0.1]
-      },
-      {
-        id: 6,
-        title: "JNC 8 Hypertension Guidelines",
-        text: "The Eighth Joint National Committee (JNC 8) recommends initiating pharmacologic treatment for patients aged 60 years or older when blood pressure is ≥150/90 mmHg, and for patients younger than 60 years when blood pressure is ≥140/90 mmHg. For patients with diabetes or chronic kidney disease, treatment should begin at ≥140/90 mmHg regardless of age. First-line agents include thiazide diuretics, calcium channel blockers, ACE inhibitors, or ARBs.",
-        specialty: "cardiology",
-        category: "chronic",
-        embedding: [0.4, 0.5, 0.7, 0.2]
-      },
-      {
-        id: 7,
-        title: "Stroke Management - AHA/ASA Guidelines",
-        text: "For acute ischemic stroke, intravenous alteplase (tPA) is recommended within 3-4.5 hours of symptom onset for eligible patients. Mechanical thrombectomy should be considered for large vessel occlusions within 24 hours of last known well time if patients meet criteria. Post-stroke, patients should receive antithrombotic therapy, statins, blood pressure management, and rehabilitation assessments. Secondary prevention includes antiplatelet therapy, statins, and lifestyle modifications.",
-        specialty: "neurology",
-        category: "emergency",
-        embedding: [0.5, 0.3, 0.1, 0.8]
-      },
-      {
-        id: 8,
-        title: "GOLD Guidelines - COPD Management",
-        text: "For chronic obstructive pulmonary disease (COPD), management includes smoking cessation, vaccinations, and pharmacologic therapy based on symptom severity and exacerbation risk. Short-acting bronchodilators are used for rescue therapy, while long-acting bronchodilators (LABA, LAMA) are maintenance therapy for persistent symptoms. Inhaled corticosteroids (ICS) are added for patients with history of exacerbations and elevated eosinophil counts. Pulmonary rehabilitation is recommended for symptomatic patients.",
-        specialty: "pulmonology",
-        category: "chronic",
-        embedding: [0.6, 0.4, 0.2, 0.7]
-      },
-    ];
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <div class="footer-icon"><i data-lucide="activity" style="width:16px;height:16px"></i></div>
+    <span>MedVector AI</span>
+  </div>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">HIPAA Compliance</a>
+    <a href="#">Contact</a>
+  </div>
+  <span class="footer-copy">&copy; 2026 MedVector AI. For demonstration purposes only.</span>
+</footer>
 
-    // Explicitly index (embed) documents using the same vectoriser as the query
-    function indexDocuments() {
-      indexedDocuments = documents.map(doc => {
-        const newEmbedding = embedQuery(doc.text);
-        return { ...doc, embedding: newEmbedding };
-      });
-      updateDocumentStore();
-      updateDocVisual();
-    }
+<!-- JavaScript -->
+<script>
+  let currentStep = 0;
+  let isRunning = false;
+  let query = document.getElementById('queryInput').value;
+  let queryEmbedding = null;
+  let retrievedDocs = [];
+  let generatedResponse = '';
+  let indexedDocuments = [];
 
-    // Update the Knowledge Base box in the simulation flow
-    function updateDocumentStore() {
-      const container = document.getElementById('documentStoreContent');
-      container.innerHTML = '';
+  const documents = [
+    { id: 1, title: "ACC/AHA Guidelines - Acute Myocardial Infarction Management", text: "For acute myocardial infarction (AMI), immediate treatment protocol includes: 1) Administer 162-325 mg of aspirin, 2) Perform ECG within 10 minutes of arrival, 3) Start dual antiplatelet therapy with aspirin plus P2Y12 inhibitor, 4) Consider anticoagulation with unfractionated heparin or low molecular weight heparin, 5) Assess eligibility for reperfusion therapy (PCI preferred if available within 90 minutes, or fibrinolysis if PCI isn't available within 120 minutes).", specialty: "cardiology", category: "emergency", embedding: [0.9, 0.2, 0.3, 0.1] },
+    { id: 2, title: "Heart Failure Management Guidelines", text: "For heart failure with reduced ejection fraction (HFrEF), first-line therapy includes ACE inhibitors or ARBs, beta-blockers, and mineralocorticoid receptor antagonists. For patients with persistent symptoms, consider adding sacubitril/valsartan (ARNI), SGLT2 inhibitors, or ivabradine. Diuretics should be used for symptom relief but do not improve mortality. Regular monitoring of renal function, potassium, and volume status is essential.", specialty: "cardiology", category: "chronic", embedding: [0.7, 0.3, 0.1, 0.2] },
+    { id: 3, title: "IDSA/ATS Guidelines - Community-Acquired Pneumonia", text: "For outpatient treatment of community-acquired pneumonia in previously healthy adults, a macrolide (azithromycin, clarithromycin) or doxycycline is recommended. For patients with comorbidities or risk factors for drug-resistant pathogens, a respiratory fluoroquinolone (levofloxacin, moxifloxacin) or combination of beta-lactam plus macrolide is preferred. Hospitalized patients should receive either a respiratory fluoroquinolone or a combination of beta-lactam plus macrolide.", specialty: "infectious disease", category: "treatment", embedding: [0.1, 0.8, 0.2, 0.4] },
+    { id: 4, title: "Sepsis Management - Surviving Sepsis Campaign", text: "For sepsis and septic shock, implement the following within 1 hour: 1) Measure lactate level, 2) Obtain blood cultures before antibiotic administration, 3) Administer broad-spectrum antibiotics, 4) Begin rapid administration of 30 ml/kg crystalloid for hypotension or lactate >= 4 mmol/L, 5) Apply vasopressors if hypotension persists during or after fluid resuscitation. Reassess and reevaluate antimicrobial therapy daily for potential de-escalation.", specialty: "critical care", category: "emergency", embedding: [0.2, 0.7, 0.3, 0.5] },
+    { id: 5, title: "ADA Standards of Care - Diabetes Blood Pressure Targets", text: "For most patients with diabetes, the American Diabetes Association recommends a blood pressure target of <140/90 mmHg. For individuals at higher risk of cardiovascular disease, a stricter target of <130/80 mmHg may be appropriate if it can be achieved safely. First-line antihypertensive therapy should include an ACE inhibitor or ARB, particularly for patients with albuminuria. Multiple medications are often required to achieve blood pressure targets.", specialty: "endocrinology", category: "chronic", embedding: [0.3, 0.4, 0.8, 0.1] },
+    { id: 6, title: "JNC 8 Hypertension Guidelines", text: "The Eighth Joint National Committee (JNC 8) recommends initiating pharmacologic treatment for patients aged 60 years or older when blood pressure is >= 150/90 mmHg, and for patients younger than 60 years when blood pressure is >= 140/90 mmHg. For patients with diabetes or chronic kidney disease, treatment should begin at >= 140/90 mmHg regardless of age. First-line agents include thiazide diuretics, calcium channel blockers, ACE inhibitors, or ARBs.", specialty: "cardiology", category: "chronic", embedding: [0.4, 0.5, 0.7, 0.2] },
+    { id: 7, title: "Stroke Management - AHA/ASA Guidelines", text: "For acute ischemic stroke, intravenous alteplase (tPA) is recommended within 3-4.5 hours of symptom onset for eligible patients. Mechanical thrombectomy should be considered for large vessel occlusions within 24 hours of last known well time if patients meet criteria. Post-stroke, patients should receive antithrombotic therapy, statins, blood pressure management, and rehabilitation assessments. Secondary prevention includes antiplatelet therapy, statins, and lifestyle modifications.", specialty: "neurology", category: "emergency", embedding: [0.5, 0.3, 0.1, 0.8] },
+    { id: 8, title: "GOLD Guidelines - COPD Management", text: "For chronic obstructive pulmonary disease (COPD), management includes smoking cessation, vaccinations, and pharmacologic therapy based on symptom severity and exacerbation risk. Short-acting bronchodilators are used for rescue therapy, while long-acting bronchodilators (LABA, LAMA) are maintenance therapy for persistent symptoms. Inhaled corticosteroids (ICS) are added for patients with history of exacerbations and elevated eosinophil counts. Pulmonary rehabilitation is recommended for symptomatic patients.", specialty: "pulmonology", category: "chronic", embedding: [0.6, 0.4, 0.2, 0.7] },
+  ];
 
-      if (indexedDocuments.length === 0) {
-        // Show message when no documents are embedded
-        const emptyMessage = document.createElement('div');
-        emptyMessage.className = "p-2 bg-yellow-50 rounded text-xs flex items-center";
-        emptyMessage.innerHTML = '<i data-lucide="alert-triangle" class="h-3 w-3 mr-1 text-yellow-500"></i> <span>No documents embedded in vector database yet.</span>';
-        container.appendChild(emptyMessage);
-
-        // Show placeholder entries
-        documents.forEach(doc => {
-          const div = document.createElement('div');
-          div.className = "mb-2 p-1 bg-gray-100 rounded flex flex-col opacity-50";
-          div.innerHTML =
-            '<div class="flex items-center space-x-1">' +
-              getProductIcon(doc.specialty) +
-              '<div class="font-medium text-xs truncate">' + doc.title + '</div>' +
-            '</div>' +
-            '<div class="text-[10px] text-gray-500">[Vector missing]</div>';
-          container.appendChild(div);
-        });
-      } else {
-        // Show embedded documents with vectors
-        indexedDocuments.forEach(doc => {
-          const div = document.createElement('div');
-          div.className = "mb-2 p-1 bg-blue-50 rounded flex flex-col";
-          div.innerHTML =
-            '<div class="flex items-center space-x-1">' +
-              getProductIcon(doc.specialty) +
-              '<div class="font-medium text-xs truncate">' + doc.title + '</div>' +
-            '</div>' +
-            '<div class="text-[10px] text-indigo-600 font-mono">[' + doc.embedding.map(v => v.toFixed(3)).join(', ') + ']</div>';
-          container.appendChild(div);
-        });
-      }
-
-      // Refresh icons
-      if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-      }
-    }
-
-    // Update the Documents Visual Representation container (accordion)
-    function updateDocVisual() {
-      const container = document.getElementById('docVisualContainer');
-      container.innerHTML = '';
-
-      // Show original documents even before embedding
-      if (indexedDocuments.length === 0) {
-        container.innerHTML = '<div class="col-span-2 p-4 bg-yellow-50 rounded-lg mb-4 text-sm font-medium"><i data-lucide="alert-triangle" class="inline h-4 w-4 mr-1"></i>Documents not yet embedded - vectors not available for search</div>';
-
-        // Display original documents without vector representation
-        const sortedOriginalDocs = [...documents].sort((a, b) => a.specialty.localeCompare(b.specialty));
-
-        sortedOriginalDocs.forEach(doc => {
-          const card = document.createElement('div');
-
-          // Use different background colors based on specialty
-          const bgColors = {
-            'cardiology': 'bg-red-50',
-            'infectious disease': 'bg-green-50',
-            'critical care': 'bg-blue-50',
-            'endocrinology': 'bg-yellow-50',
-            'neurology': 'bg-purple-50',
-            'pulmonology': 'bg-cyan-50'
-          };
-
-          const bgColor = bgColors[doc.specialty] || 'bg-gray-50';
-          card.className = `p-4 border border-dashed border-gray-200 rounded-xl ${bgColor} flex flex-col h-full`;
-
-          card.innerHTML = `
-            <div class="flex items-center space-x-2">
-              ${getProductIcon(doc.specialty)}
-              <span class="font-bold text-sm">${doc.title}</span>
-            </div>
-            <div class="mt-1 text-xs text-gray-400">Vector: [Not embedded yet]</div>
-            <div class="mt-1 text-xs text-gray-600 flex-grow">${doc.text}</div>
-            <div class="mt-2 flex items-center">
-              <span class="text-xs px-2 py-1 rounded-full bg-white border border-gray-100">${doc.specialty}</span>
-              <span class="text-xs px-2 py-1 rounded-full bg-white border border-gray-100 ml-1">${doc.category}</span>
-            </div>
-          `;
-          container.appendChild(card);
-        });
-
-        return;
-      }
-
-      // Display embedded documents with vector representation highlighted
-      container.innerHTML = '<div class="col-span-2 p-4 bg-green-50 rounded-lg mb-4 text-sm font-medium"><i data-lucide="check-circle" class="inline h-4 w-4 mr-1"></i>Documents embedded - vectors available for search</div>';
-
-      // Sort documents by specialty to group related documents
-      const sortedDocs = [...indexedDocuments].sort((a, b) => a.specialty.localeCompare(b.specialty));
-
-      sortedDocs.forEach(doc => {
-        const card = document.createElement('div');
-
-        // Use different background colors based on specialty
-        const bgColors = {
-          'cardiology': 'bg-red-50',
-          'infectious disease': 'bg-green-50',
-          'critical care': 'bg-blue-50',
-          'endocrinology': 'bg-yellow-50',
-          'neurology': 'bg-purple-50',
-          'pulmonology': 'bg-cyan-50'
-        };
-
-        const bgColor = bgColors[doc.specialty] || 'bg-gray-50';
-        card.className = `p-4 border border-solid border-gray-200 rounded-xl ${bgColor} flex flex-col h-full`;
-
-        // Format vector values with highlighting
-        const vectorDisplay = doc.embedding.map(v => v.toFixed(3)).join(', ');
-
-        card.innerHTML = `
-          <div class="flex items-center space-x-2">
-            ${getProductIcon(doc.specialty)}
-            <span class="font-bold text-sm">${doc.title}</span>
-          </div>
-          <div class="mt-1 text-xs bg-indigo-100 p-1 rounded font-mono">
-            <span class="font-medium text-indigo-800">Vector:</span>
-            <span class="text-indigo-700">[${vectorDisplay}]</span>
-          </div>
-          <div class="mt-1 text-xs text-gray-600 flex-grow">${doc.text}</div>
-          <div class="mt-2 flex items-center">
-            <span class="text-xs px-2 py-1 rounded-full bg-white border border-gray-100">${doc.specialty}</span>
-            <span class="text-xs px-2 py-1 rounded-full bg-white border border-gray-100 ml-1">${doc.category}</span>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-
-      // Refresh Lucide icons
-      if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-      }
-    }
-
-    // Get a specialty icon (using Lucide) based on medical specialty
-    function getProductIcon(specialty) {
-      let iconName = '';
-      switch(specialty) {
-        case 'cardiology': iconName = 'heart-pulse'; break;
-        case 'infectious disease': iconName = 'bacteria'; break;
-        case 'critical care': iconName = 'activity'; break;
-        case 'endocrinology': iconName = 'flask-conical'; break;
-        case 'neurology': iconName = 'brain'; break;
-        case 'pulmonology': iconName = 'lungs'; break;
-        default: iconName = 'clipboard-list';
-      }
-      return '<i data-lucide="'+iconName+'" class="h-4 w-4"></i>';
-    }
-
-    // Simulate embedding the query text into a vector
-    function embedQuery(text) {
-      let embedding = [0.5, 0.5, 0.5, 0.5];
-      const textLower = text.toLowerCase();
-      if (textLower.includes('heart') || textLower.includes('cardiac') || textLower.includes('myocardial') || textLower.includes('infarction')) {
-        embedding[0] += 0.4;
-      }
-      if (textLower.includes('pneumonia') || textLower.includes('antibiotic') || textLower.includes('infection')) {
-        embedding[1] += 0.4;
-      }
-      if (textLower.includes('diabetes') || textLower.includes('blood pressure') || textLower.includes('hypertension')) {
-        embedding[2] += 0.4;
-      }
-      if (textLower.includes('stroke') || textLower.includes('copd') || textLower.includes('pulmonary')) {
-        embedding[3] += 0.4;
-      }
-      if (textLower.includes('emergency') || textLower.includes('acute') || textLower.includes('immediate')) {
-        embedding[0] += 0.2;
-        embedding[3] += 0.2;
-      }
-      if (textLower.includes('treatment') || textLower.includes('therapy') || textLower.includes('medication')) {
-        embedding[1] += 0.3;
-      }
-      if (textLower.includes('target') || textLower.includes('management') || textLower.includes('control')) {
-        embedding[2] += 0.3;
-      }
-      if (textLower.includes('guideline') || textLower.includes('protocol') || textLower.includes('recommendation')) {
-        embedding[0] += 0.1;
-        embedding[1] += 0.1;
-        embedding[2] += 0.1;
-        embedding[3] += 0.1;
-      }
-      const sum = embedding.reduce((a, b) => a + b, 0);
-      return embedding.map(v => v / sum);
-    }
-
-    // Find the most similar documents using cosine similarity
-    function findSimilarDocuments(queryVector, docs, topK = 3) {
-      function calculateSimilarity(v1, v2) {
-        let dotProduct = 0, mag1 = 0, mag2 = 0;
-        for (let i = 0; i < v1.length; i++) {
-          dotProduct += v1[i] * v2[i];
-          mag1 += v1[i] * v1[i];
-          mag2 += v2[i] * v2[i];
-        }
-        mag1 = Math.sqrt(mag1);
-        mag2 = Math.sqrt(mag2);
-        return dotProduct / (mag1 * mag2);
-      }
-      return docs
-        .map(doc => ({ ...doc, similarity: calculateSimilarity(queryVector, doc.embedding) }))
-        .sort((a, b) => b.similarity - a.similarity)
-        .slice(0, topK);
-    }
-
-    // Generate a response based on retrieved medical documents and the query.
-    function generateResponse(retrievedDocs, userQuery) {
-      const queryLower = userQuery.toLowerCase();
-      if(queryLower.includes("weather")){
-        return "There is no information about weather in our vector database. Please ask a clinical or medical question.";
-      }
-
-      if (retrievedDocs.length === 0 || (retrievedDocs[0] && retrievedDocs[0].similarity < 0.2)) {
-        return "I don't have enough information to answer your clinical question. Could you provide more specific details about the medical condition or treatment you're inquiring about?";
-      }
-
-      if ((queryLower.includes('myocardial') || queryLower.includes('heart attack') || queryLower.includes('ami')) &&
-          (queryLower.includes('protocol') || queryLower.includes('treatment') || queryLower.includes('management'))) {
-        if (retrievedDocs.some(doc => doc.id === 1)) {
-          return "Standard protocol for treating acute myocardial infarction (AMI):\n\n1. Administer 162-325 mg of aspirin immediately\n2. Perform ECG within 10 minutes of patient arrival\n3. Initiate dual antiplatelet therapy (aspirin plus P2Y12 inhibitor)\n4. Consider anticoagulation with unfractionated heparin or LMWH\n5. Evaluate for reperfusion therapy:\n   - Primary PCI is preferred if available within 90 minutes\n   - Fibrinolysis if PCI isn't available within 120 minutes\n\nThis follows current ACC/AHA guidelines for STEMI management.";
-        }
-      }
-
-      if ((queryLower.includes('pneumonia') || queryLower.includes('cap')) &&
-          (queryLower.includes('antibiotic') || queryLower.includes('treatment'))) {
-        if (retrievedDocs.some(doc => doc.id === 3)) {
-          return "First-line antibiotics for community-acquired pneumonia according to IDSA/ATS guidelines:\n\n1. For outpatient treatment in previously healthy adults:\n   - Macrolide (azithromycin, clarithromycin) OR\n   - Doxycycline\n\n2. For outpatients with comorbidities or risk factors for drug resistance:\n   - Respiratory fluoroquinolone (levofloxacin, moxifloxacin) OR\n   - Combination of beta-lactam plus macrolide\n\n3. For hospitalized patients (non-ICU):\n   - Respiratory fluoroquinolone OR\n   - Combination of beta-lactam plus macrolide\n\nTreatment duration typically ranges from 5-7 days, guided by clinical response.";
-        }
-      }
-
-      if ((queryLower.includes('diabetes') || queryLower.includes('diabetic')) &&
-          (queryLower.includes('blood pressure') || queryLower.includes('hypertension'))) {
-        if (retrievedDocs.some(doc => doc.id === 5)) {
-          return "Blood pressure targets for diabetic patients according to ADA Standards of Care:\n\n1. General target: <140/90 mmHg for most patients with diabetes\n\n2. Stricter target: <130/80 mmHg may be appropriate for individuals at higher risk of cardiovascular disease, if achievable safely\n\n3. First-line antihypertensive therapy should include an ACE inhibitor or ARB, particularly for patients with albuminuria\n\n4. Multiple medications are often required to achieve blood pressure targets\n\nNote: The JNC 8 guidelines also specifically address patients with diabetes, recommending treatment initiation at ≥140/90 mmHg regardless of age.";
-        }
-      }
-
-      let response = "Based on current clinical guidelines and evidence:";
-      retrievedDocs.forEach(doc => {
-        response += "\n\n**" + doc.title + "**\n" + doc.text;
-      });
-
-      response += "\n\nDisclaimer: This information is based on medical guidelines and should be used in conjunction with clinical judgment.";
-
-      return response;
-    }
-
-    // Update the UI based on the current simulation step
-    function updateUI() {
-      document.getElementById('customerQueryContent').innerText = query;
-
-      if (queryEmbedding) {
-        document.getElementById('embeddingModelContent').innerText = "[" + queryEmbedding.map(v => v.toFixed(3)).join(', ') + "]";
-      } else {
-        document.getElementById('embeddingModelContent').innerHTML = '<span class="italic">Waiting for query to process...</span>';
-      }
-
-      const retrieverEl = document.getElementById('retrieverContent');
-      retrieverEl.innerHTML = '';
-      if (retrievedDocs.length > 0) {
-        retrievedDocs.forEach(doc => {
-          const div = document.createElement('div');
-          div.className = "mb-2 p-2 bg-green-50 rounded text-xs";
-          div.innerHTML = '<div class="font-medium flex items-center gap-1">' +
-            getProductIcon(doc.specialty) +
-            '<span>Doc ' + doc.id + ' (' + (doc.similarity * 100).toFixed(1) + '%)</span></div>' +
-            '<div class="text-xs truncate">' + doc.title + '</div>';
-          retrieverEl.appendChild(div);
-        });
-      } else {
-        retrieverEl.innerHTML = '<div class="p-2 bg-gray-50 rounded text-xs italic">Waiting for embedding...</div>';
-      }
-
-      const responseEl = document.getElementById('responseGeneratorContent');
-      if (generatedResponse) {
-        responseEl.innerHTML = '<div class="p-2 bg-red-50 rounded text-xs whitespace-pre-wrap">' + generatedResponse + '</div>';
-      } else {
-        responseEl.innerHTML = '<div class="p-2 bg-gray-50 rounded text-xs italic">Waiting for retrieval...</div>';
-      }
-
-      // Highlight active step with brand colors
-      const activeClass = "border-brand-500 bg-brand-50 shadow-lg shadow-brand-500/10";
-      const inactiveClass = "border-gray-200 bg-white";
-      document.getElementById('documentStoreBox').className = "relative p-4 border-2 rounded-xl w-full transition-all duration-300 " + (currentStep === 0 ? activeClass : inactiveClass);
-      document.getElementById('customerQueryBox').className = "p-4 border-2 rounded-xl w-60 transition-all duration-300 " + (currentStep === 1 ? activeClass : inactiveClass);
-      document.getElementById('embeddingModelBox').className = "p-4 border-2 rounded-xl w-60 transition-all duration-300 " + (currentStep === 2 ? activeClass : inactiveClass);
-      document.getElementById('retrieverBox').className = "p-4 border-2 rounded-xl w-60 transition-all duration-300 " + (currentStep === 3 ? activeClass : inactiveClass);
-      document.getElementById('responseGeneratorBox').className = "p-4 border-2 rounded-xl w-60 transition-all duration-300 " + (currentStep === 4 ? activeClass : inactiveClass);
-
-      const nextStepButton = document.getElementById('nextStepButton');
-      nextStepButton.innerText = (currentStep === 5 ? "Reset" : "Next Step");
-      document.getElementById('runSimulationButton').disabled = isRunning;
-      document.getElementById('nextStepButton').disabled = isRunning;
-
-      if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-      }
-
-      if (currentStep > 0) {
-        updateDocumentStore();
-      }
-    }
-
-    // Run one simulation step (manual stepping)
-    function runStep() {
-      if (isRunning) return;
-      switch(currentStep) {
-        case 0:
-          indexDocuments();
-          currentStep = 1;
-          break;
-        case 1:
-          currentStep = 2;
-          break;
-        case 2:
-          queryEmbedding = embedQuery(query);
-          currentStep = 3;
-          break;
-        case 3:
-          retrievedDocs = findSimilarDocuments(queryEmbedding, indexedDocuments);
-          currentStep = 4;
-          break;
-        case 4:
-          generatedResponse = generateResponse(retrievedDocs, query);
-          currentStep = 5;
-          break;
-        case 5:
-          currentStep = 0;
-          queryEmbedding = null;
-          retrievedDocs = [];
-          generatedResponse = '';
-          indexedDocuments = [];
-          query = "What is the standard protocol for treating acute myocardial infarction?";
-          document.getElementById('queryInput').value = query;
-          updateDocVisual();
-          updateDocumentStore();
-          break;
-      }
-      updateUI();
-    }
-
-    // Run the entire simulation automatically with delays
-    async function runSimulation() {
-      if (isRunning) return;
-      isRunning = true;
-
-      currentStep = 0;
-      queryEmbedding = null;
-      retrievedDocs = [];
-      generatedResponse = '';
-
-      query = document.getElementById('queryInput').value;
-
-      updateUI();
-
-      await new Promise(resolve => setTimeout(resolve, 500));
-      indexDocuments();
-      currentStep = 1;
-      updateUI();
-
-      await new Promise(resolve => setTimeout(resolve, 500));
-      currentStep = 2;
-      updateUI();
-
-      await new Promise(resolve => setTimeout(resolve, 500));
-      queryEmbedding = embedQuery(query);
-      currentStep = 3;
-      updateUI();
-
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      retrievedDocs = findSimilarDocuments(queryEmbedding, indexedDocuments);
-      currentStep = 4;
-      updateUI();
-
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      generatedResponse = generateResponse(retrievedDocs, query);
-      currentStep = 5;
-      updateUI();
-
-      isRunning = false;
-      updateUI();
-    }
-
-    // Event listeners
-    document.getElementById('runSimulationButton').addEventListener('click', runSimulation);
-    document.getElementById('nextStepButton').addEventListener('click', runStep);
-    document.getElementById('queryInput').addEventListener('input', function(e) {
-      query = e.target.value;
-      updateUI();
+  function indexDocuments() {
+    indexedDocuments = documents.map(doc => {
+      const newEmbedding = embedQuery(doc.text);
+      return { ...doc, embedding: newEmbedding };
     });
-    document.getElementById('embedDocumentsButton').addEventListener('click', function() {
-      indexDocuments();
-      updateDocVisual();
-      if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-      }
-    });
-    document.getElementById('toggleAccordionButton').addEventListener('click', function() {
-      document.getElementById('docVisualContainer').classList.toggle('hidden');
-    });
-    document.querySelectorAll('.sampleQuery').forEach(button => {
-      button.addEventListener('click', function() {
-        query = this.getAttribute('data-query');
-        document.getElementById('queryInput').value = query;
-        currentStep = 0;
-        queryEmbedding = null;
-        retrievedDocs = [];
-        generatedResponse = '';
-        updateUI();
-      });
-    });
-
-    // Complete reset function for the Reset All button
-    function resetSimulation() {
-      currentStep = 0;
-      queryEmbedding = null;
-      retrievedDocs = [];
-      generatedResponse = '';
-      indexedDocuments = [];
-
-      query = "What is the standard protocol for treating acute myocardial infarction?";
-      document.getElementById('queryInput').value = query;
-
-      updateDocVisual();
-      updateDocumentStore();
-      updateUI();
-
-      if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-      }
-    }
-
-    document.getElementById('resetButton').addEventListener('click', resetSimulation);
-
-    // Initialize
     updateDocumentStore();
     updateDocVisual();
+  }
+
+  function updateDocumentStore() {
+    const container = document.getElementById('documentStoreContent');
+    container.innerHTML = '';
+    if (indexedDocuments.length === 0) {
+      const emptyMessage = document.createElement('div');
+      emptyMessage.style.cssText = 'font-style:italic;color:#888;font-size:11px;font-weight:700;margin-bottom:4px';
+      emptyMessage.textContent = 'No documents embedded in vector database yet.';
+      container.appendChild(emptyMessage);
+      documents.forEach(doc => {
+        const div = document.createElement('div');
+        div.style.cssText = 'margin-bottom:4px;padding:3px 6px;background:#f5f5f5;border-radius:6px;opacity:.5;font-size:11px;font-weight:700';
+        div.innerHTML = '<div style="display:flex;align-items:center;gap:4px">' + getProductIcon(doc.specialty) + '<span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + doc.title + '</span></div><div style="font-size:10px;color:#999">[Vector missing]</div>';
+        container.appendChild(div);
+      });
+    } else {
+      indexedDocuments.forEach(doc => {
+        const div = document.createElement('div');
+        div.style.cssText = 'margin-bottom:4px;padding:3px 6px;background:#eef2ff;border-radius:6px;font-size:11px;font-weight:700';
+        div.innerHTML = '<div style="display:flex;align-items:center;gap:4px">' + getProductIcon(doc.specialty) + '<span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + doc.title + '</span></div><div style="font-size:10px;color:var(--indigo);font-family:monospace">[' + doc.embedding.map(v => v.toFixed(3)).join(', ') + ']</div>';
+        container.appendChild(div);
+      });
+    }
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  function updateDocVisual() {
+    const container = document.getElementById('docVisualContainer');
+    container.innerHTML = '';
+    const bgColors = {
+      'cardiology': '#fff0f0', 'infectious disease': '#f0fff4',
+      'critical care': '#f0f4ff', 'endocrinology': '#fffbeb',
+      'neurology': '#faf5ff', 'pulmonology': '#ecfeff'
+    };
+
+    if (indexedDocuments.length === 0) {
+      const warn = document.createElement('div');
+      warn.style.cssText = 'grid-column:1/-1;padding:12px 16px;background:var(--yellow);border:2.5px solid var(--dark);border-radius:10px;font-size:13px;font-weight:800;box-shadow:2px 2px 0 var(--dark);margin-bottom:4px';
+      warn.innerHTML = '<i data-lucide="alert-triangle" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:4px"></i>Documents not yet embedded — vectors not available for search';
+      container.appendChild(warn);
+      const sortedDocs = [...documents].sort((a, b) => a.specialty.localeCompare(b.specialty));
+      sortedDocs.forEach(doc => {
+        const card = document.createElement('div');
+        card.className = 'doc-card-app';
+        card.style.background = bgColors[doc.specialty] || '#f9fafb';
+        card.style.borderStyle = 'dashed';
+        card.innerHTML = '<div style="display:flex;align-items:center;gap:6px">' + getProductIcon(doc.specialty) + '<strong style="font-size:12px">' + doc.title + '</strong></div><div style="font-size:11px;color:#aaa">Vector: [Not embedded yet]</div><div style="font-size:11px;color:#666;flex-grow:1">' + doc.text + '</div><div style="display:flex;gap:4px;margin-top:4px"><span class="doc-tag">' + doc.specialty + '</span><span class="doc-tag">' + doc.category + '</span></div>';
+        container.appendChild(card);
+      });
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+      return;
+    }
+
+    const ok = document.createElement('div');
+    ok.style.cssText = 'grid-column:1/-1;padding:12px 16px;background:var(--green);border:2.5px solid var(--dark);border-radius:10px;font-size:13px;font-weight:800;box-shadow:2px 2px 0 var(--dark);margin-bottom:4px';
+    ok.innerHTML = '<i data-lucide="check-circle" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:4px"></i>Documents embedded — vectors available for search';
+    container.appendChild(ok);
+    const sortedDocs = [...indexedDocuments].sort((a, b) => a.specialty.localeCompare(b.specialty));
+    sortedDocs.forEach(doc => {
+      const card = document.createElement('div');
+      card.className = 'doc-card-app';
+      card.style.background = bgColors[doc.specialty] || '#f9fafb';
+      const vectorDisplay = doc.embedding.map(v => v.toFixed(3)).join(', ');
+      card.innerHTML = '<div style="display:flex;align-items:center;gap:6px">' + getProductIcon(doc.specialty) + '<strong style="font-size:12px">' + doc.title + '</strong></div><div style="font-size:11px;background:#eef2ff;padding:3px 6px;border-radius:6px;font-family:monospace"><strong style="color:var(--indigo)">Vector:</strong> <span style="color:var(--indigo)">[' + vectorDisplay + ']</span></div><div style="font-size:11px;color:#666;flex-grow:1">' + doc.text + '</div><div style="display:flex;gap:4px;margin-top:4px"><span class="doc-tag">' + doc.specialty + '</span><span class="doc-tag">' + doc.category + '</span></div>';
+      container.appendChild(card);
+    });
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  function getProductIcon(specialty) {
+    let iconName = '';
+    switch(specialty) {
+      case 'cardiology': iconName = 'heart-pulse'; break;
+      case 'infectious disease': iconName = 'bug'; break;
+      case 'critical care': iconName = 'activity'; break;
+      case 'endocrinology': iconName = 'flask-conical'; break;
+      case 'neurology': iconName = 'brain'; break;
+      case 'pulmonology': iconName = 'wind'; break;
+      default: iconName = 'clipboard-list';
+    }
+    return '<i data-lucide="'+iconName+'" style="width:16px;height:16px;flex-shrink:0"></i>';
+  }
+
+  function embedQuery(text) {
+    let embedding = [0.5, 0.5, 0.5, 0.5];
+    const textLower = text.toLowerCase();
+    if (textLower.includes('heart') || textLower.includes('cardiac') || textLower.includes('myocardial') || textLower.includes('infarction')) embedding[0] += 0.4;
+    if (textLower.includes('pneumonia') || textLower.includes('antibiotic') || textLower.includes('infection')) embedding[1] += 0.4;
+    if (textLower.includes('diabetes') || textLower.includes('blood pressure') || textLower.includes('hypertension')) embedding[2] += 0.4;
+    if (textLower.includes('stroke') || textLower.includes('copd') || textLower.includes('pulmonary')) embedding[3] += 0.4;
+    if (textLower.includes('emergency') || textLower.includes('acute') || textLower.includes('immediate')) { embedding[0] += 0.2; embedding[3] += 0.2; }
+    if (textLower.includes('treatment') || textLower.includes('therapy') || textLower.includes('medication')) embedding[1] += 0.3;
+    if (textLower.includes('target') || textLower.includes('management') || textLower.includes('control')) embedding[2] += 0.3;
+    if (textLower.includes('guideline') || textLower.includes('protocol') || textLower.includes('recommendation')) { embedding[0] += 0.1; embedding[1] += 0.1; embedding[2] += 0.1; embedding[3] += 0.1; }
+    const sum = embedding.reduce((a, b) => a + b, 0);
+    return embedding.map(v => v / sum);
+  }
+
+  function findSimilarDocuments(queryVector, docs, topK = 3) {
+    function calculateSimilarity(v1, v2) {
+      let dotProduct = 0, mag1 = 0, mag2 = 0;
+      for (let i = 0; i < v1.length; i++) { dotProduct += v1[i] * v2[i]; mag1 += v1[i] * v1[i]; mag2 += v2[i] * v2[i]; }
+      return dotProduct / (Math.sqrt(mag1) * Math.sqrt(mag2));
+    }
+    return docs.map(doc => ({ ...doc, similarity: calculateSimilarity(queryVector, doc.embedding) })).sort((a, b) => b.similarity - a.similarity).slice(0, topK);
+  }
+
+  function generateResponse(retrievedDocs, userQuery) {
+    const queryLower = userQuery.toLowerCase();
+    if (queryLower.includes("weather")) return "There is no information about weather in our vector database. Please ask a clinical or medical question.";
+    if (retrievedDocs.length === 0 || (retrievedDocs[0] && retrievedDocs[0].similarity < 0.2)) return "I don't have enough information to answer your clinical question. Could you provide more specific details about the medical condition or treatment you're inquiring about?";
+    if ((queryLower.includes('myocardial') || queryLower.includes('heart attack') || queryLower.includes('ami')) && (queryLower.includes('protocol') || queryLower.includes('treatment') || queryLower.includes('management'))) {
+      if (retrievedDocs.some(doc => doc.id === 1)) return "Standard protocol for treating acute myocardial infarction (AMI):\n\n1. Administer 162-325 mg of aspirin immediately\n2. Perform ECG within 10 minutes of patient arrival\n3. Initiate dual antiplatelet therapy (aspirin plus P2Y12 inhibitor)\n4. Consider anticoagulation with unfractionated heparin or LMWH\n5. Evaluate for reperfusion therapy:\n   - Primary PCI is preferred if available within 90 minutes\n   - Fibrinolysis if PCI isn't available within 120 minutes\n\nThis follows current ACC/AHA guidelines for STEMI management.";
+    }
+    if ((queryLower.includes('pneumonia') || queryLower.includes('cap')) && (queryLower.includes('antibiotic') || queryLower.includes('treatment'))) {
+      if (retrievedDocs.some(doc => doc.id === 3)) return "First-line antibiotics for community-acquired pneumonia according to IDSA/ATS guidelines:\n\n1. For outpatient treatment in previously healthy adults:\n   - Macrolide (azithromycin, clarithromycin) OR\n   - Doxycycline\n\n2. For outpatients with comorbidities or risk factors for drug resistance:\n   - Respiratory fluoroquinolone (levofloxacin, moxifloxacin) OR\n   - Combination of beta-lactam plus macrolide\n\n3. For hospitalized patients (non-ICU):\n   - Respiratory fluoroquinolone OR\n   - Combination of beta-lactam plus macrolide\n\nTreatment duration typically ranges from 5-7 days, guided by clinical response.";
+    }
+    if ((queryLower.includes('diabetes') || queryLower.includes('diabetic')) && (queryLower.includes('blood pressure') || queryLower.includes('hypertension'))) {
+      if (retrievedDocs.some(doc => doc.id === 5)) return "Blood pressure targets for diabetic patients according to ADA Standards of Care:\n\n1. General target: <140/90 mmHg for most patients with diabetes\n\n2. Stricter target: <130/80 mmHg may be appropriate for individuals at higher risk of cardiovascular disease, if achievable safely\n\n3. First-line antihypertensive therapy should include an ACE inhibitor or ARB, particularly for patients with albuminuria\n\n4. Multiple medications are often required to achieve blood pressure targets\n\nNote: The JNC 8 guidelines also specifically address patients with diabetes, recommending treatment initiation at >=140/90 mmHg regardless of age.";
+    }
+    let response = "Based on current clinical guidelines and evidence:";
+    retrievedDocs.forEach(doc => { response += "\n\n**" + doc.title + "**\n" + doc.text; });
+    response += "\n\nDisclaimer: This information is based on medical guidelines and should be used in conjunction with clinical judgment.";
+    return response;
+  }
+
+  function updateUI() {
+    document.getElementById('customerQueryContent').innerText = query;
+    if (queryEmbedding) {
+      document.getElementById('embeddingModelContent').innerText = "[" + queryEmbedding.map(v => v.toFixed(3)).join(', ') + "]";
+      document.getElementById('embeddingModelContent').style.fontStyle = 'normal';
+    } else {
+      document.getElementById('embeddingModelContent').innerHTML = '<span style="font-style:italic">Waiting for query...</span>';
+    }
+    const retrieverEl = document.getElementById('retrieverContent');
+    retrieverEl.innerHTML = '';
+    if (retrievedDocs.length > 0) {
+      retrieverEl.style.fontStyle = 'normal';
+      retrievedDocs.forEach(doc => {
+        const div = document.createElement('div');
+        div.style.cssText = 'margin-bottom:4px;padding:4px 6px;background:#f0fff4;border-radius:6px;font-size:11px;font-weight:700';
+        div.innerHTML = '<div style="display:flex;align-items:center;gap:4px">' + getProductIcon(doc.specialty) + '<span>Doc ' + doc.id + ' (' + (doc.similarity * 100).toFixed(1) + '%)</span></div><div style="font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + doc.title + '</div>';
+        retrieverEl.appendChild(div);
+      });
+    } else {
+      retrieverEl.innerHTML = '<span style="font-style:italic">Waiting for embedding...</span>';
+    }
+    const responseEl = document.getElementById('responseGeneratorContent');
+    if (generatedResponse) {
+      responseEl.innerHTML = '<div style="white-space:pre-wrap;font-size:11px;font-weight:700">' + generatedResponse + '</div>';
+      responseEl.style.fontStyle = 'normal';
+    } else {
+      responseEl.innerHTML = '<span style="font-style:italic">Waiting for retrieval...</span>';
+    }
+
+    // Highlight active pipeline box
+    ['documentStoreBox','customerQueryBox','embeddingModelBox','retrieverBox','responseGeneratorBox'].forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (currentStep === i) {
+        el.classList.add('active');
+      } else {
+        el.classList.remove('active');
+      }
+    });
+
+    const nextStepButton = document.getElementById('nextStepButton');
+    nextStepButton.innerHTML = currentStep === 5
+      ? '<i data-lucide="rotate-ccw" style="width:14px;height:14px"></i> Reset'
+      : '<i data-lucide="arrow-right" style="width:14px;height:14px"></i> Next Step';
+    document.getElementById('runSimulationButton').disabled = isRunning;
+    document.getElementById('nextStepButton').disabled = isRunning;
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    if (currentStep > 0) updateDocumentStore();
+  }
+
+  function runStep() {
+    if (isRunning) return;
+    switch(currentStep) {
+      case 0: indexDocuments(); currentStep = 1; break;
+      case 1: currentStep = 2; break;
+      case 2: queryEmbedding = embedQuery(query); currentStep = 3; break;
+      case 3: retrievedDocs = findSimilarDocuments(queryEmbedding, indexedDocuments); currentStep = 4; break;
+      case 4: generatedResponse = generateResponse(retrievedDocs, query); currentStep = 5; break;
+      case 5:
+        currentStep = 0; queryEmbedding = null; retrievedDocs = []; generatedResponse = ''; indexedDocuments = [];
+        query = "What is the standard protocol for treating acute myocardial infarction?";
+        document.getElementById('queryInput').value = query;
+        updateDocVisual(); updateDocumentStore(); break;
+    }
     updateUI();
-  </script>
+  }
+
+  async function runSimulation() {
+    if (isRunning) return;
+    isRunning = true;
+    currentStep = 0; queryEmbedding = null; retrievedDocs = []; generatedResponse = '';
+    query = document.getElementById('queryInput').value;
+    updateUI();
+    await new Promise(r => setTimeout(r, 500));
+    indexDocuments(); currentStep = 1; updateUI();
+    await new Promise(r => setTimeout(r, 500));
+    currentStep = 2; updateUI();
+    await new Promise(r => setTimeout(r, 500));
+    queryEmbedding = embedQuery(query); currentStep = 3; updateUI();
+    await new Promise(r => setTimeout(r, 1000));
+    retrievedDocs = findSimilarDocuments(queryEmbedding, indexedDocuments); currentStep = 4; updateUI();
+    await new Promise(r => setTimeout(r, 1000));
+    generatedResponse = generateResponse(retrievedDocs, query); currentStep = 5; updateUI();
+    isRunning = false; updateUI();
+  }
+
+  document.getElementById('runSimulationButton').addEventListener('click', runSimulation);
+  document.getElementById('nextStepButton').addEventListener('click', runStep);
+  document.getElementById('queryInput').addEventListener('input', function(e) { query = e.target.value; updateUI(); });
+  document.getElementById('embedDocumentsButton').addEventListener('click', function() { indexDocuments(); updateDocVisual(); if (typeof lucide !== 'undefined') lucide.createIcons(); });
+  document.getElementById('toggleAccordionButton').addEventListener('click', function() { document.getElementById('docVisualContainer').classList.toggle('hidden'); });
+  document.querySelectorAll('.sampleQuery').forEach(button => {
+    button.addEventListener('click', function() {
+      query = this.getAttribute('data-query');
+      document.getElementById('queryInput').value = query;
+      currentStep = 0; queryEmbedding = null; retrievedDocs = []; generatedResponse = '';
+      updateUI();
+    });
+  });
+
+  function resetSimulation() {
+    currentStep = 0; queryEmbedding = null; retrievedDocs = []; generatedResponse = ''; indexedDocuments = [];
+    query = "What is the standard protocol for treating acute myocardial infarction?";
+    document.getElementById('queryInput').value = query;
+    updateDocVisual(); updateDocumentStore(); updateUI();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  document.getElementById('resetButton').addEventListener('click', resetSimulation);
+  updateDocumentStore(); updateDocVisual(); updateUI();
+</script>
 </body>
 </html>
