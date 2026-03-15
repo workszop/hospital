@@ -204,7 +204,7 @@ body{
 }
 
 /* ── DEMO SECTION ── */
-.demo-section{padding:80px 40px;max-width:1200px;margin:0 auto}
+.demo-section{padding:80px 40px;max-width:1400px;margin:0 auto}
 .demo-outer{
   background:var(--yellow);
   border:3px solid var(--dark);border-radius:28px;
@@ -256,10 +256,8 @@ body{
   margin-bottom:12px;display:flex;align-items:center;gap:8px;
 }
 .app-icon{
-  width:32px;height:32px;border-radius:10px;
-  border:2.5px solid var(--dark);
+  width:24px;height:24px;
   display:inline-flex;align-items:center;justify-content:center;
-  box-shadow:2px 2px 0 var(--dark);
   flex-shrink:0;
 }
 .app-btn{
@@ -306,7 +304,7 @@ body{
   border:3px solid var(--dark);border-radius:14px;
   background:#fff;
   box-shadow:3px 3px 0 var(--dark);
-  width:220px;flex-shrink:0;
+  flex:1 1 180px;min-width:0;
   transition:transform .2s,box-shadow .2s,background .2s;
 }
 .pipe-box.active{
@@ -413,18 +411,24 @@ footer{
 .footer-copy{font-size:12px;font-weight:700}
 
 /* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  .demo-section{padding:60px 20px;max-width:100%}
+  .demo-outer{padding:48px 20px 32px}
+  .pipeline-row{flex-wrap:wrap!important}
+  .pipe-box{flex:1 1 200px;min-width:180px}
+}
 @media(max-width:760px){
   .hero{padding:48px 20px 56px}
   .pitch{padding:48px 20px}
   .features{padding:56px 20px}
-  .demo-section{padding:56px 20px}
-  .demo-outer{padding:48px 16px 32px}
-  .demo-inner{padding:16px}
+  .demo-section{padding:56px 12px}
+  .demo-outer{padding:48px 12px 32px}
+  .demo-inner{padding:12px}
   .how{padding:56px 20px}
   .cta-section{padding:56px 20px}
   .cta-inner{padding:40px 24px 36px}
   footer{flex-direction:column;align-items:flex-start;padding:28px 20px}
-  .pipe-box{width:100%}
+  .pipe-box{flex:1 1 100%}
   .pipeline-row{flex-direction:column!important;align-items:stretch!important}
   .pipe-arrow{transform:rotate(90deg);justify-content:center;padding:0}
   .doc-grid{grid-template-columns:1fr}
@@ -565,7 +569,7 @@ footer{
         <!-- Vector Database -->
         <div id="documentStoreBox" class="pipe-box pipe-box-wide" style="margin-bottom:16px">
           <div class="pipe-label"><i data-lucide="database" style="width:16px;height:16px;color:var(--blue)"></i> Vector Database (Pre-indexed)</div>
-          <div id="documentStoreContent" class="pipe-content" style="height:120px"></div>
+          <div id="documentStoreContent" class="pipe-content" style="height:180px"></div>
         </div>
 
         <!-- Pipeline Row -->
@@ -704,15 +708,19 @@ footer{
       container.appendChild(emptyMessage);
       documents.forEach(doc => {
         const div = document.createElement('div');
-        div.style.cssText = 'margin-bottom:4px;padding:3px 6px;background:#f5f5f5;border-radius:6px;opacity:.5;font-size:11px;font-weight:700';
-        div.innerHTML = '<div style="display:flex;align-items:center;gap:4px">' + getProductIcon(doc.specialty) + '<span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + doc.title + '</span></div><div style="font-size:10px;color:#999">[Vector missing]</div>';
+        div.style.cssText = 'margin-bottom:4px;padding:4px 6px;background:#f5f5f5;border-radius:6px;opacity:.5;font-size:11px;font-weight:700';
+        div.innerHTML = '<div style="display:flex;align-items:center;gap:4px">' + getProductIcon(doc.specialty) + '<span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + doc.title + '</span><span style="font-size:9px;background:#eee;border-radius:99px;padding:1px 6px;margin-left:auto;flex-shrink:0">' + doc.specialty + '</span></div><div style="font-size:10px;color:#999">[Not embedded]</div>';
         container.appendChild(div);
       });
     } else {
       indexedDocuments.forEach(doc => {
         const div = document.createElement('div');
-        div.style.cssText = 'margin-bottom:4px;padding:3px 6px;background:#eef2ff;border-radius:6px;font-size:11px;font-weight:700';
-        div.innerHTML = '<div style="display:flex;align-items:center;gap:4px">' + getProductIcon(doc.specialty) + '<span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + doc.title + '</span></div><div style="font-size:10px;color:var(--indigo);font-family:monospace">[' + doc.embedding.map(v => v.toFixed(3)).join(', ') + ']</div>';
+        const snippet = doc.text.length > 80 ? doc.text.substring(0, 80) + '...' : doc.text;
+        div.style.cssText = 'margin-bottom:6px;padding:6px 8px;background:#eef2ff;border-radius:8px;font-size:11px;font-weight:700;border:1.5px solid #ddd';
+        div.innerHTML = '<div style="display:flex;align-items:center;gap:4px;margin-bottom:2px">' + getProductIcon(doc.specialty) + '<span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:800">' + doc.title + '</span></div>' +
+          '<div style="display:flex;gap:4px;margin-bottom:2px"><span style="font-size:9px;background:#fff;border:1.5px solid var(--dark);border-radius:99px;padding:1px 6px;font-weight:800">' + doc.specialty + '</span><span style="font-size:9px;background:#fff;border:1.5px solid var(--dark);border-radius:99px;padding:1px 6px;font-weight:800">' + doc.category + '</span></div>' +
+          '<div style="font-size:10px;color:#555;margin-bottom:2px">' + snippet + '</div>' +
+          '<div style="font-size:9px;color:var(--indigo);font-family:monospace;opacity:.7">[' + doc.embedding.map(v => v.toFixed(3)).join(', ') + ']</div>';
         container.appendChild(div);
       });
     }
