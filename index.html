@@ -320,7 +320,7 @@ body{
   font-size:11px;font-weight:700;
   padding:8px;border-radius:10px;
   background:var(--cream);
-  height:100px;overflow-y:auto;
+  height:150px;overflow-y:auto;
 }
 .pipe-step-text{font-size:11px;font-weight:700;color:#888;margin-top:6px}
 .pipe-arrow{
@@ -581,7 +581,7 @@ footer{
           </div>
           <div class="pipe-arrow">&rarr;</div>
           <div id="embeddingModelBox" class="pipe-box">
-            <div class="pipe-label"><i data-lucide="cpu" style="width:16px;height:16px;color:var(--purple)"></i> Embedding Model</div>
+            <div class="pipe-label"><i data-lucide="cpu" style="width:16px;height:16px;color:var(--purple)"></i> Query Embedding</div>
             <div id="embeddingModelContent" class="pipe-content" style="font-style:italic">Waiting for query...</div>
             <div class="pipe-step-text">Step 2: Vectorize query</div>
           </div>
@@ -614,7 +614,7 @@ footer{
 <!-- HOW IT WORKS -->
 <section class="how" id="how-it-works">
   <div class="section-label label-red">How it works</div>
-  <h2 class="section-title">Index &middot; Embed &middot; Retrieve &middot; Answer</h2>
+  <h2 class="section-title">Index &middot; Embed &middot; Retrieve &middot; Prompt &middot; Answer</h2>
   <div class="steps-grid">
     <div class="step-card">
       <div class="step-num">1</div>
@@ -633,8 +633,13 @@ footer{
     </div>
     <div class="step-card">
       <div class="step-num">4</div>
+      <h3>Prompt Building</h3>
+      <p>Retrieved evidence is assembled into a structured prompt with system instructions, context documents, and the original query to guide accurate generation.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">5</div>
       <h3>Response Generation</h3>
-      <p>AI combines retrieved evidence with the clinical query to generate an evidence-based, specific response.</p>
+      <p>AI processes the constructed prompt, combining retrieved evidence with the clinical query to generate an evidence-based, specific response.</p>
     </div>
   </div>
   <div style="margin-top:24px;padding:16px 20px;background:var(--yellow);border:3px solid var(--dark);border-radius:14px;box-shadow:3px 3px 0 var(--dark);font-size:.9rem;font-weight:700;color:var(--dark)">
@@ -687,11 +692,9 @@ footer{
 
   const documents = [
     { id: 1, title: "ACC/AHA Guidelines - Acute Myocardial Infarction Management", text: "For acute myocardial infarction (AMI), immediate treatment protocol includes: 1) Administer 162-325 mg of aspirin, 2) Perform ECG within 10 minutes of arrival, 3) Start dual antiplatelet therapy with aspirin plus P2Y12 inhibitor, 4) Consider anticoagulation with unfractionated heparin or low molecular weight heparin, 5) Assess eligibility for reperfusion therapy (PCI preferred if available within 90 minutes, or fibrinolysis if PCI isn't available within 120 minutes).", specialty: "cardiology", category: "emergency", embedding: [0.9, 0.2, 0.3, 0.1] },
-    { id: 2, title: "Heart Failure Management Guidelines", text: "For heart failure with reduced ejection fraction (HFrEF), first-line therapy includes ACE inhibitors or ARBs, beta-blockers, and mineralocorticoid receptor antagonists. For patients with persistent symptoms, consider adding sacubitril/valsartan (ARNI), SGLT2 inhibitors, or ivabradine. Diuretics should be used for symptom relief but do not improve mortality. Regular monitoring of renal function, potassium, and volume status is essential.", specialty: "cardiology", category: "chronic", embedding: [0.7, 0.3, 0.1, 0.2] },
     { id: 3, title: "IDSA/ATS Guidelines - Community-Acquired Pneumonia", text: "For outpatient treatment of community-acquired pneumonia in previously healthy adults, a macrolide (azithromycin, clarithromycin) or doxycycline is recommended. For patients with comorbidities or risk factors for drug-resistant pathogens, a respiratory fluoroquinolone (levofloxacin, moxifloxacin) or combination of beta-lactam plus macrolide is preferred. Hospitalized patients should receive either a respiratory fluoroquinolone or a combination of beta-lactam plus macrolide.", specialty: "infectious disease", category: "treatment", embedding: [0.1, 0.8, 0.2, 0.4] },
     { id: 4, title: "Sepsis Management - Surviving Sepsis Campaign", text: "For sepsis and septic shock, implement the following within 1 hour: 1) Measure lactate level, 2) Obtain blood cultures before antibiotic administration, 3) Administer broad-spectrum antibiotics, 4) Begin rapid administration of 30 ml/kg crystalloid for hypotension or lactate >= 4 mmol/L, 5) Apply vasopressors if hypotension persists during or after fluid resuscitation. Reassess and reevaluate antimicrobial therapy daily for potential de-escalation.", specialty: "critical care", category: "emergency", embedding: [0.2, 0.7, 0.3, 0.5] },
     { id: 5, title: "ADA Standards of Care - Diabetes Blood Pressure Targets", text: "For most patients with diabetes, the American Diabetes Association recommends a blood pressure target of <140/90 mmHg. For individuals at higher risk of cardiovascular disease, a stricter target of <130/80 mmHg may be appropriate if it can be achieved safely. First-line antihypertensive therapy should include an ACE inhibitor or ARB, particularly for patients with albuminuria. Multiple medications are often required to achieve blood pressure targets.", specialty: "endocrinology", category: "chronic", embedding: [0.3, 0.4, 0.8, 0.1] },
-    { id: 6, title: "JNC 8 Hypertension Guidelines", text: "The Eighth Joint National Committee (JNC 8) recommends initiating pharmacologic treatment for patients aged 60 years or older when blood pressure is >= 150/90 mmHg, and for patients younger than 60 years when blood pressure is >= 140/90 mmHg. For patients with diabetes or chronic kidney disease, treatment should begin at >= 140/90 mmHg regardless of age. First-line agents include thiazide diuretics, calcium channel blockers, ACE inhibitors, or ARBs.", specialty: "cardiology", category: "chronic", embedding: [0.4, 0.5, 0.7, 0.2] },
     { id: 7, title: "Stroke Management - AHA/ASA Guidelines", text: "For acute ischemic stroke, intravenous alteplase (tPA) is recommended within 3-4.5 hours of symptom onset for eligible patients. Mechanical thrombectomy should be considered for large vessel occlusions within 24 hours of last known well time if patients meet criteria. Post-stroke, patients should receive antithrombotic therapy, statins, blood pressure management, and rehabilitation assessments. Secondary prevention includes antiplatelet therapy, statins, and lifestyle modifications.", specialty: "neurology", category: "emergency", embedding: [0.5, 0.3, 0.1, 0.8] },
     { id: 8, title: "GOLD Guidelines - COPD Management", text: "For chronic obstructive pulmonary disease (COPD), management includes smoking cessation, vaccinations, and pharmacologic therapy based on symptom severity and exacerbation risk. Short-acting bronchodilators are used for rescue therapy, while long-acting bronchodilators (LABA, LAMA) are maintenance therapy for persistent symptoms. Inhaled corticosteroids (ICS) are added for patients with history of exacerbations and elevated eosinophil counts. Pulmonary rehabilitation is recommended for symptomatic patients.", specialty: "pulmonology", category: "chronic", embedding: [0.6, 0.4, 0.2, 0.7] },
   ];
@@ -826,7 +829,7 @@ footer{
       if (retrievedDocs.some(doc => doc.id === 3)) return "First-line antibiotics for community-acquired pneumonia according to IDSA/ATS guidelines:\n\n1. For outpatient treatment in previously healthy adults:\n   - Macrolide (azithromycin, clarithromycin) OR\n   - Doxycycline\n\n2. For outpatients with comorbidities or risk factors for drug resistance:\n   - Respiratory fluoroquinolone (levofloxacin, moxifloxacin) OR\n   - Combination of beta-lactam plus macrolide\n\n3. For hospitalized patients (non-ICU):\n   - Respiratory fluoroquinolone OR\n   - Combination of beta-lactam plus macrolide\n\nTreatment duration typically ranges from 5-7 days, guided by clinical response.";
     }
     if ((queryLower.includes('diabetes') || queryLower.includes('diabetic')) && (queryLower.includes('blood pressure') || queryLower.includes('hypertension'))) {
-      if (retrievedDocs.some(doc => doc.id === 5)) return "Blood pressure targets for diabetic patients according to ADA Standards of Care:\n\n1. General target: <140/90 mmHg for most patients with diabetes\n\n2. Stricter target: <130/80 mmHg may be appropriate for individuals at higher risk of cardiovascular disease, if achievable safely\n\n3. First-line antihypertensive therapy should include an ACE inhibitor or ARB, particularly for patients with albuminuria\n\n4. Multiple medications are often required to achieve blood pressure targets\n\nNote: The JNC 8 guidelines also specifically address patients with diabetes, recommending treatment initiation at >=140/90 mmHg regardless of age.";
+      if (retrievedDocs.some(doc => doc.id === 5)) return "Blood pressure targets for diabetic patients according to ADA Standards of Care:\n\n1. General target: <140/90 mmHg for most patients with diabetes\n\n2. Stricter target: <130/80 mmHg may be appropriate for individuals at higher risk of cardiovascular disease, if achievable safely\n\n3. First-line antihypertensive therapy should include an ACE inhibitor or ARB, particularly for patients with albuminuria\n\n4. Multiple medications are often required to achieve blood pressure targets";
     }
     let response = "Based on current clinical guidelines and evidence:";
     retrievedDocs.forEach(doc => { response += "\n\n**" + doc.title + "**\n" + doc.text; });
