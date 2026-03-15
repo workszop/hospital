@@ -45,11 +45,11 @@ body{
 }
 .logo-name{font-size:1.2rem;font-weight:900;letter-spacing:-.02em}
 .nav-cta{
-  display:inline-flex;align-items:center;gap:7px;
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
   background:var(--blue);color:#fff;
   border:3px solid var(--dark);border-radius:14px;
   padding:9px 20px;font-size:14px;font-weight:800;
-  font-family:inherit;cursor:pointer;text-decoration:none;
+  font-family:inherit;cursor:pointer;text-decoration:none;text-align:center;
   box-shadow:4px 4px 0 var(--dark);
   transition:transform .12s,box-shadow .12s;
 }
@@ -99,22 +99,22 @@ body{
 }
 .hero-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
 .btn-primary{
-  display:inline-flex;align-items:center;gap:8px;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
   background:var(--blue);color:#fff;
   border:3px solid var(--dark);border-radius:16px;
   padding:16px 30px;font-size:16px;font-weight:900;
-  font-family:inherit;cursor:pointer;text-decoration:none;
+  font-family:inherit;cursor:pointer;text-decoration:none;text-align:center;
   box-shadow:5px 5px 0 var(--dark);
   transition:transform .12s,box-shadow .12s;
 }
 .btn-primary:hover{transform:translateY(-3px);box-shadow:5px 8px 0 var(--dark)}
 .btn-primary:active{transform:translateY(2px);box-shadow:2px 2px 0 var(--dark)}
 .btn-secondary{
-  display:inline-flex;align-items:center;gap:8px;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
   background:#fff;color:var(--dark);
   border:3px solid var(--dark);border-radius:16px;
   padding:16px 24px;font-size:16px;font-weight:800;
-  font-family:inherit;cursor:pointer;text-decoration:none;
+  font-family:inherit;cursor:pointer;text-decoration:none;text-align:center;
   box-shadow:5px 5px 0 var(--dark);
   transition:transform .12s,box-shadow .12s;
 }
@@ -261,10 +261,10 @@ body{
   flex-shrink:0;
 }
 .app-btn{
-  display:inline-flex;align-items:center;gap:6px;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
   border:3px solid var(--dark);border-radius:12px;
   padding:8px 16px;font-size:13px;font-weight:800;
-  font-family:inherit;cursor:pointer;
+  font-family:inherit;cursor:pointer;text-align:center;
   box-shadow:3px 3px 0 var(--dark);
   transition:transform .12s,box-shadow .12s;
 }
@@ -285,11 +285,11 @@ body{
 }
 .app-input:focus{box-shadow:0 0 0 3px rgba(99,102,241,.25),inset 2px 2px 0 rgba(0,0,0,.06)}
 .sample-chip{
-  display:inline-flex;align-items:center;
+  display:inline-flex;align-items:center;justify-content:center;
   background:var(--cream);
   border:2.5px solid var(--dark);border-radius:99px;
   padding:5px 12px;font-size:12px;font-weight:800;
-  cursor:pointer;
+  cursor:pointer;text-align:center;
   box-shadow:2px 2px 0 var(--dark);
   transition:transform .1s,box-shadow .1s;
   font-family:inherit;
@@ -592,10 +592,16 @@ footer{
             <div class="pipe-step-text">Step 3: Find documents</div>
           </div>
           <div class="pipe-arrow">&rarr;</div>
+          <div id="promptBuilderBox" class="pipe-box">
+            <div class="pipe-label"><i data-lucide="file-plus" style="width:16px;height:16px;color:var(--yellow)"></i> Prompt Builder</div>
+            <div id="promptBuilderContent" class="pipe-content" style="font-style:italic">Waiting for retrieval...</div>
+            <div class="pipe-step-text">Step 4: Build prompt</div>
+          </div>
+          <div class="pipe-arrow">&rarr;</div>
           <div id="responseGeneratorBox" class="pipe-box">
             <div class="pipe-label"><i data-lucide="file-text" style="width:16px;height:16px;color:var(--red)"></i> Response Generator</div>
-            <div id="responseGeneratorContent" class="pipe-content" style="font-style:italic">Waiting for retrieval...</div>
-            <div class="pipe-step-text">Step 4: Generate answer</div>
+            <div id="responseGeneratorContent" class="pipe-content" style="font-style:italic">Waiting for prompt...</div>
+            <div class="pipe-step-text">Step 5: Generate answer</div>
           </div>
         </div>
       </div>
@@ -676,6 +682,7 @@ footer{
   let queryEmbedding = null;
   let retrievedDocs = [];
   let generatedResponse = '';
+  let builtPrompt = '';
   let indexedDocuments = [];
 
   const documents = [
@@ -708,8 +715,8 @@ footer{
       container.appendChild(emptyMessage);
       documents.forEach(doc => {
         const div = document.createElement('div');
-        div.style.cssText = 'margin-bottom:4px;padding:4px 6px;background:#f5f5f5;border-radius:6px;opacity:.5;font-size:11px;font-weight:700';
-        div.innerHTML = '<div style="display:flex;align-items:center;gap:4px">' + getProductIcon(doc.specialty) + '<span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + doc.title + '</span><span style="font-size:9px;background:#eee;border-radius:99px;padding:1px 6px;margin-left:auto;flex-shrink:0">' + doc.specialty + '</span></div><div style="font-size:10px;color:#999">[Not embedded]</div>';
+        div.style.cssText = 'margin-bottom:4px;padding:4px 6px;background:#f5f5f5;border-radius:6px;opacity:.7;font-size:11px;font-weight:700';
+        div.innerHTML = '<div style="display:flex;align-items:center;gap:4px">' + getProductIcon(doc.specialty) + '<span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + doc.title + '</span><span style="font-size:9px;background:#e2e2e2;border-radius:99px;padding:1px 6px;margin-left:auto;flex-shrink:0;color:#444">' + doc.specialty + '</span></div><div style="font-size:10px;color:#666">[Not embedded]</div>';
         container.appendChild(div);
       });
     } else {
@@ -719,8 +726,8 @@ footer{
         div.style.cssText = 'margin-bottom:6px;padding:6px 8px;background:#eef2ff;border-radius:8px;font-size:11px;font-weight:700;border:1.5px solid #ddd';
         div.innerHTML = '<div style="display:flex;align-items:center;gap:4px;margin-bottom:2px">' + getProductIcon(doc.specialty) + '<span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:800">' + doc.title + '</span></div>' +
           '<div style="display:flex;gap:4px;margin-bottom:2px"><span style="font-size:9px;background:#fff;border:1.5px solid var(--dark);border-radius:99px;padding:1px 6px;font-weight:800">' + doc.specialty + '</span><span style="font-size:9px;background:#fff;border:1.5px solid var(--dark);border-radius:99px;padding:1px 6px;font-weight:800">' + doc.category + '</span></div>' +
-          '<div style="font-size:10px;color:#555;margin-bottom:2px">' + snippet + '</div>' +
-          '<div style="font-size:9px;color:var(--indigo);font-family:monospace;opacity:.7">[' + doc.embedding.map(v => v.toFixed(3)).join(', ') + ']</div>';
+          '<div style="font-size:10px;color:#333;margin-bottom:2px">' + snippet + '</div>' +
+          '<div style="font-size:9px;color:var(--indigo);font-family:monospace">[' + doc.embedding.map(v => v.toFixed(3)).join(', ') + ']</div>';
         container.appendChild(div);
       });
     }
@@ -848,16 +855,23 @@ footer{
     } else {
       retrieverEl.innerHTML = '<span style="font-style:italic">Waiting for embedding...</span>';
     }
+    const promptEl = document.getElementById('promptBuilderContent');
+    if (builtPrompt) {
+      promptEl.innerHTML = '<div style="white-space:pre-wrap;font-size:11px;font-weight:700">' + builtPrompt + '</div>';
+      promptEl.style.fontStyle = 'normal';
+    } else {
+      promptEl.innerHTML = '<span style="font-style:italic">Waiting for retrieval...</span>';
+    }
     const responseEl = document.getElementById('responseGeneratorContent');
     if (generatedResponse) {
       responseEl.innerHTML = '<div style="white-space:pre-wrap;font-size:11px;font-weight:700">' + generatedResponse + '</div>';
       responseEl.style.fontStyle = 'normal';
     } else {
-      responseEl.innerHTML = '<span style="font-style:italic">Waiting for retrieval...</span>';
+      responseEl.innerHTML = '<span style="font-style:italic">Waiting for prompt...</span>';
     }
 
     // Highlight active pipeline box
-    ['documentStoreBox','customerQueryBox','embeddingModelBox','retrieverBox','responseGeneratorBox'].forEach((id, i) => {
+    ['documentStoreBox','customerQueryBox','embeddingModelBox','retrieverBox','promptBuilderBox','responseGeneratorBox'].forEach((id, i) => {
       const el = document.getElementById(id);
       if (currentStep === i) {
         el.classList.add('active');
@@ -867,13 +881,26 @@ footer{
     });
 
     const nextStepButton = document.getElementById('nextStepButton');
-    nextStepButton.innerHTML = currentStep === 5
+    nextStepButton.innerHTML = currentStep === 6
       ? '<i data-lucide="rotate-ccw" style="width:14px;height:14px"></i> Reset'
       : '<i data-lucide="arrow-right" style="width:14px;height:14px"></i> Next Step';
     document.getElementById('runSimulationButton').disabled = isRunning;
     document.getElementById('nextStepButton').disabled = isRunning;
     if (typeof lucide !== 'undefined') lucide.createIcons();
     if (currentStep > 0) updateDocumentStore();
+  }
+
+  function buildPrompt(docs, userQuery) {
+    let prompt = 'System: You are a clinical decision support assistant. Answer based only on the provided evidence.\n\n';
+    prompt += 'Context:\n';
+    docs.forEach((doc, i) => {
+      prompt += '  [' + (i + 1) + '] ' + doc.title + ' (similarity: ' + (doc.similarity * 100).toFixed(1) + '%)\n';
+      const snippet = doc.text.length > 120 ? doc.text.substring(0, 120) + '...' : doc.text;
+      prompt += '      ' + snippet + '\n';
+    });
+    prompt += '\nUser Query: ' + userQuery;
+    prompt += '\n\nInstruction: Provide an evidence-based answer citing the retrieved guidelines.';
+    return prompt;
   }
 
   function runStep() {
@@ -883,9 +910,10 @@ footer{
       case 1: currentStep = 2; break;
       case 2: queryEmbedding = embedQuery(query); currentStep = 3; break;
       case 3: retrievedDocs = findSimilarDocuments(queryEmbedding, indexedDocuments); currentStep = 4; break;
-      case 4: generatedResponse = generateResponse(retrievedDocs, query); currentStep = 5; break;
-      case 5:
-        currentStep = 0; queryEmbedding = null; retrievedDocs = []; generatedResponse = ''; indexedDocuments = [];
+      case 4: builtPrompt = buildPrompt(retrievedDocs, query); currentStep = 5; break;
+      case 5: generatedResponse = generateResponse(retrievedDocs, query); currentStep = 6; break;
+      case 6:
+        currentStep = 0; queryEmbedding = null; retrievedDocs = []; generatedResponse = ''; builtPrompt = ''; indexedDocuments = [];
         query = "What is the standard protocol for treating acute myocardial infarction?";
         document.getElementById('queryInput').value = query;
         updateDocVisual(); updateDocumentStore(); break;
@@ -896,7 +924,7 @@ footer{
   async function runSimulation() {
     if (isRunning) return;
     isRunning = true;
-    currentStep = 0; queryEmbedding = null; retrievedDocs = []; generatedResponse = '';
+    currentStep = 0; queryEmbedding = null; retrievedDocs = []; generatedResponse = ''; builtPrompt = '';
     query = document.getElementById('queryInput').value;
     updateUI();
     await new Promise(r => setTimeout(r, 500));
@@ -907,8 +935,10 @@ footer{
     queryEmbedding = embedQuery(query); currentStep = 3; updateUI();
     await new Promise(r => setTimeout(r, 1000));
     retrievedDocs = findSimilarDocuments(queryEmbedding, indexedDocuments); currentStep = 4; updateUI();
+    await new Promise(r => setTimeout(r, 800));
+    builtPrompt = buildPrompt(retrievedDocs, query); currentStep = 5; updateUI();
     await new Promise(r => setTimeout(r, 1000));
-    generatedResponse = generateResponse(retrievedDocs, query); currentStep = 5; updateUI();
+    generatedResponse = generateResponse(retrievedDocs, query); currentStep = 6; updateUI();
     isRunning = false; updateUI();
   }
 
@@ -921,13 +951,13 @@ footer{
     button.addEventListener('click', function() {
       query = this.getAttribute('data-query');
       document.getElementById('queryInput').value = query;
-      currentStep = 0; queryEmbedding = null; retrievedDocs = []; generatedResponse = '';
+      currentStep = 0; queryEmbedding = null; retrievedDocs = []; generatedResponse = ''; builtPrompt = '';
       updateUI();
     });
   });
 
   function resetSimulation() {
-    currentStep = 0; queryEmbedding = null; retrievedDocs = []; generatedResponse = ''; indexedDocuments = [];
+    currentStep = 0; queryEmbedding = null; retrievedDocs = []; generatedResponse = ''; builtPrompt = ''; indexedDocuments = [];
     query = "What is the standard protocol for treating acute myocardial infarction?";
     document.getElementById('queryInput').value = query;
     updateDocVisual(); updateDocumentStore(); updateUI();
