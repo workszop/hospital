@@ -349,8 +349,22 @@ body{
 .how{padding:80px 40px;max-width:1100px;margin:0 auto}
 .steps-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  grid-template-columns:repeat(3,1fr);
   gap:20px;
+  justify-items:center;
+}
+.steps-grid .step-card:nth-child(4),
+.steps-grid .step-card:nth-child(5){
+  grid-column:auto;
+}
+.steps-bottom-row{
+  display:flex;
+  justify-content:center;
+  gap:20px;
+  margin-top:20px;
+}
+.steps-bottom-row .step-card{
+  flex:0 1 340px;
 }
 .step-card{
   display:flex;flex-direction:column;gap:14px;
@@ -370,45 +384,6 @@ body{
 .step-card h3{font-size:1.05rem;font-weight:900}
 .step-card p{font-size:.9rem;font-weight:700;color:#666;line-height:1.6}
 
-/* ── CTA ── */
-.cta-section{padding:80px 40px;text-align:center}
-.cta-inner{
-  max-width:680px;margin:0 auto;
-  background:var(--blue);
-  border:3px solid var(--dark);border-radius:28px;
-  padding:56px 40px 48px;
-  box-shadow:8px 8px 0 var(--dark);
-}
-.cta-inner h2{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:900;color:#fff;margin-bottom:12px}
-.cta-inner p{font-size:1.05rem;font-weight:700;color:rgba(255,255,255,.7);margin-bottom:32px;line-height:1.6}
-.cta-buttons{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
-.chip-row{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-bottom:32px}
-.chip{
-  display:inline-flex;align-items:center;gap:5px;
-  background:#fff;
-  border:2.5px solid var(--dark);border-radius:99px;
-  padding:6px 14px;font-size:13px;font-weight:800;
-  box-shadow:2px 2px 0 var(--dark);
-}
-
-/* ── FOOTER ── */
-footer{
-  background:var(--dark);color:rgba(255,255,255,.5);
-  padding:36px 40px;
-  border-top:3px solid rgba(255,255,255,.1);
-  display:flex;align-items:center;justify-content:space-between;
-  flex-wrap:wrap;gap:16px;
-}
-.footer-logo{display:flex;align-items:center;gap:8px}
-.footer-icon{
-  width:30px;height:30px;background:var(--indigo);border-radius:8px;
-  display:flex;align-items:center;justify-content:center;color:#fff;
-}
-.footer-logo span{font-size:1rem;font-weight:900;color:#fff}
-.footer-links{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
-.footer-links a{color:rgba(255,255,255,.5);text-decoration:none;font-size:13px;font-weight:700;transition:color .15s}
-.footer-links a:hover{color:#fff}
-.footer-copy{font-size:12px;font-weight:700}
 
 /* ── RESPONSIVE ── */
 @media(max-width:1024px){
@@ -425,13 +400,13 @@ footer{
   .demo-outer{padding:48px 12px 32px}
   .demo-inner{padding:12px}
   .how{padding:56px 20px}
-  .cta-section{padding:56px 20px}
-  .cta-inner{padding:40px 24px 36px}
-  footer{flex-direction:column;align-items:flex-start;padding:28px 20px}
   .pipe-box{flex:1 1 100%}
   .pipeline-row{flex-direction:column!important;align-items:stretch!important}
   .pipe-arrow{transform:rotate(90deg);justify-content:center;padding:0}
   .doc-grid{grid-template-columns:1fr}
+  .steps-grid{grid-template-columns:1fr}
+  .steps-bottom-row{flex-direction:column}
+  .steps-bottom-row .step-card{flex:1 1 auto}
 }
 </style>
 </head>
@@ -631,6 +606,8 @@ footer{
       <h3>Evidence Retrieval</h3>
       <p>Vector similarity search finds the most contextually relevant medical documents from the knowledge base.</p>
     </div>
+  </div>
+  <div class="steps-bottom-row">
     <div class="step-card">
       <div class="step-num">4</div>
       <h3>Prompt Building</h3>
@@ -647,37 +624,6 @@ footer{
   </div>
 </section>
 
-<!-- CTA -->
-<section class="cta-section">
-  <div class="cta-inner">
-    <div class="chip-row">
-      <div class="chip">Private Beta</div>
-      <div class="chip">HIPAA Ready</div>
-      <div class="chip">No Setup</div>
-    </div>
-    <h2>Ready to transform clinical decisions?</h2>
-    <p>Join the private beta and give your clinical team instant access to evidence-based answers.</p>
-    <div class="cta-buttons">
-      <a href="#demo" class="btn-primary" style="background:#fff;color:var(--dark)">Request Early Access</a>
-      <a href="#how-it-works" class="btn-secondary" style="background:transparent;color:#fff;border-color:#fff">Learn More</a>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-logo">
-    <div class="footer-icon"><i data-lucide="activity" style="width:16px;height:16px"></i></div>
-    <span>MedVector AI</span>
-  </div>
-  <div class="footer-links">
-    <a href="#">Privacy</a>
-    <a href="#">Terms</a>
-    <a href="#">HIPAA Compliance</a>
-    <a href="#">Contact</a>
-  </div>
-  <span class="footer-copy">&copy; 2026 MedVector AI. For demonstration purposes only.</span>
-</footer>
 
 <!-- JavaScript -->
 <script>
@@ -860,7 +806,7 @@ footer{
     }
     const promptEl = document.getElementById('promptBuilderContent');
     if (builtPrompt) {
-      promptEl.innerHTML = '<div style="white-space:pre-wrap;font-size:11px;font-weight:700">' + builtPrompt + '</div>';
+      promptEl.innerHTML = '<div style="font-size:11px;font-weight:700">' + builtPrompt + '</div>';
       promptEl.style.fontStyle = 'normal';
     } else {
       promptEl.innerHTML = '<span style="font-style:italic">Waiting for retrieval...</span>';
@@ -894,15 +840,16 @@ footer{
   }
 
   function buildPrompt(docs, userQuery) {
-    let prompt = 'System: You are a clinical decision support assistant. Answer based only on the provided evidence.\n\n';
-    prompt += 'Context:\n';
+    const label = 'display:inline-block;background:var(--dark);color:#fff;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:900;margin-bottom:2px';
+    let prompt = '<div style="margin-bottom:6px"><span style="' + label + '">SYSTEM</span><br>You are a clinical decision support assistant. Answer based only on the provided evidence.</div>';
+    prompt += '<div style="margin-bottom:6px"><span style="' + label + ';background:var(--blue)">CONTEXT</span>';
     docs.forEach((doc, i) => {
-      prompt += '  [' + (i + 1) + '] ' + doc.title + ' (similarity: ' + (doc.similarity * 100).toFixed(1) + '%)\n';
-      const snippet = doc.text.length > 120 ? doc.text.substring(0, 120) + '...' : doc.text;
-      prompt += '      ' + snippet + '\n';
+      const snippet = doc.text.length > 100 ? doc.text.substring(0, 100) + '...' : doc.text;
+      prompt += '<div style="margin:3px 0 3px 8px;padding:3px 6px;background:rgba(0,0,0,.04);border-radius:4px;border-left:3px solid var(--blue)"><strong>[' + (i + 1) + ']</strong> ' + doc.title + ' <span style="color:var(--green);font-size:10px">(' + (doc.similarity * 100).toFixed(1) + '%)</span><br><span style="color:#555;font-size:10px">' + snippet + '</span></div>';
     });
-    prompt += '\nUser Query: ' + userQuery;
-    prompt += '\n\nInstruction: Provide an evidence-based answer citing the retrieved guidelines.';
+    prompt += '</div>';
+    prompt += '<div style="margin-bottom:6px"><span style="' + label + ';background:var(--indigo)">USER QUERY</span><br>' + userQuery + '</div>';
+    prompt += '<div><span style="' + label + ';background:var(--green);color:var(--dark)">INSTRUCTION</span><br>Provide an evidence-based answer citing the retrieved guidelines.</div>';
     return prompt;
   }
 
