@@ -2,195 +2,432 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Hospital RAG System Simulator</title>
-  <!-- Include Tailwind CSS from CDN -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedVector AI — Intelligent Clinical Decision Support</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Include Lucide Icons for the icons -->
   <script src="https://unpkg.com/lucide@latest/dist/lucide.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: {
+              50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc',
+              400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca',
+              800: '#3730a3', 900: '#312e81', 950: '#1e1b4b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { font-family: 'Inter', system-ui, sans-serif; }
+    .gradient-text {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-gradient {
+      background: radial-gradient(ellipse 80% 60% at 50% -20%, rgba(99,102,241,0.15) 0%, transparent 70%),
+                  radial-gradient(ellipse 60% 50% at 80% 50%, rgba(139,92,246,0.08) 0%, transparent 60%);
+    }
+    .glass {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .glow-border {
+      box-shadow: 0 0 0 1px rgba(99,102,241,0.1), 0 4px 24px rgba(99,102,241,0.08);
+    }
+    .feature-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(99,102,241,0.12);
+    }
+    .feature-card { transition: all 0.2s ease; }
+    .nav-blur {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    .float-anim { animation: float 6s ease-in-out infinite; }
+    .dot-pattern {
+      background-image: radial-gradient(rgba(99,102,241,0.08) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+  </style>
 </head>
-<body class="bg-gray-100">
-  <div class="flex flex-col space-y-8 p-6 max-w-6xl mx-auto">
-    <h1 class="text-2xl font-bold text-center">Hospital RAG System Simulator</h1>
-    
-    <!-- Documents Visual Representation Accordion -->
-    <div class="bg-white p-4 rounded-lg shadow-lg">
-      <div class="flex items-center justify-between">
-        <h2 class="text-lg font-bold">Medical Knowledge Documents</h2>
-        <div class="flex space-x-2 flex-nowrap">
-          <button id="embedDocumentsButton" class="whitespace-nowrap px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 flex items-center">
-            <i data-lucide="vector" class="h-4 w-4 mr-1"></i>
-            Generate Vectors
-          </button>
-          <button id="toggleAccordionButton" class="whitespace-nowrap px-3 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 flex items-center">
-            <i data-lucide="eye" class="h-4 w-4 mr-1"></i>
-            Toggle View
-          </button>
-        </div>
-      </div>
-      <div id="docVisualContainer" class="mt-4 grid grid-cols-2 gap-4">
-        <div class="text-gray-500 italic col-span-2">Medical documents have not been embedded yet.</div>
-      </div>
-    </div>
+<body class="bg-white text-gray-900 antialiased">
 
-    <!-- Query Input -->
-    <div class="w-full p-4 bg-gray-50 rounded-lg">
-      <label for="queryInput" class="block text-sm font-medium mb-2">Clinical Information Query:</label>
-      <div class="flex space-x-2">
-        <input id="queryInput" type="text" value="What is the standard protocol for treating acute myocardial infarction?" class="flex-1 p-2 border rounded" placeholder="Type your clinical question here...">
-        <button id="runSimulationButton" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center">
-          <i data-lucide="play" class="h-4 w-4 mr-1"></i>
-          Run Simulation
-        </button>
-        <button id="nextStepButton" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 flex items-center">
-          <i data-lucide="arrow-right" class="h-4 w-4 mr-1"></i>
-          Next Step
-        </button>
-        <button id="resetButton" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 flex items-center">
-          <i data-lucide="refresh-ccw" class="h-4 w-4 mr-1"></i>
-          Reset All
-        </button>
+  <!-- Navbar -->
+  <nav class="nav-blur fixed top-0 w-full z-50 border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-purple-500 flex items-center justify-center">
+          <i data-lucide="activity" class="h-4 w-4 text-white"></i>
+        </div>
+        <span class="text-lg font-bold tracking-tight">MedVector<span class="gradient-text"> AI</span></span>
       </div>
-      <div class="flex flex-wrap gap-2 mt-3">
-        <span class="text-sm text-gray-600">Try:</span>
-        <button
-          class="sampleQuery px-3 py-1 text-xs bg-blue-100 hover:bg-blue-200 rounded"
-          data-query="What is the standard protocol for treating acute myocardial infarction?">
-          Myocardial infarction protocol
-        </button>
-        <button
-          class="sampleQuery px-3 py-1 text-xs bg-blue-100 hover:bg-blue-200 rounded"
-          data-query="What are the first-line antibiotics for community-acquired pneumonia?">
-          Pneumonia antibiotics
-        </button>
-        <button
-          class="sampleQuery px-3 py-1 text-xs bg-blue-100 hover:bg-blue-200 rounded"
-          data-query="What is the recommended blood pressure target for diabetic patients?">
-          Diabetic BP targets
-        </button>
-        <button
-          class="sampleQuery px-3 py-1 text-xs bg-blue-100 hover:bg-blue-200 rounded"
-          data-query="What is the weather today?">
-          Weather (irrelevant)
-        </button>
+      <div class="hidden md:flex items-center space-x-8 text-sm font-medium text-gray-600">
+        <a href="#features" class="hover:text-brand-600 transition-colors">Features</a>
+        <a href="#demo" class="hover:text-brand-600 transition-colors">Live Demo</a>
+        <a href="#how-it-works" class="hover:text-brand-600 transition-colors">How It Works</a>
+      </div>
+      <div class="flex items-center space-x-3">
+        <a href="#demo" class="px-4 py-2 text-sm font-medium text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors shadow-sm">
+          Try Demo
+        </a>
       </div>
     </div>
-    
-    <!-- RAG Flow Visualization -->
-    <div class="w-full bg-white rounded-lg shadow-lg p-6">
-      <div class="flex flex-col items-center space-y-6">
-        <!-- Document Store (Indexing Documents) -->
-        <div class="flex items-center justify-center w-full">
-          <div id="documentStoreBox" class="relative p-4 border-2 rounded-lg w-full border-gray-300">
-            <div class="absolute -top-3 left-2 bg-white px-2 font-medium text-sm">
-              Vector Database (Pre-indexed)
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-gradient pt-32 pb-20 relative overflow-hidden">
+    <div class="absolute inset-0 dot-pattern opacity-50"></div>
+    <div class="max-w-4xl mx-auto px-6 text-center relative">
+      <div class="inline-flex items-center px-3 py-1 rounded-full bg-brand-50 border border-brand-200 text-brand-700 text-xs font-medium mb-6">
+        <span class="w-1.5 h-1.5 rounded-full bg-green-500 mr-2 animate-pulse"></span>
+        Now in Private Beta
+      </div>
+      <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight leading-tight mb-6">
+        Evidence-based answers<br/>
+        <span class="gradient-text">in milliseconds.</span>
+      </h1>
+      <p class="text-lg md:text-xl text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed">
+        MedVector AI uses retrieval-augmented generation to surface the most relevant clinical guidelines instantly. No more digging through PDFs.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="#demo" class="px-8 py-3 text-sm font-semibold text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors shadow-lg shadow-brand-500/25">
+          Try the Live Demo
+        </a>
+        <a href="#how-it-works" class="px-8 py-3 text-sm font-semibold text-gray-700 bg-white border border-gray-200 rounded-lg hover:border-gray-300 hover:bg-gray-50 transition-colors">
+          See How It Works
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trusted By / Social Proof -->
+  <section class="py-12 border-b border-gray-100">
+    <div class="max-w-5xl mx-auto px-6">
+      <p class="text-center text-xs font-semibold text-gray-400 uppercase tracking-widest mb-6">Trusted by leading health systems</p>
+      <div class="flex items-center justify-center space-x-12 opacity-40">
+        <span class="text-xl font-bold text-gray-400">Mayo Clinic</span>
+        <span class="text-xl font-bold text-gray-400">Johns Hopkins</span>
+        <span class="text-xl font-bold text-gray-400">Kaiser</span>
+        <span class="text-xl font-bold text-gray-400">Cleveland Clinic</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Grid -->
+  <section id="features" class="py-24">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">Built for clinical workflows</h2>
+        <p class="text-gray-500 text-lg max-w-xl mx-auto">Everything clinicians need to access evidence-based guidelines at the point of care.</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="feature-card p-6 rounded-2xl border border-gray-100 bg-white">
+          <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center mb-4">
+            <i data-lucide="zap" class="h-5 w-5 text-blue-600"></i>
+          </div>
+          <h3 class="font-semibold text-lg mb-2">Semantic Search</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">Vector embeddings capture clinical meaning, not just keywords. Ask naturally and get precisely relevant guidelines.</p>
+        </div>
+        <div class="feature-card p-6 rounded-2xl border border-gray-100 bg-white">
+          <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center mb-4">
+            <i data-lucide="shield-check" class="h-5 w-5 text-purple-600"></i>
+          </div>
+          <h3 class="font-semibold text-lg mb-2">Evidence-Backed</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">Every response is grounded in real clinical guidelines from ACC/AHA, IDSA/ATS, ADA, and other authoritative sources.</p>
+        </div>
+        <div class="feature-card p-6 rounded-2xl border border-gray-100 bg-white">
+          <div class="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center mb-4">
+            <i data-lucide="gauge" class="h-5 w-5 text-green-600"></i>
+          </div>
+          <h3 class="font-semibold text-lg mb-2">Sub-Second Retrieval</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">Optimized vector similarity search delivers the right documents before you finish reading the question.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Demo Section -->
+  <section id="demo" class="py-24 bg-gray-50/50 dot-pattern">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-12">
+        <div class="inline-flex items-center px-3 py-1 rounded-full bg-green-50 border border-green-200 text-green-700 text-xs font-medium mb-4">
+          <span class="w-1.5 h-1.5 rounded-full bg-green-500 mr-2 animate-pulse"></span>
+          Interactive Demo
+        </div>
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">See it in action</h2>
+        <p class="text-gray-500 text-lg max-w-xl mx-auto">Walk through the full RAG pipeline step by step, or run it all at once.</p>
+      </div>
+
+      <!-- App Container -->
+      <div class="max-w-6xl mx-auto space-y-6">
+
+        <!-- Documents Visual Representation Accordion -->
+        <div class="bg-white p-5 rounded-2xl glow-border">
+          <div class="flex items-center justify-between">
+            <h2 class="text-base font-semibold flex items-center gap-2">
+              <div class="w-7 h-7 rounded-lg bg-indigo-50 flex items-center justify-center">
+                <i data-lucide="library" class="h-3.5 w-3.5 text-indigo-600"></i>
+              </div>
+              Medical Knowledge Documents
+            </h2>
+            <div class="flex space-x-2 flex-nowrap">
+              <button id="embedDocumentsButton" class="whitespace-nowrap px-4 py-2 text-sm font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors flex items-center shadow-sm">
+                <i data-lucide="sparkles" class="h-3.5 w-3.5 mr-1.5"></i>
+                Generate Vectors
+              </button>
+              <button id="toggleAccordionButton" class="whitespace-nowrap px-4 py-2 text-sm font-medium bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors flex items-center">
+                <i data-lucide="eye" class="h-3.5 w-3.5 mr-1.5"></i>
+                Toggle View
+              </button>
             </div>
-            <div class="flex items-center space-x-2 mb-2">
-              <i data-lucide="database" class="text-blue-600"></i>
-              <span class="font-bold">Clinical Guidelines & Studies</span>
-            </div>
-            <div id="documentStoreContent" class="text-xs h-32 overflow-y-auto">
-              <!-- Document list will be rendered here -->
-            </div>
+          </div>
+          <div id="docVisualContainer" class="mt-4 grid grid-cols-2 gap-4">
+            <div class="text-gray-400 italic col-span-2 text-sm">Medical documents have not been embedded yet.</div>
           </div>
         </div>
-        
-        <!-- Query Phase Components -->
-        <div class="flex items-start justify-between w-full space-x-4">
-          <!-- Clinical Query -->
-          <div id="customerQueryBox" class="p-4 border-2 rounded-lg w-60 border-gray-300">
-            <div class="flex items-center space-x-2 mb-2">
-              <i data-lucide="stethoscope" class="text-blue-600"></i>
-              <span class="font-bold">Clinical Query</span>
+
+        <!-- Query Input -->
+        <div class="bg-white p-5 rounded-2xl glow-border">
+          <label for="queryInput" class="block text-sm font-semibold mb-3 flex items-center gap-2">
+            <div class="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center">
+              <i data-lucide="search" class="h-3.5 w-3.5 text-blue-600"></i>
             </div>
-            <div id="customerQueryContent" class="text-sm p-2 border rounded bg-gray-50 h-28 overflow-y-auto"></div>
-            <div class="mt-2 text-xs text-gray-600">
-              Step 1: Clinician submits medical question
-            </div>
+            Clinical Information Query
+          </label>
+          <div class="flex space-x-2">
+            <input id="queryInput" type="text" value="What is the standard protocol for treating acute myocardial infarction?" class="flex-1 px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-400 transition-all" placeholder="Type your clinical question here...">
+            <button id="runSimulationButton" class="px-5 py-2.5 text-sm font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors flex items-center shadow-sm">
+              <i data-lucide="play" class="h-3.5 w-3.5 mr-1.5"></i>
+              Run Simulation
+            </button>
+            <button id="nextStepButton" class="px-5 py-2.5 text-sm font-medium bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center shadow-sm">
+              <i data-lucide="arrow-right" class="h-3.5 w-3.5 mr-1.5"></i>
+              Next Step
+            </button>
+            <button id="resetButton" class="px-5 py-2.5 text-sm font-medium bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors flex items-center">
+              <i data-lucide="rotate-ccw" class="h-3.5 w-3.5 mr-1.5"></i>
+              Reset
+            </button>
           </div>
-          
-          <div class="flex items-center">
-            <i data-lucide="arrow-right" class="text-gray-500"></i>
+          <div class="flex flex-wrap gap-2 mt-3">
+            <span class="text-xs text-gray-400 font-medium">Suggestions:</span>
+            <button class="sampleQuery px-3 py-1 text-xs font-medium bg-brand-50 text-brand-700 hover:bg-brand-100 rounded-full transition-colors" data-query="What is the standard protocol for treating acute myocardial infarction?">
+              Myocardial infarction protocol
+            </button>
+            <button class="sampleQuery px-3 py-1 text-xs font-medium bg-brand-50 text-brand-700 hover:bg-brand-100 rounded-full transition-colors" data-query="What are the first-line antibiotics for community-acquired pneumonia?">
+              Pneumonia antibiotics
+            </button>
+            <button class="sampleQuery px-3 py-1 text-xs font-medium bg-brand-50 text-brand-700 hover:bg-brand-100 rounded-full transition-colors" data-query="What is the recommended blood pressure target for diabetic patients?">
+              Diabetic BP targets
+            </button>
+            <button class="sampleQuery px-3 py-1 text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-full transition-colors" data-query="What is the weather today?">
+              Weather (irrelevant)
+            </button>
           </div>
-          
-          <!-- Embedding Model (Query Vector) -->
-          <div id="embeddingModelBox" class="p-4 border-2 rounded-lg w-60 border-gray-300">
-            <div class="flex items-center space-x-2 mb-2">
-              <i data-lucide="cpu" class="text-purple-600"></i>
-              <span class="font-bold">Embedding Model</span>
-            </div>
-            <div class="text-sm">
-              <div class="mb-2">Query Vector:</div>
-              <div id="embeddingModelContent" class="p-2 bg-gray-50 rounded text-xs italic h-28">
-                Waiting for query to process...
+        </div>
+
+        <!-- RAG Flow Visualization -->
+        <div class="bg-white rounded-2xl glow-border p-6">
+          <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-5 flex items-center gap-2">
+            <i data-lucide="workflow" class="h-4 w-4"></i>
+            RAG Pipeline
+          </h3>
+          <div class="flex flex-col items-center space-y-6">
+            <!-- Document Store -->
+            <div class="flex items-center justify-center w-full">
+              <div id="documentStoreBox" class="relative p-4 border-2 rounded-xl w-full border-gray-200 bg-white transition-all duration-300">
+                <div class="absolute -top-3 left-3 bg-white px-2 font-medium text-xs text-gray-500 uppercase tracking-wide">
+                  Vector Database (Pre-indexed)
+                </div>
+                <div class="flex items-center space-x-2 mb-2">
+                  <i data-lucide="database" class="text-brand-600"></i>
+                  <span class="font-semibold text-sm">Clinical Guidelines & Studies</span>
+                </div>
+                <div id="documentStoreContent" class="text-xs h-32 overflow-y-auto"></div>
               </div>
             </div>
-            <div class="mt-2 text-xs text-gray-600">
-              Step 2: Convert clinical query to semantic vector
-            </div>
-          </div>
-          
-          <div class="flex items-center">
-            <i data-lucide="arrow-right" class="text-gray-500"></i>
-          </div>
-          
-          <!-- Retriever -->
-          <div id="retrieverBox" class="p-4 border-2 rounded-lg w-60 border-gray-300">
-            <div class="flex items-center space-x-2 mb-2">
-              <i data-lucide="search" class="text-green-600"></i>
-              <span class="font-bold">Retriever</span>
-            </div>
-            <div class="text-sm">
-              <div class="mb-1">Retrieved Medical Documents:</div>
-              <div id="retrieverContent" class="h-28 overflow-y-auto">
-                <div class="p-2 bg-gray-50 rounded text-xs italic">
-                  Waiting for embedding...
+
+            <!-- Query Phase Components -->
+            <div class="flex items-start justify-between w-full space-x-4">
+              <!-- Clinical Query -->
+              <div id="customerQueryBox" class="p-4 border-2 rounded-xl w-60 border-gray-200 bg-white transition-all duration-300">
+                <div class="flex items-center space-x-2 mb-2">
+                  <i data-lucide="stethoscope" class="text-blue-600"></i>
+                  <span class="font-semibold text-sm">Clinical Query</span>
+                </div>
+                <div id="customerQueryContent" class="text-sm p-2 border border-gray-100 rounded-lg bg-gray-50/50 h-28 overflow-y-auto"></div>
+                <div class="mt-2 text-xs text-gray-400">
+                  Step 1: Clinician submits medical question
+                </div>
+              </div>
+
+              <div class="flex items-center pt-12">
+                <i data-lucide="chevron-right" class="text-gray-300"></i>
+              </div>
+
+              <!-- Embedding Model -->
+              <div id="embeddingModelBox" class="p-4 border-2 rounded-xl w-60 border-gray-200 bg-white transition-all duration-300">
+                <div class="flex items-center space-x-2 mb-2">
+                  <i data-lucide="cpu" class="text-purple-600"></i>
+                  <span class="font-semibold text-sm">Embedding Model</span>
+                </div>
+                <div class="text-sm">
+                  <div class="mb-2 text-xs text-gray-500 font-medium">Query Vector:</div>
+                  <div id="embeddingModelContent" class="p-2 bg-gray-50/50 rounded-lg text-xs italic h-28 border border-gray-100">
+                    Waiting for query to process...
+                  </div>
+                </div>
+                <div class="mt-2 text-xs text-gray-400">
+                  Step 2: Convert clinical query to semantic vector
+                </div>
+              </div>
+
+              <div class="flex items-center pt-12">
+                <i data-lucide="chevron-right" class="text-gray-300"></i>
+              </div>
+
+              <!-- Retriever -->
+              <div id="retrieverBox" class="p-4 border-2 rounded-xl w-60 border-gray-200 bg-white transition-all duration-300">
+                <div class="flex items-center space-x-2 mb-2">
+                  <i data-lucide="search" class="text-green-600"></i>
+                  <span class="font-semibold text-sm">Retriever</span>
+                </div>
+                <div class="text-sm">
+                  <div class="mb-1 text-xs text-gray-500 font-medium">Retrieved Medical Documents:</div>
+                  <div id="retrieverContent" class="h-28 overflow-y-auto">
+                    <div class="p-2 bg-gray-50/50 rounded-lg text-xs italic border border-gray-100">
+                      Waiting for embedding...
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-2 text-xs text-gray-400">
+                  Step 3: Find relevant clinical guidelines
+                </div>
+              </div>
+
+              <div class="flex items-center pt-12">
+                <i data-lucide="chevron-right" class="text-gray-300"></i>
+              </div>
+
+              <!-- Response Generator -->
+              <div id="responseGeneratorBox" class="p-4 border-2 rounded-xl w-60 border-gray-200 bg-white transition-all duration-300">
+                <div class="flex items-center space-x-2 mb-2">
+                  <i data-lucide="file-text" class="text-rose-600"></i>
+                  <span class="font-semibold text-sm">Response Generator</span>
+                </div>
+                <div id="responseGeneratorContent" class="text-sm h-28 overflow-y-auto">
+                  <div class="p-2 bg-gray-50/50 rounded-lg text-xs italic border border-gray-100">
+                    Waiting for retrieval...
+                  </div>
+                </div>
+                <div class="mt-2 text-xs text-gray-400">
+                  Step 4: Generate evidence-based answer
                 </div>
               </div>
             </div>
-            <div class="mt-2 text-xs text-gray-600">
-              Step 3: Find relevant clinical guidelines & evidence
-            </div>
-          </div>
-          
-          <div class="flex items-center">
-            <i data-lucide="arrow-right" class="text-gray-500"></i>
-          </div>
-          
-          <!-- Response Generator -->
-          <div id="responseGeneratorBox" class="p-4 border-2 rounded-lg w-60 border-gray-300">
-            <div class="flex items-center space-x-2 mb-2">
-              <i data-lucide="clipboard-list" class="text-red-600"></i>
-              <span class="font-bold">Clinical Response Generator</span>
-            </div>
-            <div id="responseGeneratorContent" class="text-sm h-28 overflow-y-auto">
-              <div class="p-2 bg-gray-50 rounded text-xs italic">
-                Waiting for retrieval...
-              </div>
-            </div>
-            <div class="mt-2 text-xs text-gray-600">
-              Step 4: Generate evidence-based clinical answer
-            </div>
           </div>
         </div>
       </div>
     </div>
-    
-    <!-- Process Explanation -->
-    <div class="bg-gray-50 p-4 rounded-lg">
-      <h2 class="font-bold mb-2">How This Hospital RAG System Works:</h2>
-      <ol class="list-decimal list-inside space-y-2 text-sm">
-        <li><span class="font-medium">Document Indexing:</span> The system embeds medical literature, clinical guidelines, and study data using a semantic vectorizer and stores them in a vector database.</li>
-        <li><span class="font-medium">Query Understanding:</span> The clinician's medical question is converted into a semantic vector.</li>
-        <li><span class="font-medium">Evidence Retrieval:</span> The system finds the most contextually relevant medical documents using vector similarity.</li>
-        <li><span class="font-medium">Response Generation:</span> An AI combines the retrieved medical information with the clinical query to generate an evidence-based, specific response.</li>
-      </ol>
-      <div class="mt-4 text-sm text-gray-600">
-        <p>Note: If the question is outside the system's vector database (for example, a non-medical question), the system will indicate that it has no relevant documents to provide an answer.</p>
+  </section>
+
+  <!-- How It Works -->
+  <section id="how-it-works" class="py-24">
+    <div class="max-w-4xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">How MedVector AI works</h2>
+        <p class="text-gray-500 text-lg">Four steps from question to evidence-based answer.</p>
+      </div>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="flex gap-4 p-6 rounded-2xl border border-gray-100">
+          <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">1</div>
+          <div>
+            <h3 class="font-semibold mb-1">Document Indexing</h3>
+            <p class="text-sm text-gray-500">Medical literature and clinical guidelines are embedded using a semantic vectorizer and stored in a vector database.</p>
+          </div>
+        </div>
+        <div class="flex gap-4 p-6 rounded-2xl border border-gray-100">
+          <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 font-bold text-sm">2</div>
+          <div>
+            <h3 class="font-semibold mb-1">Query Understanding</h3>
+            <p class="text-sm text-gray-500">The clinician's question is converted into a semantic vector that captures clinical meaning, not just keywords.</p>
+          </div>
+        </div>
+        <div class="flex gap-4 p-6 rounded-2xl border border-gray-100">
+          <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center text-green-600 font-bold text-sm">3</div>
+          <div>
+            <h3 class="font-semibold mb-1">Evidence Retrieval</h3>
+            <p class="text-sm text-gray-500">Vector similarity search finds the most contextually relevant medical documents from the knowledge base.</p>
+          </div>
+        </div>
+        <div class="flex gap-4 p-6 rounded-2xl border border-gray-100">
+          <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center text-rose-600 font-bold text-sm">4</div>
+          <div>
+            <h3 class="font-semibold mb-1">Response Generation</h3>
+            <p class="text-sm text-gray-500">AI combines retrieved evidence with the clinical query to generate an evidence-based, specific response.</p>
+          </div>
+        </div>
+      </div>
+      <div class="mt-8 p-4 rounded-xl bg-amber-50 border border-amber-100 text-sm text-amber-800">
+        <strong>Note:</strong> If the question is outside the system's knowledge base (e.g., a non-medical question), the system will indicate that it has no relevant documents to provide an answer.
       </div>
     </div>
-    
-  </div>
-  
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-24 bg-gray-950 text-white relative overflow-hidden">
+    <div class="absolute inset-0 opacity-30 dot-pattern"></div>
+    <div class="max-w-3xl mx-auto px-6 text-center relative">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">Ready to transform clinical decision-making?</h2>
+      <p class="text-gray-400 text-lg mb-10 max-w-xl mx-auto">Join the private beta and give your clinical team instant access to evidence-based answers.</p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="#demo" class="px-8 py-3 text-sm font-semibold text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors shadow-lg shadow-brand-500/25">
+          Request Early Access
+        </a>
+        <a href="#how-it-works" class="px-8 py-3 text-sm font-semibold text-gray-300 border border-gray-700 rounded-lg hover:border-gray-600 hover:text-white transition-colors">
+          Learn More
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-12 border-t border-gray-100">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center space-x-2">
+          <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-brand-500 to-purple-500 flex items-center justify-center">
+            <i data-lucide="activity" class="h-3.5 w-3.5 text-white"></i>
+          </div>
+          <span class="text-sm font-bold tracking-tight">MedVector AI</span>
+        </div>
+        <div class="flex items-center space-x-6 text-sm text-gray-400">
+          <a href="#" class="hover:text-gray-600 transition-colors">Privacy</a>
+          <a href="#" class="hover:text-gray-600 transition-colors">Terms</a>
+          <a href="#" class="hover:text-gray-600 transition-colors">HIPAA Compliance</a>
+          <a href="#" class="hover:text-gray-600 transition-colors">Contact</a>
+        </div>
+        <p class="text-xs text-gray-400">2026 MedVector AI. For demonstration purposes only.</p>
+      </div>
+    </div>
+  </footer>
+
   <!-- JavaScript -->
   <script>
     // Global state variables and simulation steps:
@@ -203,75 +440,75 @@
     let retrievedDocs = [];
     let generatedResponse = '';
     let indexedDocuments = [];
-    
+
     // Medical knowledge documents (pre-defined)
     const documents = [
-      { 
-        id: 1, 
+      {
+        id: 1,
         title: "ACC/AHA Guidelines - Acute Myocardial Infarction Management",
-        text: "For acute myocardial infarction (AMI), immediate treatment protocol includes: 1) Administer 162-325 mg of aspirin, 2) Perform ECG within 10 minutes of arrival, 3) Start dual antiplatelet therapy with aspirin plus P2Y12 inhibitor, 4) Consider anticoagulation with unfractionated heparin or low molecular weight heparin, 5) Assess eligibility for reperfusion therapy (PCI preferred if available within 90 minutes, or fibrinolysis if PCI isn't available within 120 minutes).", 
+        text: "For acute myocardial infarction (AMI), immediate treatment protocol includes: 1) Administer 162-325 mg of aspirin, 2) Perform ECG within 10 minutes of arrival, 3) Start dual antiplatelet therapy with aspirin plus P2Y12 inhibitor, 4) Consider anticoagulation with unfractionated heparin or low molecular weight heparin, 5) Assess eligibility for reperfusion therapy (PCI preferred if available within 90 minutes, or fibrinolysis if PCI isn't available within 120 minutes).",
         specialty: "cardiology",
         category: "emergency",
-        embedding: [0.9, 0.2, 0.3, 0.1] 
+        embedding: [0.9, 0.2, 0.3, 0.1]
       },
-      { 
-        id: 2, 
+      {
+        id: 2,
         title: "Heart Failure Management Guidelines",
-        text: "For heart failure with reduced ejection fraction (HFrEF), first-line therapy includes ACE inhibitors or ARBs, beta-blockers, and mineralocorticoid receptor antagonists. For patients with persistent symptoms, consider adding sacubitril/valsartan (ARNI), SGLT2 inhibitors, or ivabradine. Diuretics should be used for symptom relief but do not improve mortality. Regular monitoring of renal function, potassium, and volume status is essential.", 
+        text: "For heart failure with reduced ejection fraction (HFrEF), first-line therapy includes ACE inhibitors or ARBs, beta-blockers, and mineralocorticoid receptor antagonists. For patients with persistent symptoms, consider adding sacubitril/valsartan (ARNI), SGLT2 inhibitors, or ivabradine. Diuretics should be used for symptom relief but do not improve mortality. Regular monitoring of renal function, potassium, and volume status is essential.",
         specialty: "cardiology",
         category: "chronic",
-        embedding: [0.7, 0.3, 0.1, 0.2] 
+        embedding: [0.7, 0.3, 0.1, 0.2]
       },
-      { 
-        id: 3, 
+      {
+        id: 3,
         title: "IDSA/ATS Guidelines - Community-Acquired Pneumonia",
-        text: "For outpatient treatment of community-acquired pneumonia in previously healthy adults, a macrolide (azithromycin, clarithromycin) or doxycycline is recommended. For patients with comorbidities or risk factors for drug-resistant pathogens, a respiratory fluoroquinolone (levofloxacin, moxifloxacin) or combination of beta-lactam plus macrolide is preferred. Hospitalized patients should receive either a respiratory fluoroquinolone or a combination of beta-lactam plus macrolide.", 
+        text: "For outpatient treatment of community-acquired pneumonia in previously healthy adults, a macrolide (azithromycin, clarithromycin) or doxycycline is recommended. For patients with comorbidities or risk factors for drug-resistant pathogens, a respiratory fluoroquinolone (levofloxacin, moxifloxacin) or combination of beta-lactam plus macrolide is preferred. Hospitalized patients should receive either a respiratory fluoroquinolone or a combination of beta-lactam plus macrolide.",
         specialty: "infectious disease",
         category: "treatment",
-        embedding: [0.1, 0.8, 0.2, 0.4] 
+        embedding: [0.1, 0.8, 0.2, 0.4]
       },
-      { 
-        id: 4, 
+      {
+        id: 4,
         title: "Sepsis Management - Surviving Sepsis Campaign",
-        text: "For sepsis and septic shock, implement the following within 1 hour: 1) Measure lactate level, 2) Obtain blood cultures before antibiotic administration, 3) Administer broad-spectrum antibiotics, 4) Begin rapid administration of 30 ml/kg crystalloid for hypotension or lactate ≥4 mmol/L, 5) Apply vasopressors if hypotension persists during or after fluid resuscitation. Reassess and reevaluate antimicrobial therapy daily for potential de-escalation.", 
+        text: "For sepsis and septic shock, implement the following within 1 hour: 1) Measure lactate level, 2) Obtain blood cultures before antibiotic administration, 3) Administer broad-spectrum antibiotics, 4) Begin rapid administration of 30 ml/kg crystalloid for hypotension or lactate ≥4 mmol/L, 5) Apply vasopressors if hypotension persists during or after fluid resuscitation. Reassess and reevaluate antimicrobial therapy daily for potential de-escalation.",
         specialty: "critical care",
         category: "emergency",
-        embedding: [0.2, 0.7, 0.3, 0.5] 
+        embedding: [0.2, 0.7, 0.3, 0.5]
       },
-      { 
-        id: 5, 
+      {
+        id: 5,
         title: "ADA Standards of Care - Diabetes Blood Pressure Targets",
-        text: "For most patients with diabetes, the American Diabetes Association recommends a blood pressure target of <140/90 mmHg. For individuals at higher risk of cardiovascular disease, a stricter target of <130/80 mmHg may be appropriate if it can be achieved safely. First-line antihypertensive therapy should include an ACE inhibitor or ARB, particularly for patients with albuminuria. Multiple medications are often required to achieve blood pressure targets.", 
+        text: "For most patients with diabetes, the American Diabetes Association recommends a blood pressure target of <140/90 mmHg. For individuals at higher risk of cardiovascular disease, a stricter target of <130/80 mmHg may be appropriate if it can be achieved safely. First-line antihypertensive therapy should include an ACE inhibitor or ARB, particularly for patients with albuminuria. Multiple medications are often required to achieve blood pressure targets.",
         specialty: "endocrinology",
         category: "chronic",
-        embedding: [0.3, 0.4, 0.8, 0.1] 
+        embedding: [0.3, 0.4, 0.8, 0.1]
       },
-      { 
-        id: 6, 
+      {
+        id: 6,
         title: "JNC 8 Hypertension Guidelines",
-        text: "The Eighth Joint National Committee (JNC 8) recommends initiating pharmacologic treatment for patients aged 60 years or older when blood pressure is ≥150/90 mmHg, and for patients younger than 60 years when blood pressure is ≥140/90 mmHg. For patients with diabetes or chronic kidney disease, treatment should begin at ≥140/90 mmHg regardless of age. First-line agents include thiazide diuretics, calcium channel blockers, ACE inhibitors, or ARBs.", 
+        text: "The Eighth Joint National Committee (JNC 8) recommends initiating pharmacologic treatment for patients aged 60 years or older when blood pressure is ≥150/90 mmHg, and for patients younger than 60 years when blood pressure is ≥140/90 mmHg. For patients with diabetes or chronic kidney disease, treatment should begin at ≥140/90 mmHg regardless of age. First-line agents include thiazide diuretics, calcium channel blockers, ACE inhibitors, or ARBs.",
         specialty: "cardiology",
         category: "chronic",
-        embedding: [0.4, 0.5, 0.7, 0.2] 
+        embedding: [0.4, 0.5, 0.7, 0.2]
       },
-      { 
-        id: 7, 
+      {
+        id: 7,
         title: "Stroke Management - AHA/ASA Guidelines",
-        text: "For acute ischemic stroke, intravenous alteplase (tPA) is recommended within 3-4.5 hours of symptom onset for eligible patients. Mechanical thrombectomy should be considered for large vessel occlusions within 24 hours of last known well time if patients meet criteria. Post-stroke, patients should receive antithrombotic therapy, statins, blood pressure management, and rehabilitation assessments. Secondary prevention includes antiplatelet therapy, statins, and lifestyle modifications.", 
+        text: "For acute ischemic stroke, intravenous alteplase (tPA) is recommended within 3-4.5 hours of symptom onset for eligible patients. Mechanical thrombectomy should be considered for large vessel occlusions within 24 hours of last known well time if patients meet criteria. Post-stroke, patients should receive antithrombotic therapy, statins, blood pressure management, and rehabilitation assessments. Secondary prevention includes antiplatelet therapy, statins, and lifestyle modifications.",
         specialty: "neurology",
         category: "emergency",
-        embedding: [0.5, 0.3, 0.1, 0.8] 
+        embedding: [0.5, 0.3, 0.1, 0.8]
       },
-      { 
-        id: 8, 
+      {
+        id: 8,
         title: "GOLD Guidelines - COPD Management",
-        text: "For chronic obstructive pulmonary disease (COPD), management includes smoking cessation, vaccinations, and pharmacologic therapy based on symptom severity and exacerbation risk. Short-acting bronchodilators are used for rescue therapy, while long-acting bronchodilators (LABA, LAMA) are maintenance therapy for persistent symptoms. Inhaled corticosteroids (ICS) are added for patients with history of exacerbations and elevated eosinophil counts. Pulmonary rehabilitation is recommended for symptomatic patients.", 
+        text: "For chronic obstructive pulmonary disease (COPD), management includes smoking cessation, vaccinations, and pharmacologic therapy based on symptom severity and exacerbation risk. Short-acting bronchodilators are used for rescue therapy, while long-acting bronchodilators (LABA, LAMA) are maintenance therapy for persistent symptoms. Inhaled corticosteroids (ICS) are added for patients with history of exacerbations and elevated eosinophil counts. Pulmonary rehabilitation is recommended for symptomatic patients.",
         specialty: "pulmonology",
         category: "chronic",
-        embedding: [0.6, 0.4, 0.2, 0.7] 
+        embedding: [0.6, 0.4, 0.2, 0.7]
       },
     ];
-    
+
     // Explicitly index (embed) documents using the same vectoriser as the query
     function indexDocuments() {
       indexedDocuments = documents.map(doc => {
@@ -281,24 +518,24 @@
       updateDocumentStore();
       updateDocVisual();
     }
-    
+
     // Update the Knowledge Base box in the simulation flow
     function updateDocumentStore() {
       const container = document.getElementById('documentStoreContent');
       container.innerHTML = '';
-      
+
       if (indexedDocuments.length === 0) {
         // Show message when no documents are embedded
         const emptyMessage = document.createElement('div');
         emptyMessage.className = "p-2 bg-yellow-50 rounded text-xs flex items-center";
         emptyMessage.innerHTML = '<i data-lucide="alert-triangle" class="h-3 w-3 mr-1 text-yellow-500"></i> <span>No documents embedded in vector database yet.</span>';
         container.appendChild(emptyMessage);
-        
+
         // Show placeholder entries
         documents.forEach(doc => {
           const div = document.createElement('div');
           div.className = "mb-2 p-1 bg-gray-100 rounded flex flex-col opacity-50";
-          div.innerHTML = 
+          div.innerHTML =
             '<div class="flex items-center space-x-1">' +
               getProductIcon(doc.specialty) +
               '<div class="font-medium text-xs truncate">' + doc.title + '</div>' +
@@ -311,7 +548,7 @@
         indexedDocuments.forEach(doc => {
           const div = document.createElement('div');
           div.className = "mb-2 p-1 bg-blue-50 rounded flex flex-col";
-          div.innerHTML = 
+          div.innerHTML =
             '<div class="flex items-center space-x-1">' +
               getProductIcon(doc.specialty) +
               '<div class="font-medium text-xs truncate">' + doc.title + '</div>' +
@@ -320,28 +557,28 @@
           container.appendChild(div);
         });
       }
-      
+
       // Refresh icons
       if (typeof lucide !== 'undefined') {
         lucide.createIcons();
       }
     }
-    
+
     // Update the Documents Visual Representation container (accordion)
     function updateDocVisual() {
       const container = document.getElementById('docVisualContainer');
       container.innerHTML = '';
-      
+
       // Show original documents even before embedding
       if (indexedDocuments.length === 0) {
         container.innerHTML = '<div class="col-span-2 p-4 bg-yellow-50 rounded-lg mb-4 text-sm font-medium"><i data-lucide="alert-triangle" class="inline h-4 w-4 mr-1"></i>Documents not yet embedded - vectors not available for search</div>';
-        
+
         // Display original documents without vector representation
         const sortedOriginalDocs = [...documents].sort((a, b) => a.specialty.localeCompare(b.specialty));
-        
+
         sortedOriginalDocs.forEach(doc => {
           const card = document.createElement('div');
-          
+
           // Use different background colors based on specialty
           const bgColors = {
             'cardiology': 'bg-red-50',
@@ -351,10 +588,10 @@
             'neurology': 'bg-purple-50',
             'pulmonology': 'bg-cyan-50'
           };
-          
+
           const bgColor = bgColors[doc.specialty] || 'bg-gray-50';
-          card.className = `p-4 border border-dashed border-gray-300 rounded-lg ${bgColor} flex flex-col h-full`;
-          
+          card.className = `p-4 border border-dashed border-gray-200 rounded-xl ${bgColor} flex flex-col h-full`;
+
           card.innerHTML = `
             <div class="flex items-center space-x-2">
               ${getProductIcon(doc.specialty)}
@@ -363,25 +600,25 @@
             <div class="mt-1 text-xs text-gray-400">Vector: [Not embedded yet]</div>
             <div class="mt-1 text-xs text-gray-600 flex-grow">${doc.text}</div>
             <div class="mt-2 flex items-center">
-              <span class="text-xs px-2 py-1 rounded bg-white">${doc.specialty}</span>
-              <span class="text-xs px-2 py-1 rounded bg-white ml-1">${doc.category}</span>
+              <span class="text-xs px-2 py-1 rounded-full bg-white border border-gray-100">${doc.specialty}</span>
+              <span class="text-xs px-2 py-1 rounded-full bg-white border border-gray-100 ml-1">${doc.category}</span>
             </div>
           `;
           container.appendChild(card);
         });
-        
+
         return;
       }
-      
+
       // Display embedded documents with vector representation highlighted
       container.innerHTML = '<div class="col-span-2 p-4 bg-green-50 rounded-lg mb-4 text-sm font-medium"><i data-lucide="check-circle" class="inline h-4 w-4 mr-1"></i>Documents embedded - vectors available for search</div>';
-      
+
       // Sort documents by specialty to group related documents
       const sortedDocs = [...indexedDocuments].sort((a, b) => a.specialty.localeCompare(b.specialty));
-      
+
       sortedDocs.forEach(doc => {
         const card = document.createElement('div');
-        
+
         // Use different background colors based on specialty
         const bgColors = {
           'cardiology': 'bg-red-50',
@@ -391,37 +628,37 @@
           'neurology': 'bg-purple-50',
           'pulmonology': 'bg-cyan-50'
         };
-        
+
         const bgColor = bgColors[doc.specialty] || 'bg-gray-50';
-        card.className = `p-4 border border-solid border-gray-300 rounded-lg ${bgColor} flex flex-col h-full`;
-        
+        card.className = `p-4 border border-solid border-gray-200 rounded-xl ${bgColor} flex flex-col h-full`;
+
         // Format vector values with highlighting
         const vectorDisplay = doc.embedding.map(v => v.toFixed(3)).join(', ');
-        
+
         card.innerHTML = `
           <div class="flex items-center space-x-2">
             ${getProductIcon(doc.specialty)}
             <span class="font-bold text-sm">${doc.title}</span>
           </div>
           <div class="mt-1 text-xs bg-indigo-100 p-1 rounded font-mono">
-            <span class="font-medium text-indigo-800">Vector:</span> 
+            <span class="font-medium text-indigo-800">Vector:</span>
             <span class="text-indigo-700">[${vectorDisplay}]</span>
           </div>
           <div class="mt-1 text-xs text-gray-600 flex-grow">${doc.text}</div>
           <div class="mt-2 flex items-center">
-            <span class="text-xs px-2 py-1 rounded bg-white">${doc.specialty}</span>
-            <span class="text-xs px-2 py-1 rounded bg-white ml-1">${doc.category}</span>
+            <span class="text-xs px-2 py-1 rounded-full bg-white border border-gray-100">${doc.specialty}</span>
+            <span class="text-xs px-2 py-1 rounded-full bg-white border border-gray-100 ml-1">${doc.category}</span>
           </div>
         `;
         container.appendChild(card);
       });
-      
+
       // Refresh Lucide icons
       if (typeof lucide !== 'undefined') {
         lucide.createIcons();
       }
     }
-    
+
     // Get a specialty icon (using Lucide) based on medical specialty
     function getProductIcon(specialty) {
       let iconName = '';
@@ -436,7 +673,7 @@
       }
       return '<i data-lucide="'+iconName+'" class="h-4 w-4"></i>';
     }
-    
+
     // Simulate embedding the query text into a vector
     function embedQuery(text) {
       let embedding = [0.5, 0.5, 0.5, 0.5];
@@ -472,7 +709,7 @@
       const sum = embedding.reduce((a, b) => a + b, 0);
       return embedding.map(v => v / sum);
     }
-    
+
     // Find the most similar documents using cosine similarity
     function findSimilarDocuments(queryVector, docs, topK = 3) {
       function calculateSimilarity(v1, v2) {
@@ -491,75 +728,67 @@
         .sort((a, b) => b.similarity - a.similarity)
         .slice(0, topK);
     }
-    
+
     // Generate a response based on retrieved medical documents and the query.
-    // If the query contains "weather", answer that no weather information is available.
     function generateResponse(retrievedDocs, userQuery) {
       const queryLower = userQuery.toLowerCase();
       if(queryLower.includes("weather")){
         return "There is no information about weather in our vector database. Please ask a clinical or medical question.";
       }
-      
+
       if (retrievedDocs.length === 0 || (retrievedDocs[0] && retrievedDocs[0].similarity < 0.2)) {
         return "I don't have enough information to answer your clinical question. Could you provide more specific details about the medical condition or treatment you're inquiring about?";
       }
-      
-      // Acute myocardial infarction protocol
+
       if ((queryLower.includes('myocardial') || queryLower.includes('heart attack') || queryLower.includes('ami')) &&
           (queryLower.includes('protocol') || queryLower.includes('treatment') || queryLower.includes('management'))) {
         if (retrievedDocs.some(doc => doc.id === 1)) {
           return "Standard protocol for treating acute myocardial infarction (AMI):\n\n1. Administer 162-325 mg of aspirin immediately\n2. Perform ECG within 10 minutes of patient arrival\n3. Initiate dual antiplatelet therapy (aspirin plus P2Y12 inhibitor)\n4. Consider anticoagulation with unfractionated heparin or LMWH\n5. Evaluate for reperfusion therapy:\n   - Primary PCI is preferred if available within 90 minutes\n   - Fibrinolysis if PCI isn't available within 120 minutes\n\nThis follows current ACC/AHA guidelines for STEMI management.";
         }
       }
-      
-      // Community-acquired pneumonia treatment
+
       if ((queryLower.includes('pneumonia') || queryLower.includes('cap')) &&
           (queryLower.includes('antibiotic') || queryLower.includes('treatment'))) {
         if (retrievedDocs.some(doc => doc.id === 3)) {
           return "First-line antibiotics for community-acquired pneumonia according to IDSA/ATS guidelines:\n\n1. For outpatient treatment in previously healthy adults:\n   - Macrolide (azithromycin, clarithromycin) OR\n   - Doxycycline\n\n2. For outpatients with comorbidities or risk factors for drug resistance:\n   - Respiratory fluoroquinolone (levofloxacin, moxifloxacin) OR\n   - Combination of beta-lactam plus macrolide\n\n3. For hospitalized patients (non-ICU):\n   - Respiratory fluoroquinolone OR\n   - Combination of beta-lactam plus macrolide\n\nTreatment duration typically ranges from 5-7 days, guided by clinical response.";
         }
       }
-      
-      // Diabetes blood pressure targets
+
       if ((queryLower.includes('diabetes') || queryLower.includes('diabetic')) &&
           (queryLower.includes('blood pressure') || queryLower.includes('hypertension'))) {
         if (retrievedDocs.some(doc => doc.id === 5)) {
           return "Blood pressure targets for diabetic patients according to ADA Standards of Care:\n\n1. General target: <140/90 mmHg for most patients with diabetes\n\n2. Stricter target: <130/80 mmHg may be appropriate for individuals at higher risk of cardiovascular disease, if achievable safely\n\n3. First-line antihypertensive therapy should include an ACE inhibitor or ARB, particularly for patients with albuminuria\n\n4. Multiple medications are often required to achieve blood pressure targets\n\nNote: The JNC 8 guidelines also specifically address patients with diabetes, recommending treatment initiation at ≥140/90 mmHg regardless of age.";
         }
       }
-      
-      // Default: Combine information from retrieved documents with clinical formatting
+
       let response = "Based on current clinical guidelines and evidence:";
       retrievedDocs.forEach(doc => {
         response += "\n\n**" + doc.title + "**\n" + doc.text;
       });
-      
+
       response += "\n\nDisclaimer: This information is based on medical guidelines and should be used in conjunction with clinical judgment.";
-      
+
       return response;
     }
-    
+
     // Update the UI based on the current simulation step
     function updateUI() {
-      // Update clinical query text
       document.getElementById('customerQueryContent').innerText = query;
-      
-      // Update embedding model box
+
       if (queryEmbedding) {
         document.getElementById('embeddingModelContent').innerText = "[" + queryEmbedding.map(v => v.toFixed(3)).join(', ') + "]";
       } else {
         document.getElementById('embeddingModelContent').innerHTML = '<span class="italic">Waiting for query to process...</span>';
       }
-      
-      // Update retriever box
+
       const retrieverEl = document.getElementById('retrieverContent');
       retrieverEl.innerHTML = '';
       if (retrievedDocs.length > 0) {
         retrievedDocs.forEach(doc => {
           const div = document.createElement('div');
           div.className = "mb-2 p-2 bg-green-50 rounded text-xs";
-          div.innerHTML = '<div class="font-medium flex items-center gap-1">' + 
-            getProductIcon(doc.specialty) + 
+          div.innerHTML = '<div class="font-medium flex items-center gap-1">' +
+            getProductIcon(doc.specialty) +
             '<span>Doc ' + doc.id + ' (' + (doc.similarity * 100).toFixed(1) + '%)</span></div>' +
             '<div class="text-xs truncate">' + doc.title + '</div>';
           retrieverEl.appendChild(div);
@@ -567,139 +796,117 @@
       } else {
         retrieverEl.innerHTML = '<div class="p-2 bg-gray-50 rounded text-xs italic">Waiting for embedding...</div>';
       }
-      
-      // Update response generator box
+
       const responseEl = document.getElementById('responseGeneratorContent');
       if (generatedResponse) {
         responseEl.innerHTML = '<div class="p-2 bg-red-50 rounded text-xs whitespace-pre-wrap">' + generatedResponse + '</div>';
       } else {
         responseEl.innerHTML = '<div class="p-2 bg-gray-50 rounded text-xs italic">Waiting for retrieval...</div>';
       }
-      
-      // Highlight the active step box:
-      // Step 0: Document Indexing, Step 1: Clinical Query, Step 2: Query Embedding,
-      // Step 3: Document Retrieval, Step 4: Response Generation.
-      document.getElementById('documentStoreBox').className = "relative p-4 border-2 rounded-lg w-60 " + (currentStep === 0 ? "border-blue-500 bg-blue-50" : "border-gray-300");
-      document.getElementById('customerQueryBox').className = "p-4 border-2 rounded-lg w-60 " + (currentStep === 1 ? "border-blue-500 bg-blue-50" : "border-gray-300");
-      document.getElementById('embeddingModelBox').className = "p-4 border-2 rounded-lg w-60 " + (currentStep === 2 ? "border-blue-500 bg-blue-50" : "border-gray-300");
-      document.getElementById('retrieverBox').className = "p-4 border-2 rounded-lg w-60 " + (currentStep === 3 ? "border-blue-500 bg-blue-50" : "border-gray-300");
-      document.getElementById('responseGeneratorBox').className = "p-4 border-2 rounded-lg w-60 " + (currentStep === 4 ? "border-blue-500 bg-blue-50" : "border-gray-300");
-      
-      // Update button text based on step. At step 5, button shows "Reset"
+
+      // Highlight active step with brand colors
+      const activeClass = "border-brand-500 bg-brand-50 shadow-lg shadow-brand-500/10";
+      const inactiveClass = "border-gray-200 bg-white";
+      document.getElementById('documentStoreBox').className = "relative p-4 border-2 rounded-xl w-full transition-all duration-300 " + (currentStep === 0 ? activeClass : inactiveClass);
+      document.getElementById('customerQueryBox').className = "p-4 border-2 rounded-xl w-60 transition-all duration-300 " + (currentStep === 1 ? activeClass : inactiveClass);
+      document.getElementById('embeddingModelBox').className = "p-4 border-2 rounded-xl w-60 transition-all duration-300 " + (currentStep === 2 ? activeClass : inactiveClass);
+      document.getElementById('retrieverBox').className = "p-4 border-2 rounded-xl w-60 transition-all duration-300 " + (currentStep === 3 ? activeClass : inactiveClass);
+      document.getElementById('responseGeneratorBox').className = "p-4 border-2 rounded-xl w-60 transition-all duration-300 " + (currentStep === 4 ? activeClass : inactiveClass);
+
       const nextStepButton = document.getElementById('nextStepButton');
       nextStepButton.innerText = (currentStep === 5 ? "Reset" : "Next Step");
       document.getElementById('runSimulationButton').disabled = isRunning;
       document.getElementById('nextStepButton').disabled = isRunning;
-      
-      // Refresh Lucide icons after DOM changes
+
       if (typeof lucide !== 'undefined') {
         lucide.createIcons();
       }
-      
-      // If document indexing is done, update the document store content
+
       if (currentStep > 0) {
         updateDocumentStore();
       }
     }
-    
+
     // Run one simulation step (manual stepping)
     function runStep() {
       if (isRunning) return;
       switch(currentStep) {
         case 0:
-          // Step 0: Index documents
           indexDocuments();
           currentStep = 1;
           break;
         case 1:
-          // Step 1: Customer Query is already displayed; move to query embedding.
           currentStep = 2;
           break;
         case 2:
-          // Step 2: Embed customer query.
           queryEmbedding = embedQuery(query);
           currentStep = 3;
           break;
         case 3:
-          // Step 3: Retrieve similar documents from the indexed documents.
           retrievedDocs = findSimilarDocuments(queryEmbedding, indexedDocuments);
           currentStep = 4;
           break;
         case 4:
-          // Step 4: Generate response.
           generatedResponse = generateResponse(retrievedDocs, query);
           currentStep = 5;
           break;
         case 5:
-          // Step 5: Reset simulation state completely.
           currentStep = 0;
           queryEmbedding = null;
           retrievedDocs = [];
           generatedResponse = '';
-          // Also reset indexed documents to empty to require re-embedding
           indexedDocuments = [];
-          // Reset query to default value
           query = "What is the standard protocol for treating acute myocardial infarction?";
           document.getElementById('queryInput').value = query;
-          // Update document visuals to show unembedded state
           updateDocVisual();
-          // Reset the Vector Database display
           updateDocumentStore();
           break;
       }
       updateUI();
     }
-    
+
     // Run the entire simulation automatically with delays
     async function runSimulation() {
       if (isRunning) return;
       isRunning = true;
-      
-      // Reset everything to initial state
+
       currentStep = 0;
       queryEmbedding = null;
       retrievedDocs = [];
       generatedResponse = '';
-      // Preserve indexed documents if they exist, otherwise they'll be created during the simulation
-      
-      // Get current query from input field in case user changed it
+
       query = document.getElementById('queryInput').value;
-      
+
       updateUI();
-      
+
       await new Promise(resolve => setTimeout(resolve, 500));
-      // Step 0: Index documents
       indexDocuments();
       currentStep = 1;
       updateUI();
-      
+
       await new Promise(resolve => setTimeout(resolve, 500));
-      // Step 1: (Customer query is already shown)
       currentStep = 2;
       updateUI();
-      
+
       await new Promise(resolve => setTimeout(resolve, 500));
-      // Step 2: Embed query
       queryEmbedding = embedQuery(query);
       currentStep = 3;
       updateUI();
-      
+
       await new Promise(resolve => setTimeout(resolve, 1000));
-      // Step 3: Retrieve similar documents
       retrievedDocs = findSimilarDocuments(queryEmbedding, indexedDocuments);
       currentStep = 4;
       updateUI();
-      
+
       await new Promise(resolve => setTimeout(resolve, 1000));
-      // Step 4: Generate response
       generatedResponse = generateResponse(retrievedDocs, query);
       currentStep = 5;
       updateUI();
-      
+
       isRunning = false;
       updateUI();
     }
-    
+
     // Event listeners
     document.getElementById('runSimulationButton').addEventListener('click', runSimulation);
     document.getElementById('nextStepButton').addEventListener('click', runStep);
@@ -710,7 +917,6 @@
     document.getElementById('embedDocumentsButton').addEventListener('click', function() {
       indexDocuments();
       updateDocVisual();
-      // Refresh Lucide icons after DOM changes
       if (typeof lucide !== 'undefined') {
         lucide.createIcons();
       }
@@ -729,37 +935,32 @@
         updateUI();
       });
     });
-    
+
     // Complete reset function for the Reset All button
     function resetSimulation() {
-      // Reset all state variables
       currentStep = 0;
       queryEmbedding = null;
       retrievedDocs = [];
       generatedResponse = '';
       indexedDocuments = [];
-      
-      // Reset query to default value
+
       query = "What is the standard protocol for treating acute myocardial infarction?";
       document.getElementById('queryInput').value = query;
-      
-      // Update UI components
+
       updateDocVisual();
-      updateDocumentStore(); // Also reset the Vector Database display
+      updateDocumentStore();
       updateUI();
-      
-      // Refresh icons
+
       if (typeof lucide !== 'undefined') {
         lucide.createIcons();
       }
     }
-    
-    // Add event listener for the Reset All button
+
     document.getElementById('resetButton').addEventListener('click', resetSimulation);
-    
-    // Initialize the UI with documents visible but not indexed yet
+
+    // Initialize
     updateDocumentStore();
-    updateDocVisual(); // Show unembedded documents initially
+    updateDocVisual();
     updateUI();
   </script>
 </body>
