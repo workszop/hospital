@@ -695,6 +695,52 @@ function assembleAnswer(retrieved){
   return out;
 }
 
+var state = { qVec:[0.940,0.342], retrieved:[] };
+
+function specialtyIcon(spec){
+  const m={'kardiologia':'heart-pulse','choroby zakaźne':'bug','intensywna terapia':'activity',
+           'endokrynologia':'flask-conical','neurologia':'brain','pulmonologia':'wind'};
+  return m[spec]||'clipboard-list';
+}
+
+/* opts: { showQuery:bool, showLines:bool, topIds:[ids] } */
+function renderVectorMap(opts){
+  const o = Object.assign({showQuery:false, showLines:false, topIds:[]}, opts||{});
+  const P = v => [ (v[0]*100).toFixed(1), (-v[1]*100).toFixed(1) ];
+  let svg = '<svg viewBox="-120 -120 240 240" role="img" aria-label="Mapa wektorowa">';
+  // osie
+  svg += '<line x1="-115" y1="0" x2="115" y2="0" stroke="#ddd" stroke-width="1.5"/>';
+  svg += '<line x1="0" y1="-115" x2="0" y2="115" stroke="#ddd" stroke-width="1.5"/>';
+  svg += '<circle cx="0" cy="0" r="100" fill="none" stroke="#e6ddd0" stroke-width="1.5" stroke-dasharray="4 4"/>';
+  // linie podobieństwa (rysowane pod punktami)
+  if(o.showLines && state.qVec){
+    const [qx,qy]=P(state.qVec);
+    DOCS.forEach(d=>{
+      const sim=cosineSim(state.qVec,d.vec);
+      const [dx,dy]=P(d.vec);
+      const w=Math.max(0.4, sim*5).toFixed(2);
+      const op=Math.max(0.08, Math.min(1, sim)).toFixed(2);
+      const hot=o.topIds.includes(d.id);
+      svg += `<line x1="${qx}" y1="${qy}" x2="${dx}" y2="${dy}" stroke="${hot?'#1a1a2e':'#4D96FF'}" stroke-width="${hot?Math.max(1.5,parseFloat(w)):parseFloat(w)}" stroke-opacity="${op}"/>`;
+    });
+  }
+  // punkty dokumentów
+  DOCS.forEach(d=>{
+    const [dx,dy]=P(d.vec);
+    const color=SPECIALTY_COLORS[d.specialty]||'#999';
+    const hot=o.topIds.includes(d.id);
+    svg += `<circle cx="${dx}" cy="${dy}" r="${hot?9:7}" fill="${color}" stroke="#1a1a2e" stroke-width="${hot?3:2}"/>`;
+    svg += `<text x="${dx}" y="${dy-12}" font-size="9" font-weight="800" text-anchor="middle" fill="#1a1a2e">${d.id}</text>`;
+  });
+  // gwiazdka zapytania
+  if(o.showQuery && state.qVec){
+    const [qx,qy]=P(state.qVec);
+    svg += `<polygon points="${qx},${(+qy-10).toFixed(1)} ${(+qx+3).toFixed(1)},${(+qy-3).toFixed(1)} ${(+qx+10).toFixed(1)},${(+qy-3).toFixed(1)} ${(+qx+4).toFixed(1)},${(+qy+2).toFixed(1)} ${(+qx+6).toFixed(1)},${(+qy+9).toFixed(1)} ${qx},${(+qy+4).toFixed(1)} ${(+qx-6).toFixed(1)},${(+qy+9).toFixed(1)} ${(+qx-4).toFixed(1)},${(+qy+2).toFixed(1)} ${(+qx-10).toFixed(1)},${(+qy-3).toFixed(1)} ${(+qx-3).toFixed(1)},${(+qy-3).toFixed(1)}" fill="#FFD93D" stroke="#1a1a2e" stroke-width="2"/>`;
+  }
+  svg += '</svg>';
+  return svg;
+}
+
 /* ── TEMPORARY SELF-CHECK (removed in Task 8) ── */
 (function(){
   const log=[];
