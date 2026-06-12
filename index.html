@@ -695,7 +695,119 @@ function assembleAnswer(retrieved){
   return out;
 }
 
-var state = { qVec:[0.940,0.342], retrieved:[] };
+const state = { query:'', qVec:null, retrieved:[], promptBlocks:[], answer:'', stage:0, running:false };
+
+function buildPrompt(retrieved, query){
+  const ctx = retrieved.filter(d=>d.sim>=THRESHOLD);
+  return [
+    {tag:'SYSTEM', color:'#1a1a2e', body:'Jesteś asystentem wspomagającym decyzje kliniczne. Odpowiadaj wyłącznie na podstawie dostarczonych dowodów.'},
+    {tag:'KONTEKST', color:'#4D96FF', body: ctx.length ? ctx.map((d,i)=>'['+(i+1)+'] '+d.title+' ('+(d.sim*100).toFixed(0)+'%) — '+d.text.slice(0,90)+'…').join('\n') : '(brak pasujących dokumentów)'},
+    {tag:'PYTANIE', color:'#6366f1', body: query},
+    {tag:'INSTRUKCJA', color:'#6BCB77', body:'Udziel odpowiedzi opartej na dowodach, powołując się na odnalezione wytyczne.'}
+  ];
+}
+
+const NARRATION = {
+  0:'Naciśnij „Następny krok" albo „Odtwórz całość", aby rozpocząć.',
+  1:'Każdy dokument zamieniamy na wektor — listę liczb opisującą jego znaczenie. Podobne tematy trafiają blisko siebie na mapie.',
+  2:'To samo robimy z pytaniem — zamieniamy je na wektor w tej samej przestrzeni, żeby móc je porównać z dokumentami.',
+  3:'Mierzymy podobieństwo (kąt między wektorami). Im bliżej, tym bardziej dokument pasuje. Wybieramy 3 najlepsze.',
+  4:'Z odnalezionych dowodów składamy prompt: instrukcje + kontekst + pytanie. To wszystko, co model dostaje na wejściu.',
+  5:'Model generuje odpowiedź wyłącznie na podstawie dostarczonego kontekstu — dlatego jest oparta na wytycznych, a nie zmyślona.'
+};
+
+function setQuery(q){
+  state.query = q;
+  state.qVec = embedText(q);
+  state.retrieved = retrieve(state.qVec);
+  state.promptBlocks = buildPrompt(state.retrieved, q);
+  state.answer = assembleAnswer(state.retrieved);
+  state.stage = 0;
+  render();
+}
+
+function topIds(){
+  return state.retrieved.filter(d=>d.sim>=THRESHOLD).map(d=>d.id);
+}
+
+function renderStage(){
+  const area = document.getElementById('stageArea');
+  const cap = '<div class="stage-caption">Uproszczony wektor 2-D do celów dydaktycznych. Prawdziwe modele używają ~1500 wymiarów.</div>';
+  if(state.stage===0){
+    area.innerHTML = '<div class="stage-heading">Gotowe do startu</div>'+
+      '<div class="stage-caption">Wybierz przykład powyżej lub wpisz własne pytanie, a następnie przejdź przez kolejne kroki.</div>'+
+      '<div class="vmap-wrap"><div class="vmap">'+renderVectorMap({})+'<div class="vmap-caption">Baza wiedzy w przestrzeni wektorowej (jeszcze bez zapytania)</div></div></div>';
+  } else if(state.stage===1){
+    area.innerHTML = '<div class="stage-heading">Krok 1 — Indeksowanie</div>'+cap+
+      '<div class="vmap-wrap"><div class="vmap">'+renderVectorMap({})+'<div class="vmap-caption">6 dokumentów jako wektory — kolor oznacza specjalizację</div></div></div>';
+  } else if(state.stage===2){
+    area.innerHTML = '<div class="stage-heading">Krok 2 — Osadzanie zapytania</div>'+
+      '<div class="stage-caption">Wektor zapytania: ['+state.qVec.map(v=>v.toFixed(3)).join(', ')+']</div>'+
+      '<div class="vmap-wrap"><div class="vmap">'+renderVectorMap({showQuery:true})+'<div class="vmap-caption">⭐ zapytanie trafia do tej samej przestrzeni</div></div></div>';
+  } else if(state.stage===3){
+    area.innerHTML = '<div class="stage-heading">Krok 3 — Wyszukiwanie</div>'+
+      '<div class="vmap-wrap"><div class="vmap">'+renderVectorMap({showQuery:true,showLines:true,topIds:topIds()})+
+      '<div class="vmap-caption">Grubość linii = podobieństwo. Wyróżnione = 3 najlepsze</div></div>'+
+      '<div class="rank-list">'+renderRankList()+'</div></div>';
+  }
+  if(typeof lucide!=='undefined') lucide.createIcons();
+}
+
+function renderRankList(){
+  if(!state.retrieved.length) return '';
+  const any = topIds().length>0;
+  let html = '';
+  if(!any) html += '<div class="rank-item dim">Brak dokumentów powyżej progu podobieństwa ('+(THRESHOLD*100)+'%).</div>';
+  state.retrieved.forEach(d=>{
+    const pct=Math.max(0,d.sim*100);
+    const dim = d.sim<THRESHOLD ? ' dim':'';
+    html += '<div class="rank-item'+dim+'"><div>Dok '+d.id+' — '+d.title+'</div>'+
+      '<div style="font-size:11px;color:#666">podobieństwo: '+pct.toFixed(0)+'%</div>'+
+      '<div class="rank-bar"><div class="rank-bar-fill" style="width:'+Math.max(0,Math.min(100,pct)).toFixed(0)+'%"></div></div></div>';
+  });
+  return html;
+}
+
+function renderStepper(){
+  document.querySelectorAll('.step-pill').forEach(p=>{
+    const s=+p.getAttribute('data-stage');
+    p.classList.toggle('active', s===state.stage);
+    p.classList.toggle('done', s<state.stage);
+  });
+}
+
+function render(){
+  renderStepper();
+  renderStage();
+  document.getElementById('narratorText').textContent = NARRATION[state.stage];
+  document.getElementById('nextStepButton').disabled = state.running || state.stage>=5;
+  document.getElementById('runSimulationButton').disabled = state.running;
+  if(typeof lucide!=='undefined') lucide.createIcons();
+}
+
+function nextStep(){ if(state.running) return; if(state.stage<5){ state.stage++; render(); } }
+function reset(){ if(state.running) return; setQuery(document.getElementById('queryInput').value); }
+
+async function runAll(){
+  if(state.running) return;
+  state.running=true; state.stage=0; render();
+  for(let s=1;s<=5;s++){
+    await new Promise(r=>setTimeout(r, s===1?400:900));
+    state.stage=s; render();
+  }
+  state.running=false; render();
+}
+
+document.getElementById('nextStepButton').addEventListener('click', nextStep);
+document.getElementById('runSimulationButton').addEventListener('click', runAll);
+document.getElementById('resetButton').addEventListener('click', reset);
+document.getElementById('queryInput').addEventListener('input', e=>setQuery(e.target.value));
+document.querySelectorAll('.sampleQuery').forEach(b=>b.addEventListener('click', ()=>{
+  document.getElementById('queryInput').value = b.getAttribute('data-query');
+  setQuery(b.getAttribute('data-query'));
+}));
+
+setQuery(document.getElementById('queryInput').value);   // inicjalizacja
 
 function specialtyIcon(spec){
   const m={'kardiologia':'heart-pulse','choroby zakaźne':'bug','intensywna terapia':'activity',
