@@ -298,53 +298,6 @@ body{
 .sample-chip:active{transform:translateY(1px);box-shadow:1px 1px 0 var(--dark)}
 .sample-chip-gray{background:#eee}
 
-/* Pipeline boxes */
-.pipe-box{
-  padding:14px;
-  border:3px solid var(--dark);border-radius:14px;
-  background:#fff;
-  box-shadow:3px 3px 0 var(--dark);
-  flex:1 1 180px;min-width:0;
-  transition:transform .2s,box-shadow .2s,background .2s;
-}
-.pipe-box.active{
-  background:var(--blue);color:#fff;
-  transform:translateY(-3px);
-  box-shadow:3px 6px 0 var(--dark);
-}
-.pipe-box.active .pipe-step-text{color:rgba(255,255,255,.7)}
-.pipe-box.active .pipe-content{background:rgba(255,255,255,.2);color:#fff}
-.pipe-box-wide{width:100%}
-.pipe-label{font-size:.85rem;font-weight:900;display:flex;align-items:center;gap:6px;margin-bottom:8px}
-.pipe-content{
-  font-size:11px;font-weight:700;
-  padding:8px;border-radius:10px;
-  background:var(--cream);
-  height:150px;overflow-y:auto;
-}
-.pipe-step-text{font-size:11px;font-weight:700;color:#888;margin-top:6px}
-.pipe-arrow{
-  font-size:20px;font-weight:900;color:var(--dark);
-  display:flex;align-items:center;flex-shrink:0;
-  padding-top:24px;
-}
-
-/* Document cards in accordion */
-.doc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
-.doc-card-app{
-  padding:12px;
-  border:2.5px solid var(--dark);border-radius:14px;
-  font-size:12px;font-weight:700;
-  box-shadow:2px 2px 0 var(--dark);
-  display:flex;flex-direction:column;gap:4px;
-}
-.doc-tag{
-  display:inline-flex;
-  background:#fff;border:2px solid var(--dark);border-radius:99px;
-  padding:2px 8px;font-size:10px;font-weight:800;
-  box-shadow:1px 1px 0 var(--dark);
-}
-
 /* ── HOW IT WORKS ── */
 .how{padding:80px 40px;max-width:1100px;margin:0 auto}
 .steps-grid{
@@ -389,8 +342,6 @@ body{
 @media(max-width:1024px){
   .demo-section{padding:60px 20px;max-width:100%}
   .demo-outer{padding:48px 20px 32px}
-  .pipeline-row{flex-wrap:wrap!important}
-  .pipe-box{flex:1 1 200px;min-width:180px}
 }
 @media(max-width:760px){
   .hero{padding:48px 20px 56px}
@@ -400,10 +351,6 @@ body{
   .demo-outer{padding:48px 12px 32px}
   .demo-inner{padding:12px}
   .how{padding:56px 20px}
-  .pipe-box{flex:1 1 100%}
-  .pipeline-row{flex-direction:column!important;align-items:stretch!important}
-  .pipe-arrow{transform:rotate(90deg);justify-content:center;padding:0}
-  .doc-grid{grid-template-columns:1fr}
   .steps-grid{grid-template-columns:1fr}
   .steps-bottom-row{flex-direction:column}
   .steps-bottom-row .step-card{flex:1 1 auto}
@@ -889,22 +836,6 @@ function renderVectorMap(opts){
   svg += '</svg>';
   return svg;
 }
-
-/* ── TEMPORARY SELF-CHECK (removed in Task 8) ── */
-(function(){
-  const log=[];
-  const okMag = DOCS.every(d=>Math.abs(Math.hypot(d.vec[0],d.vec[1])-1)<0.01);
-  log.push(['wektory dokumentów są jednostkowe', okMag]);
-  const qHeart = embedText("Jaki jest standardowy protokół leczenia ostrego zawału serca?");
-  log.push(['zapytanie o zawał → dok. id 1 najbliżej', retrieve(qHeart)[0].id===1]);
-  const qWeather = embedText("Jaka jest dzisiaj pogoda?");
-  log.push(['pytanie poza tematem → max podobieństwo < próg', retrieve(qWeather)[0].sim < THRESHOLD]);
-  log.push(['odpowiedź poza tematem zawiera „Brak"', assembleAnswer(retrieve(qWeather)).includes('Brak')]);
-  log.push(['odpowiedź o zawale cytuje tytuł dok. 1', assembleAnswer(retrieve(qHeart)).includes('STEMI')]);
-  const allPass = log.every(r=>r[1]);
-  console.log('[DEMO TEST] '+(allPass?'PASS':'FAIL'));
-  log.forEach(r=>console.log('  '+(r[1]?'✓':'✗')+' '+r[0]));
-})();
 </script>
 </body>
 </html>
