@@ -917,5 +917,88 @@ body{
   document.getElementById('resetButton').addEventListener('click', resetSimulation);
   updateDocumentStore(); updateDocVisual(); updateUI();
 </script>
+
+<script>
+/* ===== MedVector — silnik demonstracyjny RAG (uproszczony, dydaktyczny) ===== */
+const THRESHOLD = 0.5;
+
+/* Każdy dokument ma ręcznie przypisany wektor 2-D (jednostkowy) — do celów
+   dydaktycznych. Prawdziwe modele używają ~1500 wymiarów. */
+const DOCS = [
+  { id:1, title:"Wytyczne ESC — Ostry zawał serca (STEMI)", specialty:"kardiologia", category:"stan nagły", vec:[0.940,0.342],
+    text:"W ostrym zawale serca z uniesieniem odcinka ST (STEMI) należy: 1) podać 150–300 mg kwasu acetylosalicylowego, 2) wykonać EKG w ciągu 10 minut od przyjęcia, 3) rozpocząć podwójną terapię przeciwpłytkową (ASA + inhibitor P2Y12), 4) rozważyć leczenie przeciwkrzepliwe (heparyna), 5) ocenić wskazania do reperfuzji: pierwotna PCI jest preferowana, jeśli możliwa w ciągu 120 minut, w przeciwnym razie fibrynoliza." },
+  { id:2, title:"Pozaszpitalne zapalenie płuc — antybiotykoterapia", specialty:"choroby zakaźne", category:"leczenie", vec:[-0.643,0.766],
+    text:"W leczeniu ambulatoryjnym pozaszpitalnego zapalenia płuc u wcześniej zdrowych dorosłych zaleca się makrolid (azytromycyna, klarytromycyna) lub doksycyklinę. U chorych z chorobami współistniejącymi preferuje się fluorochinolon oddechowy (lewofloksacyna, moksyfloksacyna) lub beta-laktam z makrolidem. Pacjenci hospitalizowani powinni otrzymać fluorochinolon oddechowy lub beta-laktam z makrolidem." },
+  { id:3, title:"Sepsa i wstrząs septyczny — pakiet 1-godzinny", specialty:"intensywna terapia", category:"stan nagły", vec:[-0.259,0.966],
+    text:"W sepsie i wstrząsie septycznym w ciągu pierwszej godziny należy: 1) oznaczyć stężenie mleczanu, 2) pobrać posiewy krwi przed antybiotykiem, 3) podać antybiotyk o szerokim spektrum, 4) rozpocząć szybki wlew krystaloidów 30 ml/kg przy hipotensji lub mleczanie ≥ 4 mmol/l, 5) zastosować leki obkurczające naczynia, jeśli hipotensja utrzymuje się mimo płynoterapii." },
+  { id:4, title:"Docelowe ciśnienie tętnicze w cukrzycy", specialty:"endokrynologia", category:"choroba przewlekła", vec:[-0.940,0.342],
+    text:"U większości chorych na cukrzycę zaleca się docelowe ciśnienie tętnicze < 140/90 mmHg. U osób z wysokim ryzykiem sercowo-naczyniowym można rozważyć cel < 130/80 mmHg, jeśli jest bezpiecznie osiągalny. Lekiem pierwszego wyboru jest inhibitor ACE lub sartan (ARB), zwłaszcza przy albuminurii. Często konieczne jest leczenie skojarzone kilkoma lekami." },
+  { id:5, title:"Ostry udar niedokrwienny mózgu", specialty:"neurologia", category:"stan nagły", vec:[0.574,0.819],
+    text:"W ostrym udarze niedokrwiennym mózgu zaleca się dożylne podanie alteplazy (tPA) w ciągu 3–4,5 godziny od wystąpienia objawów u kwalifikujących się chorych. Trombektomię mechaniczną należy rozważyć w niedrożności dużego naczynia do 24 godzin od ostatniego momentu dobrostanu. Po udarze stosuje się leczenie przeciwpłytkowe, statyny, kontrolę ciśnienia oraz rehabilitację." },
+  { id:6, title:"Wytyczne GOLD — POChP", specialty:"pulmonologia", category:"choroba przewlekła", vec:[0.174,0.985],
+    text:"W przewlekłej obturacyjnej chorobie płuc (POChP) leczenie obejmuje zaprzestanie palenia, szczepienia oraz farmakoterapię zależną od nasilenia objawów i ryzyka zaostrzeń. Krótko działające leki rozszerzające oskrzela stosuje się doraźnie, a długo działające (LABA, LAMA) jako leczenie podtrzymujące. Wziewne glikokortykosteroidy dodaje się u chorych z zaostrzeniami i eozynofilią. Zaleca się rehabilitację oddechową." },
+];
+
+/* Reguła „słowo kluczowe → kierunek w przestrzeni 2-D". Sumujemy kierunki
+   dopasowanych słów i normalizujemy. Brak dopasowania → wektor [0,-1] (poza bazą). */
+const SPECIALTY_DIRS = [
+  { dir:[0.940,0.342],  keys:['zawał','serce','serca','sercow','wieńc','stemi'] },
+  { dir:[0.574,0.819],  keys:['udar','mózg','niedokrwien','alteplaz','tpa','trombektom'] },
+  { dir:[0.174,0.985],  keys:['pochp','obturacyjn','oskrzel','duszność','wziewn','lama','laba'] },
+  { dir:[-0.259,0.966], keys:['sepsa','sepsie','wstrząs','posocznic','mleczan'] },
+  { dir:[-0.643,0.766], keys:['zapaleni','antybiotyk','makrolid','fluorochinolon','doksycyklin'] },
+  { dir:[-0.940,0.342], keys:['cukrzyc','ciśnieni','nadciśnien','glikemi','insulin'] },
+];
+
+const SPECIALTY_COLORS = {
+  'kardiologia':'#FF6B6B', 'choroby zakaźne':'#6BCB77', 'intensywna terapia':'#C77DFF',
+  'endokrynologia':'#FFD93D', 'neurologia':'#4D96FF', 'pulmonologia':'#6366f1'
+};
+
+function embedText(text){
+  const t = (text||'').toLowerCase();
+  let x=0,y=0;
+  SPECIALTY_DIRS.forEach(s=>{ if(s.keys.some(k=>t.includes(k))){ x+=s.dir[0]; y+=s.dir[1]; } });
+  if(x===0 && y===0) return [0,-1];
+  const m=Math.hypot(x,y); return [x/m,y/m];
+}
+
+function cosineSim(a,b){
+  const dot=a[0]*b[0]+a[1]*b[1];
+  const ma=Math.hypot(a[0],a[1]), mb=Math.hypot(b[0],b[1]);
+  return (ma===0||mb===0) ? 0 : dot/(ma*mb);
+}
+
+function retrieve(qVec, k=3){
+  return DOCS.map(d=>({ ...d, sim:cosineSim(qVec,d.vec) }))
+             .sort((a,b)=>b.sim-a.sim).slice(0,k);
+}
+
+function assembleAnswer(retrieved){
+  if(!retrieved.length || retrieved[0].sim < THRESHOLD){
+    return "Brak wystarczająco podobnych dokumentów w bazie wiedzy. Zadaj pytanie kliniczne dotyczące dostępnych wytycznych.";
+  }
+  let out = "Na podstawie odnalezionych wytycznych:";
+  retrieved.filter(d=>d.sim>=THRESHOLD).forEach((d,i)=>{ out += `\n\n[${i+1}] ${d.title}\n${d.text}`; });
+  out += "\n\nUwaga: To demonstracja edukacyjna — nie jest poradą medyczną.";
+  return out;
+}
+
+/* ── TEMPORARY SELF-CHECK (removed in Task 8) ── */
+(function(){
+  const log=[];
+  const okMag = DOCS.every(d=>Math.abs(Math.hypot(d.vec[0],d.vec[1])-1)<0.01);
+  log.push(['wektory dokumentów są jednostkowe', okMag]);
+  const qHeart = embedText("Jaki jest standardowy protokół leczenia ostrego zawału serca?");
+  log.push(['zapytanie o zawał → dok. id 1 najbliżej', retrieve(qHeart)[0].id===1]);
+  const qWeather = embedText("Jaka jest dzisiaj pogoda?");
+  log.push(['pytanie poza tematem → max podobieństwo < próg', retrieve(qWeather)[0].sim < THRESHOLD]);
+  log.push(['odpowiedź poza tematem zawiera „Brak"', assembleAnswer(retrieve(qWeather)).includes('Brak')]);
+  log.push(['odpowiedź o zawale cytuje tytuł dok. 1', assembleAnswer(retrieve(qHeart)).includes('STEMI')]);
+  const allPass = log.every(r=>r[1]);
+  console.log('[DEMO TEST] '+(allPass?'PASS':'FAIL'));
+  log.forEach(r=>console.log('  '+(r[1]?'✓':'✗')+' '+r[0]));
+})();
+</script>
 </body>
 </html>
