@@ -298,53 +298,6 @@ body{
 .sample-chip:active{transform:translateY(1px);box-shadow:1px 1px 0 var(--dark)}
 .sample-chip-gray{background:#eee}
 
-/* Pipeline boxes */
-.pipe-box{
-  padding:14px;
-  border:3px solid var(--dark);border-radius:14px;
-  background:#fff;
-  box-shadow:3px 3px 0 var(--dark);
-  flex:1 1 180px;min-width:0;
-  transition:transform .2s,box-shadow .2s,background .2s;
-}
-.pipe-box.active{
-  background:var(--blue);color:#fff;
-  transform:translateY(-3px);
-  box-shadow:3px 6px 0 var(--dark);
-}
-.pipe-box.active .pipe-step-text{color:rgba(255,255,255,.7)}
-.pipe-box.active .pipe-content{background:rgba(255,255,255,.2);color:#fff}
-.pipe-box-wide{width:100%}
-.pipe-label{font-size:.85rem;font-weight:900;display:flex;align-items:center;gap:6px;margin-bottom:8px}
-.pipe-content{
-  font-size:11px;font-weight:700;
-  padding:8px;border-radius:10px;
-  background:var(--cream);
-  height:150px;overflow-y:auto;
-}
-.pipe-step-text{font-size:11px;font-weight:700;color:#888;margin-top:6px}
-.pipe-arrow{
-  font-size:20px;font-weight:900;color:var(--dark);
-  display:flex;align-items:center;flex-shrink:0;
-  padding-top:24px;
-}
-
-/* Document cards in accordion */
-.doc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
-.doc-card-app{
-  padding:12px;
-  border:2.5px solid var(--dark);border-radius:14px;
-  font-size:12px;font-weight:700;
-  box-shadow:2px 2px 0 var(--dark);
-  display:flex;flex-direction:column;gap:4px;
-}
-.doc-tag{
-  display:inline-flex;
-  background:#fff;border:2px solid var(--dark);border-radius:99px;
-  padding:2px 8px;font-size:10px;font-weight:800;
-  box-shadow:1px 1px 0 var(--dark);
-}
-
 /* ── HOW IT WORKS ── */
 .how{padding:80px 40px;max-width:1100px;margin:0 auto}
 .steps-grid{
@@ -389,8 +342,6 @@ body{
 @media(max-width:1024px){
   .demo-section{padding:60px 20px;max-width:100%}
   .demo-outer{padding:48px 20px 32px}
-  .pipeline-row{flex-wrap:wrap!important}
-  .pipe-box{flex:1 1 200px;min-width:180px}
 }
 @media(max-width:760px){
   .hero{padding:48px 20px 56px}
@@ -400,13 +351,69 @@ body{
   .demo-outer{padding:48px 12px 32px}
   .demo-inner{padding:12px}
   .how{padding:56px 20px}
-  .pipe-box{flex:1 1 100%}
-  .pipeline-row{flex-direction:column!important;align-items:stretch!important}
-  .pipe-arrow{transform:rotate(90deg);justify-content:center;padding:0}
-  .doc-grid{grid-template-columns:1fr}
   .steps-grid{grid-template-columns:1fr}
   .steps-bottom-row{flex-direction:column}
   .steps-bottom-row .step-card{flex:1 1 auto}
+}
+
+/* ── REDESIGNED DEMO ── */
+.stepper{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.step-pill{
+  display:flex;align-items:center;gap:8px;
+  background:#fff;border:3px solid var(--dark);border-radius:99px;
+  padding:8px 14px;font-size:13px;font-weight:800;color:#999;
+  box-shadow:2px 2px 0 var(--dark);flex:1 1 auto;justify-content:center;
+  transition:background .2s,color .2s,transform .2s;
+}
+.step-pill-num{
+  width:22px;height:22px;border-radius:50%;border:2.5px solid var(--dark);
+  background:#eee;color:var(--dark);
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;
+}
+.step-pill.done{color:var(--dark)}
+.step-pill.done .step-pill-num{background:var(--green)}
+.step-pill.active{background:var(--dark);color:#fff;transform:translateY(-2px)}
+.step-pill.active .step-pill-num{background:var(--yellow)}
+
+.stage-area{
+  background:#fff;border:3px solid var(--dark);border-radius:18px;
+  box-shadow:4px 4px 0 var(--dark);padding:20px;min-height:340px;margin-bottom:16px;
+}
+.stage-heading{font-size:1rem;font-weight:900;margin-bottom:4px}
+.stage-caption{font-size:12px;font-weight:700;color:#888;margin-bottom:14px}
+
+.narrator{
+  background:var(--dark);color:#fff;
+  border:3px solid var(--dark);border-radius:16px;padding:16px 18px;
+  display:flex;flex-direction:column;gap:12px;
+}
+.narrator-text{font-size:.95rem;font-weight:700;line-height:1.5}
+.narrator-controls{display:flex;gap:8px;flex-wrap:wrap}
+
+/* Vector map */
+.vmap-wrap{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start}
+.vmap{flex:1 1 320px;min-width:280px}
+.vmap svg{width:100%;height:auto;display:block;background:var(--cream);border:2.5px solid var(--dark);border-radius:12px}
+.vmap-caption{font-size:11px;font-weight:700;color:#888;margin-top:6px;text-align:center}
+.rank-list{flex:1 1 240px;min-width:220px;display:flex;flex-direction:column;gap:8px}
+.rank-item{border:2.5px solid var(--dark);border-radius:10px;padding:8px 10px;box-shadow:2px 2px 0 var(--dark);font-size:12px;font-weight:800}
+.rank-item.dim{opacity:.5}
+.rank-bar{height:8px;border-radius:99px;background:#eee;border:2px solid var(--dark);margin-top:6px;overflow:hidden}
+.rank-bar-fill{height:100%;background:var(--green)}
+
+/* Prompt blocks */
+.prompt-block{border:2.5px solid var(--dark);border-radius:10px;padding:10px 12px;margin-bottom:10px;box-shadow:2px 2px 0 var(--dark);background:#fff}
+.prompt-tag{display:inline-block;color:#fff;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:900;margin-bottom:6px}
+.prompt-body{font-size:13px;font-weight:600;line-height:1.5;white-space:pre-wrap;color:#222}
+
+/* Answer panel */
+.answer-panel{font-size:14px;font-weight:600;line-height:1.65;white-space:pre-wrap;color:#1a1a2e}
+.answer-cite{background:var(--yellow);border:2px solid var(--dark);border-radius:6px;padding:0 5px;font-weight:900;font-size:12px}
+.answer-disclaimer{margin-top:16px;padding:12px 14px;background:var(--red);color:#fff;border:2.5px solid var(--dark);border-radius:12px;box-shadow:2px 2px 0 var(--dark);font-size:13px;font-weight:800}
+
+@media(max-width:760px){
+  .stepper{flex-direction:column}
+  .vmap-wrap{flex-direction:column}
 }
 </style>
 </head>
@@ -473,449 +480,362 @@ body{
 </section>
 
 <!-- DEMO -->
+<!-- DEMO -->
 <section class="demo-section" id="demo">
   <div style="text-align:center;margin-bottom:48px">
-    <div class="section-label label-blue">Live Demo</div>
-    <h2 class="section-title">See it in action</h2>
+    <div class="section-label label-blue">Demo na żywo</div>
+    <h2 class="section-title">Zobacz, jak to działa</h2>
   </div>
 
   <div class="demo-outer">
-    <div class="demo-label">
-      <span class="pulse-dot"></span>
-      Interactive Demo — Try It Yourself
-    </div>
+    <div class="demo-label"><span class="pulse-dot"></span> Interaktywne demo — wypróbuj sam</div>
 
     <div class="demo-inner">
-      <!-- Documents Accordion -->
-      <div class="app-card">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-          <div class="app-card-label">
-            <span class="app-icon" style="background:#eef2ff;color:var(--indigo)"><i data-lucide="library" style="width:16px;height:16px"></i></span>
-            Medical Knowledge Documents
-          </div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button id="embedDocumentsButton" class="app-btn app-btn-indigo">
-              <i data-lucide="sparkles" style="width:14px;height:14px"></i> Generate Vectors
-            </button>
-            <button id="toggleAccordionButton" class="app-btn app-btn-white">
-              <i data-lucide="eye" style="width:14px;height:14px"></i> Toggle View
-            </button>
-          </div>
-        </div>
-        <div id="docVisualContainer" class="doc-grid">
-          <div style="grid-column:1/-1;color:#888;font-style:italic;font-size:13px;font-weight:700;padding:8px 0">Medical documents have not been embedded yet.</div>
-        </div>
-      </div>
-
-      <!-- Query Input -->
+      <!-- Pytanie -->
       <div class="app-card">
         <div class="app-card-label">
           <span class="app-icon" style="background:#dbeafe;color:var(--blue)"><i data-lucide="search" style="width:16px;height:16px"></i></span>
-          Clinical Information Query
+          Pytanie kliniczne
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <input id="queryInput" type="text" value="What is the standard protocol for treating acute myocardial infarction?" class="app-input" placeholder="Type your clinical question here...">
-          <button id="runSimulationButton" class="app-btn app-btn-blue">
-            <i data-lucide="play" style="width:14px;height:14px"></i> Run
-          </button>
-          <button id="nextStepButton" class="app-btn app-btn-green">
-            <i data-lucide="arrow-right" style="width:14px;height:14px"></i> Next Step
-          </button>
-          <button id="resetButton" class="app-btn app-btn-red">
-            <i data-lucide="rotate-ccw" style="width:14px;height:14px"></i> Reset
-          </button>
+          <input id="queryInput" type="text" class="app-input" placeholder="Wpisz pytanie kliniczne..." value="Jaki jest standardowy protokół leczenia ostrego zawału serca?">
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;align-items:center">
-          <span style="font-size:12px;font-weight:800;color:#888">Try:</span>
-          <button class="sampleQuery sample-chip" data-query="What is the standard protocol for treating acute myocardial infarction?">Myocardial infarction</button>
-          <button class="sampleQuery sample-chip" data-query="What are the first-line antibiotics for community-acquired pneumonia?">Pneumonia antibiotics</button>
-          <button class="sampleQuery sample-chip" data-query="What is the recommended blood pressure target for diabetic patients?">Diabetic BP targets</button>
-          <button class="sampleQuery sample-chip sample-chip-gray" data-query="What is the weather today?">Weather (irrelevant)</button>
+          <span style="font-size:12px;font-weight:800;color:#888">Przykłady:</span>
+          <button class="sampleQuery sample-chip" data-query="Jaki jest standardowy protokół leczenia ostrego zawału serca?">Zawał serca</button>
+          <button class="sampleQuery sample-chip" data-query="Jakie są antybiotyki pierwszego rzutu w pozaszpitalnym zapaleniu płuc?">Antybiotyki w zapaleniu płuc</button>
+          <button class="sampleQuery sample-chip" data-query="Jakie jest docelowe ciśnienie tętnicze u chorych na cukrzycę?">Ciśnienie w cukrzycy</button>
+          <button class="sampleQuery sample-chip sample-chip-gray" data-query="Jaka jest dzisiaj pogoda?">Pogoda (poza tematem)</button>
         </div>
       </div>
 
-      <!-- RAG Pipeline -->
-      <div class="app-card">
-        <div class="app-card-label">
-          <span class="app-icon" style="background:#fef3c7;color:var(--dark)"><i data-lucide="workflow" style="width:16px;height:16px"></i></span>
-          RAG Pipeline
-        </div>
+      <!-- Stepper -->
+      <div class="stepper" id="stepper">
+        <div class="step-pill" data-stage="1"><span class="step-pill-num">1</span> Indeksowanie</div>
+        <div class="step-pill" data-stage="2"><span class="step-pill-num">2</span> Osadzanie zapytania</div>
+        <div class="step-pill" data-stage="3"><span class="step-pill-num">3</span> Wyszukiwanie</div>
+        <div class="step-pill" data-stage="4"><span class="step-pill-num">4</span> Budowa promptu</div>
+        <div class="step-pill" data-stage="5"><span class="step-pill-num">5</span> Odpowiedź</div>
+      </div>
 
-        <!-- Vector Database -->
-        <div id="documentStoreBox" class="pipe-box pipe-box-wide" style="margin-bottom:16px">
-          <div class="pipe-label"><i data-lucide="database" style="width:16px;height:16px;color:var(--blue)"></i> Vector Database (Pre-indexed)</div>
-          <div id="documentStoreContent" class="pipe-content" style="height:180px"></div>
-        </div>
+      <!-- Scena -->
+      <div class="stage-area" id="stageArea"></div>
 
-        <!-- Pipeline Row -->
-        <div class="pipeline-row" style="display:flex;align-items:flex-start;gap:12px;overflow-x:auto">
-          <div id="customerQueryBox" class="pipe-box">
-            <div class="pipe-label"><i data-lucide="stethoscope" style="width:16px;height:16px;color:var(--blue)"></i> Clinical Query</div>
-            <div id="customerQueryContent" class="pipe-content"></div>
-            <div class="pipe-step-text">Step 1: Submit question</div>
-          </div>
-          <div class="pipe-arrow">&rarr;</div>
-          <div id="embeddingModelBox" class="pipe-box">
-            <div class="pipe-label"><i data-lucide="cpu" style="width:16px;height:16px;color:var(--purple)"></i> Query Embedding</div>
-            <div id="embeddingModelContent" class="pipe-content" style="font-style:italic">Waiting for query...</div>
-            <div class="pipe-step-text">Step 2: Vectorize query</div>
-          </div>
-          <div class="pipe-arrow">&rarr;</div>
-          <div id="retrieverBox" class="pipe-box">
-            <div class="pipe-label"><i data-lucide="search" style="width:16px;height:16px;color:var(--green)"></i> Retriever</div>
-            <div id="retrieverContent" class="pipe-content" style="font-style:italic">Waiting for embedding...</div>
-            <div class="pipe-step-text">Step 3: Find documents</div>
-          </div>
-          <div class="pipe-arrow">&rarr;</div>
-          <div id="promptBuilderBox" class="pipe-box">
-            <div class="pipe-label"><i data-lucide="file-plus" style="width:16px;height:16px;color:var(--yellow)"></i> Prompt Builder</div>
-            <div id="promptBuilderContent" class="pipe-content" style="font-style:italic">Waiting for retrieval...</div>
-            <div class="pipe-step-text">Step 4: Build prompt</div>
-          </div>
-          <div class="pipe-arrow">&rarr;</div>
-          <div id="responseGeneratorBox" class="pipe-box">
-            <div class="pipe-label"><i data-lucide="file-text" style="width:16px;height:16px;color:var(--red)"></i> Response Generator</div>
-            <div id="responseGeneratorContent" class="pipe-content" style="font-style:italic">Waiting for prompt...</div>
-            <div class="pipe-step-text">Step 5: Generate answer</div>
-          </div>
+      <!-- Narrator + sterowanie -->
+      <div class="narrator">
+        <div class="narrator-text" id="narratorText">Naciśnij „Następny krok" albo „Odtwórz całość", aby rozpocząć.</div>
+        <div class="narrator-controls">
+          <button id="nextStepButton" class="app-btn app-btn-green"><i data-lucide="arrow-right" style="width:14px;height:14px"></i> Następny krok</button>
+          <button id="runSimulationButton" class="app-btn app-btn-blue"><i data-lucide="play" style="width:14px;height:14px"></i> Odtwórz całość</button>
+          <button id="resetButton" class="app-btn app-btn-red"><i data-lucide="rotate-ccw" style="width:14px;height:14px"></i> Reset</button>
         </div>
       </div>
     </div>
 
-    <div class="demo-note">This demo runs entirely in your browser. No data is sent to any server.</div>
+    <div class="demo-note">To demo działa w całości w Twojej przeglądarce. Żadne dane nie są wysyłane na serwer.</div>
   </div>
 </section>
 
 <!-- HOW IT WORKS -->
 <section class="how" id="how-it-works">
-  <div class="section-label label-red">How it works</div>
-  <h2 class="section-title">Index &middot; Embed &middot; Retrieve &middot; Prompt &middot; Answer</h2>
+  <div class="section-label label-red">Jak to działa</div>
+  <h2 class="section-title">Indeksuj &middot; Osadzaj &middot; Wyszukuj &middot; Buduj prompt &middot; Odpowiadaj</h2>
   <div class="steps-grid">
     <div class="step-card">
       <div class="step-num">1</div>
-      <h3>Document Indexing</h3>
-      <p>Medical literature and clinical guidelines are embedded using a semantic vectorizer and stored in a vector database.</p>
+      <h3>Indeksowanie dokumentów</h3>
+      <p>Literatura medyczna i wytyczne kliniczne są zamieniane na wektory przez model osadzeń i przechowywane w bazie wektorowej.</p>
     </div>
     <div class="step-card">
       <div class="step-num">2</div>
-      <h3>Query Understanding</h3>
-      <p>The clinician's question is converted into a semantic vector that captures clinical meaning, not just keywords.</p>
+      <h3>Zrozumienie zapytania</h3>
+      <p>Pytanie klinicysty jest zamieniane na wektor, który oddaje znaczenie kliniczne, a nie tylko słowa kluczowe.</p>
     </div>
     <div class="step-card">
       <div class="step-num">3</div>
-      <h3>Evidence Retrieval</h3>
-      <p>Vector similarity search finds the most contextually relevant medical documents from the knowledge base.</p>
+      <h3>Wyszukiwanie dowodów</h3>
+      <p>Wyszukiwanie po podobieństwie wektorów znajduje najbardziej pasujące dokumenty medyczne z bazy wiedzy.</p>
     </div>
   </div>
   <div class="steps-bottom-row">
     <div class="step-card">
       <div class="step-num">4</div>
-      <h3>Prompt Building</h3>
-      <p>Retrieved evidence is assembled into a structured prompt with system instructions, context documents, and the original query to guide accurate generation.</p>
+      <h3>Budowa promptu</h3>
+      <p>Odnalezione dowody są składane w uporządkowany prompt: instrukcje systemowe, dokumenty kontekstu i oryginalne pytanie.</p>
     </div>
     <div class="step-card">
       <div class="step-num">5</div>
-      <h3>Response Generation</h3>
-      <p>AI processes the constructed prompt, combining retrieved evidence with the clinical query to generate an evidence-based, specific response.</p>
+      <h3>Generowanie odpowiedzi</h3>
+      <p>Model przetwarza zbudowany prompt, łącząc odnalezione dowody z pytaniem, aby wygenerować odpowiedź opartą na faktach.</p>
     </div>
   </div>
   <div style="margin-top:24px;padding:16px 20px;background:var(--yellow);border:3px solid var(--dark);border-radius:14px;box-shadow:3px 3px 0 var(--dark);font-size:.9rem;font-weight:700;color:var(--dark)">
-    <strong>Note:</strong> If the question is outside the system's knowledge base (e.g., a non-medical question), the system will indicate that it has no relevant documents to provide an answer.
+    <strong>Uwaga:</strong> Jeśli pytanie wykracza poza bazę wiedzy (np. pytanie niemedyczne), system poinformuje, że nie ma odpowiednich dokumentów, aby udzielić odpowiedzi.
   </div>
 </section>
 
 
-<!-- JavaScript -->
+
 <script>
-  let currentStep = 0;
-  let isRunning = false;
-  let query = document.getElementById('queryInput').value;
-  let queryEmbedding = null;
-  let retrievedDocs = [];
-  let generatedResponse = '';
-  let builtPrompt = '';
-  let indexedDocuments = [];
+/* ===== MedVector — silnik demonstracyjny RAG (uproszczony, dydaktyczny) ===== */
+const THRESHOLD = 0.5;
 
-  const documents = [
-    { id: 1, title: "ACC/AHA Guidelines - Acute Myocardial Infarction Management", text: "For acute myocardial infarction (AMI), immediate treatment protocol includes: 1) Administer 162-325 mg of aspirin, 2) Perform ECG within 10 minutes of arrival, 3) Start dual antiplatelet therapy with aspirin plus P2Y12 inhibitor, 4) Consider anticoagulation with unfractionated heparin or low molecular weight heparin, 5) Assess eligibility for reperfusion therapy (PCI preferred if available within 90 minutes, or fibrinolysis if PCI isn't available within 120 minutes).", specialty: "cardiology", category: "emergency", embedding: [0.9, 0.2, 0.3, 0.1] },
-    { id: 3, title: "IDSA/ATS Guidelines - Community-Acquired Pneumonia", text: "For outpatient treatment of community-acquired pneumonia in previously healthy adults, a macrolide (azithromycin, clarithromycin) or doxycycline is recommended. For patients with comorbidities or risk factors for drug-resistant pathogens, a respiratory fluoroquinolone (levofloxacin, moxifloxacin) or combination of beta-lactam plus macrolide is preferred. Hospitalized patients should receive either a respiratory fluoroquinolone or a combination of beta-lactam plus macrolide.", specialty: "infectious disease", category: "treatment", embedding: [0.1, 0.8, 0.2, 0.4] },
-    { id: 4, title: "Sepsis Management - Surviving Sepsis Campaign", text: "For sepsis and septic shock, implement the following within 1 hour: 1) Measure lactate level, 2) Obtain blood cultures before antibiotic administration, 3) Administer broad-spectrum antibiotics, 4) Begin rapid administration of 30 ml/kg crystalloid for hypotension or lactate >= 4 mmol/L, 5) Apply vasopressors if hypotension persists during or after fluid resuscitation. Reassess and reevaluate antimicrobial therapy daily for potential de-escalation.", specialty: "critical care", category: "emergency", embedding: [0.2, 0.7, 0.3, 0.5] },
-    { id: 5, title: "ADA Standards of Care - Diabetes Blood Pressure Targets", text: "For most patients with diabetes, the American Diabetes Association recommends a blood pressure target of <140/90 mmHg. For individuals at higher risk of cardiovascular disease, a stricter target of <130/80 mmHg may be appropriate if it can be achieved safely. First-line antihypertensive therapy should include an ACE inhibitor or ARB, particularly for patients with albuminuria. Multiple medications are often required to achieve blood pressure targets.", specialty: "endocrinology", category: "chronic", embedding: [0.3, 0.4, 0.8, 0.1] },
-    { id: 7, title: "Stroke Management - AHA/ASA Guidelines", text: "For acute ischemic stroke, intravenous alteplase (tPA) is recommended within 3-4.5 hours of symptom onset for eligible patients. Mechanical thrombectomy should be considered for large vessel occlusions within 24 hours of last known well time if patients meet criteria. Post-stroke, patients should receive antithrombotic therapy, statins, blood pressure management, and rehabilitation assessments. Secondary prevention includes antiplatelet therapy, statins, and lifestyle modifications.", specialty: "neurology", category: "emergency", embedding: [0.5, 0.3, 0.1, 0.8] },
-    { id: 8, title: "GOLD Guidelines - COPD Management", text: "For chronic obstructive pulmonary disease (COPD), management includes smoking cessation, vaccinations, and pharmacologic therapy based on symptom severity and exacerbation risk. Short-acting bronchodilators are used for rescue therapy, while long-acting bronchodilators (LABA, LAMA) are maintenance therapy for persistent symptoms. Inhaled corticosteroids (ICS) are added for patients with history of exacerbations and elevated eosinophil counts. Pulmonary rehabilitation is recommended for symptomatic patients.", specialty: "pulmonology", category: "chronic", embedding: [0.6, 0.4, 0.2, 0.7] },
+/* Każdy dokument ma ręcznie przypisany wektor 2-D (jednostkowy) — do celów
+   dydaktycznych. Prawdziwe modele używają ~1500 wymiarów. */
+const DOCS = [
+  { id:1, title:"Wytyczne ESC — Ostry zawał serca (STEMI)", specialty:"kardiologia", category:"stan nagły", vec:[0.940,0.342],
+    text:"W ostrym zawale serca z uniesieniem odcinka ST (STEMI) należy: 1) podać 150–300 mg kwasu acetylosalicylowego, 2) wykonać EKG w ciągu 10 minut od przyjęcia, 3) rozpocząć podwójną terapię przeciwpłytkową (ASA + inhibitor P2Y12), 4) rozważyć leczenie przeciwkrzepliwe (heparyna), 5) ocenić wskazania do reperfuzji: pierwotna PCI jest preferowana, jeśli możliwa w ciągu 120 minut, w przeciwnym razie fibrynoliza." },
+  { id:2, title:"Pozaszpitalne zapalenie płuc — antybiotykoterapia", specialty:"choroby zakaźne", category:"leczenie", vec:[-0.643,0.766],
+    text:"W leczeniu ambulatoryjnym pozaszpitalnego zapalenia płuc u wcześniej zdrowych dorosłych zaleca się makrolid (azytromycyna, klarytromycyna) lub doksycyklinę. U chorych z chorobami współistniejącymi preferuje się fluorochinolon oddechowy (lewofloksacyna, moksyfloksacyna) lub beta-laktam z makrolidem. Pacjenci hospitalizowani powinni otrzymać fluorochinolon oddechowy lub beta-laktam z makrolidem." },
+  { id:3, title:"Sepsa i wstrząs septyczny — pakiet 1-godzinny", specialty:"intensywna terapia", category:"stan nagły", vec:[-0.259,0.966],
+    text:"W sepsie i wstrząsie septycznym w ciągu pierwszej godziny należy: 1) oznaczyć stężenie mleczanu, 2) pobrać posiewy krwi przed antybiotykiem, 3) podać antybiotyk o szerokim spektrum, 4) rozpocząć szybki wlew krystaloidów 30 ml/kg przy hipotensji lub mleczanie ≥ 4 mmol/l, 5) zastosować leki obkurczające naczynia, jeśli hipotensja utrzymuje się mimo płynoterapii." },
+  { id:4, title:"Docelowe ciśnienie tętnicze w cukrzycy", specialty:"endokrynologia", category:"choroba przewlekła", vec:[-0.940,0.342],
+    text:"U większości chorych na cukrzycę zaleca się docelowe ciśnienie tętnicze < 140/90 mmHg. U osób z wysokim ryzykiem sercowo-naczyniowym można rozważyć cel < 130/80 mmHg, jeśli jest bezpiecznie osiągalny. Lekiem pierwszego wyboru jest inhibitor ACE lub sartan (ARB), zwłaszcza przy albuminurii. Często konieczne jest leczenie skojarzone kilkoma lekami." },
+  { id:5, title:"Ostry udar niedokrwienny mózgu", specialty:"neurologia", category:"stan nagły", vec:[0.574,0.819],
+    text:"W ostrym udarze niedokrwiennym mózgu zaleca się dożylne podanie alteplazy (tPA) w ciągu 3–4,5 godziny od wystąpienia objawów u kwalifikujących się chorych. Trombektomię mechaniczną należy rozważyć w niedrożności dużego naczynia do 24 godzin od ostatniego momentu dobrostanu. Po udarze stosuje się leczenie przeciwpłytkowe, statyny, kontrolę ciśnienia oraz rehabilitację." },
+  { id:6, title:"Wytyczne GOLD — POChP", specialty:"pulmonologia", category:"choroba przewlekła", vec:[0.174,0.985],
+    text:"W przewlekłej obturacyjnej chorobie płuc (POChP) leczenie obejmuje zaprzestanie palenia, szczepienia oraz farmakoterapię zależną od nasilenia objawów i ryzyka zaostrzeń. Krótko działające leki rozszerzające oskrzela stosuje się doraźnie, a długo działające (LABA, LAMA) jako leczenie podtrzymujące. Wziewne glikokortykosteroidy dodaje się u chorych z zaostrzeniami i eozynofilią. Zaleca się rehabilitację oddechową." },
+];
+
+/* Reguła „słowo kluczowe → kierunek w przestrzeni 2-D". Sumujemy kierunki
+   dopasowanych słów i normalizujemy. Brak dopasowania → wektor [0,-1] (poza bazą). */
+const SPECIALTY_DIRS = [
+  { dir:[0.940,0.342],  keys:['zawał','serce','serca','sercow','wieńc','stemi'] },
+  { dir:[0.574,0.819],  keys:['udar','mózg','niedokrwien','alteplaz','tpa','trombektom'] },
+  { dir:[0.174,0.985],  keys:['pochp','obturacyjn','oskrzel','duszność','wziewn','lama','laba'] },
+  { dir:[-0.259,0.966], keys:['sepsa','sepsie','wstrząs','posocznic','mleczan'] },
+  { dir:[-0.643,0.766], keys:['zapaleni','antybiotyk','makrolid','fluorochinolon','doksycyklin'] },
+  { dir:[-0.940,0.342], keys:['cukrzyc','ciśnieni','nadciśnien','glikemi','insulin'] },
+];
+
+const SPECIALTY_COLORS = {
+  'kardiologia':'#FF6B6B', 'choroby zakaźne':'#6BCB77', 'intensywna terapia':'#C77DFF',
+  'endokrynologia':'#FFD93D', 'neurologia':'#4D96FF', 'pulmonologia':'#6366f1'
+};
+
+function embedText(text){
+  const t = (text||'').toLowerCase();
+  let x=0,y=0;
+  SPECIALTY_DIRS.forEach(s=>{ if(s.keys.some(k=>t.includes(k))){ x+=s.dir[0]; y+=s.dir[1]; } });
+  if(x===0 && y===0) return [0,-1];
+  const m=Math.hypot(x,y); return [x/m,y/m];
+}
+
+function cosineSim(a,b){
+  const dot=a[0]*b[0]+a[1]*b[1];
+  const ma=Math.hypot(a[0],a[1]), mb=Math.hypot(b[0],b[1]);
+  return (ma===0||mb===0) ? 0 : dot/(ma*mb);
+}
+
+function retrieve(qVec, k=3){
+  return DOCS.map(d=>({ ...d, sim:cosineSim(qVec,d.vec) }))
+             .sort((a,b)=>b.sim-a.sim).slice(0,k);
+}
+
+function assembleAnswer(retrieved){
+  if(!retrieved.length || retrieved[0].sim < THRESHOLD){
+    return "Brak wystarczająco podobnych dokumentów w bazie wiedzy. Zadaj pytanie kliniczne dotyczące dostępnych wytycznych.";
+  }
+  let out = "Na podstawie odnalezionych wytycznych:";
+  retrieved.filter(d=>d.sim>=THRESHOLD).forEach((d,i)=>{ out += `\n\n[${i+1}] ${d.title}\n${d.text}`; });
+  out += "\n\nUwaga: To demonstracja edukacyjna — nie jest poradą medyczną.";
+  return out;
+}
+
+const state = { query:'', qVec:null, retrieved:[], promptBlocks:[], answer:'', stage:0, running:false };
+
+function buildPrompt(retrieved, query){
+  const ctx = retrieved.filter(d=>d.sim>=THRESHOLD);
+  return [
+    {tag:'SYSTEM', color:'#1a1a2e', body:'Jesteś asystentem wspomagającym decyzje kliniczne. Odpowiadaj wyłącznie na podstawie dostarczonych dowodów.'},
+    {tag:'KONTEKST', color:'#4D96FF', body: ctx.length ? ctx.map((d,i)=>'['+(i+1)+'] '+d.title+' ('+(d.sim*100).toFixed(0)+'%) — '+d.text.slice(0,90)+'…').join('\n') : '(brak pasujących dokumentów)'},
+    {tag:'PYTANIE', color:'#6366f1', body: query},
+    {tag:'INSTRUKCJA', color:'#6BCB77', body:'Udziel odpowiedzi opartej na dowodach, powołując się na odnalezione wytyczne.'}
   ];
+}
 
-  function indexDocuments() {
-    indexedDocuments = documents.map(doc => {
-      const newEmbedding = embedQuery(doc.text);
-      return { ...doc, embedding: newEmbedding };
+const NARRATION = {
+  0:'Naciśnij „Następny krok" albo „Odtwórz całość", aby rozpocząć.',
+  1:'Każdy dokument zamieniamy na wektor — listę liczb opisującą jego znaczenie. Podobne tematy trafiają blisko siebie na mapie.',
+  2:'To samo robimy z pytaniem — zamieniamy je na wektor w tej samej przestrzeni, żeby móc je porównać z dokumentami.',
+  3:'Mierzymy podobieństwo (kąt między wektorami). Im bliżej, tym bardziej dokument pasuje. Wybieramy 3 najlepsze.',
+  4:'Z odnalezionych dowodów składamy prompt: instrukcje + kontekst + pytanie. To wszystko, co model dostaje na wejściu.',
+  5:'Model generuje odpowiedź wyłącznie na podstawie dostarczonego kontekstu — dlatego jest oparta na wytycznych, a nie zmyślona.'
+};
+
+function setQuery(q){
+  state.query = q;
+  state.qVec = embedText(q);
+  state.retrieved = retrieve(state.qVec);
+  state.promptBlocks = buildPrompt(state.retrieved, q);
+  state.answer = assembleAnswer(state.retrieved);
+  state.stage = 0;
+  render();
+}
+
+function topIds(){
+  return state.retrieved.filter(d=>d.sim>=THRESHOLD).map(d=>d.id);
+}
+
+function renderStage(){
+  const area = document.getElementById('stageArea');
+  const cap = '<div class="stage-caption">Uproszczony wektor 2-D do celów dydaktycznych. Prawdziwe modele używają ~1500 wymiarów.</div>';
+  if(state.stage===0){
+    area.innerHTML = '<div class="stage-heading">Gotowe do startu</div>'+
+      '<div class="stage-caption">Wybierz przykład powyżej lub wpisz własne pytanie, a następnie przejdź przez kolejne kroki.</div>'+
+      '<div class="vmap-wrap"><div class="vmap">'+renderVectorMap({})+'<div class="vmap-caption">Baza wiedzy w przestrzeni wektorowej (jeszcze bez zapytania)</div></div></div>';
+  } else if(state.stage===1){
+    area.innerHTML = '<div class="stage-heading">Krok 1 — Indeksowanie</div>'+cap+
+      '<div class="vmap-wrap"><div class="vmap">'+renderVectorMap({})+'<div class="vmap-caption">6 dokumentów jako wektory — kolor oznacza specjalizację</div></div></div>';
+  } else if(state.stage===2){
+    area.innerHTML = '<div class="stage-heading">Krok 2 — Osadzanie zapytania</div>'+
+      '<div class="stage-caption">Wektor zapytania: ['+state.qVec.map(v=>v.toFixed(3)).join(', ')+']</div>'+
+      '<div class="vmap-wrap"><div class="vmap">'+renderVectorMap({showQuery:true})+'<div class="vmap-caption">⭐ zapytanie trafia do tej samej przestrzeni</div></div></div>';
+  } else if(state.stage===3){
+    area.innerHTML = '<div class="stage-heading">Krok 3 — Wyszukiwanie</div>'+
+      '<div class="vmap-wrap"><div class="vmap">'+renderVectorMap({showQuery:true,showLines:true,topIds:topIds()})+
+      '<div class="vmap-caption">Grubość linii = podobieństwo. Wyróżnione = 3 najlepsze</div></div>'+
+      '<div class="rank-list">'+renderRankList()+'</div></div>';
+  }
+  else if(state.stage===4){
+    let blocks='';
+    state.promptBlocks.forEach(b=>{
+      blocks += '<div class="prompt-block"><span class="prompt-tag" style="background:'+b.color+'">'+b.tag+'</span><div class="prompt-body">'+escapeHtml(b.body)+'</div></div>';
     });
-    updateDocumentStore();
-    updateDocVisual();
+    area.innerHTML = '<div class="stage-heading">Krok 4 — Budowa promptu</div>'+
+      '<div class="stage-caption">Tak wygląda wejście przekazywane do modelu językowego.</div>'+blocks;
   }
-
-  function updateDocumentStore() {
-    const container = document.getElementById('documentStoreContent');
-    container.innerHTML = '';
-    if (indexedDocuments.length === 0) {
-      const emptyMessage = document.createElement('div');
-      emptyMessage.style.cssText = 'font-style:italic;color:#888;font-size:11px;font-weight:700;margin-bottom:4px';
-      emptyMessage.textContent = 'No documents embedded in vector database yet.';
-      container.appendChild(emptyMessage);
-      documents.forEach(doc => {
-        const div = document.createElement('div');
-        div.style.cssText = 'margin-bottom:4px;padding:4px 6px;background:#f5f5f5;border-radius:6px;opacity:.7;font-size:11px;font-weight:700';
-        div.innerHTML = '<div style="display:flex;align-items:center;gap:4px">' + getProductIcon(doc.specialty) + '<span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + doc.title + '</span><span style="font-size:9px;background:#e2e2e2;border-radius:99px;padding:1px 6px;margin-left:auto;flex-shrink:0;color:#444">' + doc.specialty + '</span></div><div style="font-size:10px;color:#666">[Not embedded]</div>';
-        container.appendChild(div);
-      });
-    } else {
-      indexedDocuments.forEach(doc => {
-        const div = document.createElement('div');
-        const snippet = doc.text.length > 80 ? doc.text.substring(0, 80) + '...' : doc.text;
-        div.style.cssText = 'margin-bottom:6px;padding:6px 8px;background:#eef2ff;border-radius:8px;font-size:11px;font-weight:700;border:1.5px solid #ddd';
-        div.innerHTML = '<div style="display:flex;align-items:center;gap:4px;margin-bottom:2px">' + getProductIcon(doc.specialty) + '<span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:800">' + doc.title + '</span></div>' +
-          '<div style="display:flex;gap:4px;margin-bottom:2px"><span style="font-size:9px;background:#fff;border:1.5px solid var(--dark);border-radius:99px;padding:1px 6px;font-weight:800">' + doc.specialty + '</span><span style="font-size:9px;background:#fff;border:1.5px solid var(--dark);border-radius:99px;padding:1px 6px;font-weight:800">' + doc.category + '</span></div>' +
-          '<div style="font-size:10px;color:#333;margin-bottom:2px">' + snippet + '</div>' +
-          '<div style="font-size:9px;color:var(--indigo);font-family:monospace">[' + doc.embedding.map(v => v.toFixed(3)).join(', ') + ']</div>';
-        container.appendChild(div);
-      });
-    }
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+  else if(state.stage===5){
+    area.innerHTML = '<div class="stage-heading">Krok 5 — Odpowiedź</div>'+
+      '<div class="stage-caption">W prawdziwym systemie ten krok wykonuje model językowy. Tutaj składamy odpowiedź z fragmentów dokumentów, aby pokazać zasadę.</div>'+
+      '<div class="answer-panel" id="answerPanel"></div>';
+    streamAnswer();
   }
+}
 
-  function updateDocVisual() {
-    const container = document.getElementById('docVisualContainer');
-    container.innerHTML = '';
-    const bgColors = {
-      'cardiology': '#fff0f0', 'infectious disease': '#f0fff4',
-      'critical care': '#f0f4ff', 'endocrinology': '#fffbeb',
-      'neurology': '#faf5ff', 'pulmonology': '#ecfeff'
-    };
+function escapeHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function highlightCitations(s){
+  return s.replace(/\[(\d+)\]/g, '<span class="answer-cite">[$1]</span>');
+}
+function streamAnswer(){
+  const el=document.getElementById('answerPanel');
+  if(!el) return;
+  const full=state.answer;
+  const hasDisc = full.includes('nie jest poradą medyczną');
+  const main = hasDisc ? full.split('\n\nUwaga:')[0] : full;
+  const words = main.split(' ');
+  let i=0;
+  el.innerHTML='';
+  (function tick(){
+    if(state.stage!==5) return;
+    i++;
+    el.innerHTML = highlightCitations(escapeHtml(words.slice(0,i).join(' ')));
+    if(i<words.length){ setTimeout(tick, 35); }
+    else if(hasDisc){ el.innerHTML += '<div class="answer-disclaimer">Demonstracja edukacyjna — nie jest poradą medyczną.</div>'; }
+  })();
+}
 
-    if (indexedDocuments.length === 0) {
-      const warn = document.createElement('div');
-      warn.style.cssText = 'grid-column:1/-1;padding:12px 16px;background:var(--yellow);border:2.5px solid var(--dark);border-radius:10px;font-size:13px;font-weight:800;box-shadow:2px 2px 0 var(--dark);margin-bottom:4px';
-      warn.innerHTML = '<i data-lucide="alert-triangle" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:4px"></i>Documents not yet embedded — vectors not available for search';
-      container.appendChild(warn);
-      const sortedDocs = [...documents].sort((a, b) => a.specialty.localeCompare(b.specialty));
-      sortedDocs.forEach(doc => {
-        const card = document.createElement('div');
-        card.className = 'doc-card-app';
-        card.style.background = bgColors[doc.specialty] || '#f9fafb';
-        card.style.borderStyle = 'dashed';
-        card.innerHTML = '<div style="display:flex;align-items:center;gap:6px">' + getProductIcon(doc.specialty) + '<strong style="font-size:12px">' + doc.title + '</strong></div><div style="font-size:11px;color:#aaa">Vector: [Not embedded yet]</div><div style="font-size:11px;color:#666;flex-grow:1">' + doc.text + '</div><div style="display:flex;gap:4px;margin-top:4px"><span class="doc-tag">' + doc.specialty + '</span><span class="doc-tag">' + doc.category + '</span></div>';
-        container.appendChild(card);
-      });
-      if (typeof lucide !== 'undefined') lucide.createIcons();
-      return;
-    }
-
-    const ok = document.createElement('div');
-    ok.style.cssText = 'grid-column:1/-1;padding:12px 16px;background:var(--green);border:2.5px solid var(--dark);border-radius:10px;font-size:13px;font-weight:800;box-shadow:2px 2px 0 var(--dark);margin-bottom:4px';
-    ok.innerHTML = '<i data-lucide="check-circle" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:4px"></i>Documents embedded — vectors available for search';
-    container.appendChild(ok);
-    const sortedDocs = [...indexedDocuments].sort((a, b) => a.specialty.localeCompare(b.specialty));
-    sortedDocs.forEach(doc => {
-      const card = document.createElement('div');
-      card.className = 'doc-card-app';
-      card.style.background = bgColors[doc.specialty] || '#f9fafb';
-      const vectorDisplay = doc.embedding.map(v => v.toFixed(3)).join(', ');
-      card.innerHTML = '<div style="display:flex;align-items:center;gap:6px">' + getProductIcon(doc.specialty) + '<strong style="font-size:12px">' + doc.title + '</strong></div><div style="font-size:11px;background:#eef2ff;padding:3px 6px;border-radius:6px;font-family:monospace"><strong style="color:var(--indigo)">Vector:</strong> <span style="color:var(--indigo)">[' + vectorDisplay + ']</span></div><div style="font-size:11px;color:#666;flex-grow:1">' + doc.text + '</div><div style="display:flex;gap:4px;margin-top:4px"><span class="doc-tag">' + doc.specialty + '</span><span class="doc-tag">' + doc.category + '</span></div>';
-      container.appendChild(card);
-    });
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-  }
-
-  function getProductIcon(specialty) {
-    let iconName = '';
-    switch(specialty) {
-      case 'cardiology': iconName = 'heart-pulse'; break;
-      case 'infectious disease': iconName = 'bug'; break;
-      case 'critical care': iconName = 'activity'; break;
-      case 'endocrinology': iconName = 'flask-conical'; break;
-      case 'neurology': iconName = 'brain'; break;
-      case 'pulmonology': iconName = 'wind'; break;
-      default: iconName = 'clipboard-list';
-    }
-    return '<i data-lucide="'+iconName+'" style="width:16px;height:16px;flex-shrink:0"></i>';
-  }
-
-  function embedQuery(text) {
-    let embedding = [0.5, 0.5, 0.5, 0.5];
-    const textLower = text.toLowerCase();
-    if (textLower.includes('heart') || textLower.includes('cardiac') || textLower.includes('myocardial') || textLower.includes('infarction')) embedding[0] += 0.4;
-    if (textLower.includes('pneumonia') || textLower.includes('antibiotic') || textLower.includes('infection')) embedding[1] += 0.4;
-    if (textLower.includes('diabetes') || textLower.includes('blood pressure') || textLower.includes('hypertension')) embedding[2] += 0.4;
-    if (textLower.includes('stroke') || textLower.includes('copd') || textLower.includes('pulmonary')) embedding[3] += 0.4;
-    if (textLower.includes('emergency') || textLower.includes('acute') || textLower.includes('immediate')) { embedding[0] += 0.2; embedding[3] += 0.2; }
-    if (textLower.includes('treatment') || textLower.includes('therapy') || textLower.includes('medication')) embedding[1] += 0.3;
-    if (textLower.includes('target') || textLower.includes('management') || textLower.includes('control')) embedding[2] += 0.3;
-    if (textLower.includes('guideline') || textLower.includes('protocol') || textLower.includes('recommendation')) { embedding[0] += 0.1; embedding[1] += 0.1; embedding[2] += 0.1; embedding[3] += 0.1; }
-    const sum = embedding.reduce((a, b) => a + b, 0);
-    return embedding.map(v => v / sum);
-  }
-
-  function findSimilarDocuments(queryVector, docs, topK = 3) {
-    function calculateSimilarity(v1, v2) {
-      let dotProduct = 0, mag1 = 0, mag2 = 0;
-      for (let i = 0; i < v1.length; i++) { dotProduct += v1[i] * v2[i]; mag1 += v1[i] * v1[i]; mag2 += v2[i] * v2[i]; }
-      return dotProduct / (Math.sqrt(mag1) * Math.sqrt(mag2));
-    }
-    return docs.map(doc => ({ ...doc, similarity: calculateSimilarity(queryVector, doc.embedding) })).sort((a, b) => b.similarity - a.similarity).slice(0, topK);
-  }
-
-  function generateResponse(retrievedDocs, userQuery) {
-    const queryLower = userQuery.toLowerCase();
-    if (queryLower.includes("weather")) return "There is no information about weather in our vector database. Please ask a clinical or medical question.";
-    if (retrievedDocs.length === 0 || (retrievedDocs[0] && retrievedDocs[0].similarity < 0.2)) return "I don't have enough information to answer your clinical question. Could you provide more specific details about the medical condition or treatment you're inquiring about?";
-    if ((queryLower.includes('myocardial') || queryLower.includes('heart attack') || queryLower.includes('ami')) && (queryLower.includes('protocol') || queryLower.includes('treatment') || queryLower.includes('management'))) {
-      if (retrievedDocs.some(doc => doc.id === 1)) return "Standard protocol for treating acute myocardial infarction (AMI):\n\n1. Administer 162-325 mg of aspirin immediately\n2. Perform ECG within 10 minutes of patient arrival\n3. Initiate dual antiplatelet therapy (aspirin plus P2Y12 inhibitor)\n4. Consider anticoagulation with unfractionated heparin or LMWH\n5. Evaluate for reperfusion therapy:\n   - Primary PCI is preferred if available within 90 minutes\n   - Fibrinolysis if PCI isn't available within 120 minutes\n\nThis follows current ACC/AHA guidelines for STEMI management.";
-    }
-    if ((queryLower.includes('pneumonia') || queryLower.includes('cap')) && (queryLower.includes('antibiotic') || queryLower.includes('treatment'))) {
-      if (retrievedDocs.some(doc => doc.id === 3)) return "First-line antibiotics for community-acquired pneumonia according to IDSA/ATS guidelines:\n\n1. For outpatient treatment in previously healthy adults:\n   - Macrolide (azithromycin, clarithromycin) OR\n   - Doxycycline\n\n2. For outpatients with comorbidities or risk factors for drug resistance:\n   - Respiratory fluoroquinolone (levofloxacin, moxifloxacin) OR\n   - Combination of beta-lactam plus macrolide\n\n3. For hospitalized patients (non-ICU):\n   - Respiratory fluoroquinolone OR\n   - Combination of beta-lactam plus macrolide\n\nTreatment duration typically ranges from 5-7 days, guided by clinical response.";
-    }
-    if ((queryLower.includes('diabetes') || queryLower.includes('diabetic')) && (queryLower.includes('blood pressure') || queryLower.includes('hypertension'))) {
-      if (retrievedDocs.some(doc => doc.id === 5)) return "Blood pressure targets for diabetic patients according to ADA Standards of Care:\n\n1. General target: <140/90 mmHg for most patients with diabetes\n\n2. Stricter target: <130/80 mmHg may be appropriate for individuals at higher risk of cardiovascular disease, if achievable safely\n\n3. First-line antihypertensive therapy should include an ACE inhibitor or ARB, particularly for patients with albuminuria\n\n4. Multiple medications are often required to achieve blood pressure targets";
-    }
-    let response = "Based on current clinical guidelines and evidence:";
-    retrievedDocs.forEach(doc => { response += "\n\n**" + doc.title + "**\n" + doc.text; });
-    response += "\n\nDisclaimer: This information is based on medical guidelines and should be used in conjunction with clinical judgment.";
-    return response;
-  }
-
-  function updateUI() {
-    document.getElementById('customerQueryContent').innerText = query;
-    if (queryEmbedding) {
-      document.getElementById('embeddingModelContent').innerText = "[" + queryEmbedding.map(v => v.toFixed(3)).join(', ') + "]";
-      document.getElementById('embeddingModelContent').style.fontStyle = 'normal';
-    } else {
-      document.getElementById('embeddingModelContent').innerHTML = '<span style="font-style:italic">Waiting for query...</span>';
-    }
-    const retrieverEl = document.getElementById('retrieverContent');
-    retrieverEl.innerHTML = '';
-    if (retrievedDocs.length > 0) {
-      retrieverEl.style.fontStyle = 'normal';
-      retrievedDocs.forEach(doc => {
-        const div = document.createElement('div');
-        div.style.cssText = 'margin-bottom:4px;padding:4px 6px;background:#f0fff4;border-radius:6px;font-size:11px;font-weight:700';
-        div.innerHTML = '<div style="display:flex;align-items:center;gap:4px">' + getProductIcon(doc.specialty) + '<span>Doc ' + doc.id + ' (' + (doc.similarity * 100).toFixed(1) + '%)</span></div><div style="font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + doc.title + '</div>';
-        retrieverEl.appendChild(div);
-      });
-    } else {
-      retrieverEl.innerHTML = '<span style="font-style:italic">Waiting for embedding...</span>';
-    }
-    const promptEl = document.getElementById('promptBuilderContent');
-    if (builtPrompt) {
-      promptEl.innerHTML = '<div style="font-size:11px;font-weight:700">' + builtPrompt + '</div>';
-      promptEl.style.fontStyle = 'normal';
-    } else {
-      promptEl.innerHTML = '<span style="font-style:italic">Waiting for retrieval...</span>';
-    }
-    const responseEl = document.getElementById('responseGeneratorContent');
-    if (generatedResponse) {
-      responseEl.innerHTML = '<div style="white-space:pre-wrap;font-size:11px;font-weight:700">' + generatedResponse + '</div>';
-      responseEl.style.fontStyle = 'normal';
-    } else {
-      responseEl.innerHTML = '<span style="font-style:italic">Waiting for prompt...</span>';
-    }
-
-    // Highlight active pipeline box
-    ['documentStoreBox','customerQueryBox','embeddingModelBox','retrieverBox','promptBuilderBox','responseGeneratorBox'].forEach((id, i) => {
-      const el = document.getElementById(id);
-      if (currentStep === i) {
-        el.classList.add('active');
-      } else {
-        el.classList.remove('active');
-      }
-    });
-
-    const nextStepButton = document.getElementById('nextStepButton');
-    nextStepButton.innerHTML = currentStep === 6
-      ? '<i data-lucide="rotate-ccw" style="width:14px;height:14px"></i> Reset'
-      : '<i data-lucide="arrow-right" style="width:14px;height:14px"></i> Next Step';
-    document.getElementById('runSimulationButton').disabled = isRunning;
-    document.getElementById('nextStepButton').disabled = isRunning;
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-    if (currentStep > 0) updateDocumentStore();
-  }
-
-  function buildPrompt(docs, userQuery) {
-    const label = 'display:inline-block;background:var(--dark);color:#fff;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:900;margin-bottom:2px';
-    let prompt = '<div style="margin-bottom:6px"><span style="' + label + '">SYSTEM</span><br>You are a clinical decision support assistant. Answer based only on the provided evidence.</div>';
-    prompt += '<div style="margin-bottom:6px"><span style="' + label + ';background:var(--blue)">CONTEXT</span>';
-    docs.forEach((doc, i) => {
-      const snippet = doc.text.length > 100 ? doc.text.substring(0, 100) + '...' : doc.text;
-      prompt += '<div style="margin:3px 0 3px 8px;padding:3px 6px;background:rgba(0,0,0,.04);border-radius:4px;border-left:3px solid var(--blue)"><strong>[' + (i + 1) + ']</strong> ' + doc.title + ' <span style="color:var(--green);font-size:10px">(' + (doc.similarity * 100).toFixed(1) + '%)</span><br><span style="color:#555;font-size:10px">' + snippet + '</span></div>';
-    });
-    prompt += '</div>';
-    prompt += '<div style="margin-bottom:6px"><span style="' + label + ';background:var(--indigo)">USER QUERY</span><br>' + userQuery + '</div>';
-    prompt += '<div><span style="' + label + ';background:var(--green);color:var(--dark)">INSTRUCTION</span><br>Provide an evidence-based answer citing the retrieved guidelines.</div>';
-    return prompt;
-  }
-
-  function runStep() {
-    if (isRunning) return;
-    switch(currentStep) {
-      case 0: indexDocuments(); currentStep = 1; break;
-      case 1: currentStep = 2; break;
-      case 2: queryEmbedding = embedQuery(query); currentStep = 3; break;
-      case 3: retrievedDocs = findSimilarDocuments(queryEmbedding, indexedDocuments); currentStep = 4; break;
-      case 4: builtPrompt = buildPrompt(retrievedDocs, query); currentStep = 5; break;
-      case 5: generatedResponse = generateResponse(retrievedDocs, query); currentStep = 6; break;
-      case 6:
-        currentStep = 0; queryEmbedding = null; retrievedDocs = []; generatedResponse = ''; builtPrompt = ''; indexedDocuments = [];
-        query = "What is the standard protocol for treating acute myocardial infarction?";
-        document.getElementById('queryInput').value = query;
-        updateDocVisual(); updateDocumentStore(); break;
-    }
-    updateUI();
-  }
-
-  async function runSimulation() {
-    if (isRunning) return;
-    isRunning = true;
-    currentStep = 0; queryEmbedding = null; retrievedDocs = []; generatedResponse = ''; builtPrompt = '';
-    query = document.getElementById('queryInput').value;
-    updateUI();
-    await new Promise(r => setTimeout(r, 500));
-    indexDocuments(); currentStep = 1; updateUI();
-    await new Promise(r => setTimeout(r, 500));
-    currentStep = 2; updateUI();
-    await new Promise(r => setTimeout(r, 500));
-    queryEmbedding = embedQuery(query); currentStep = 3; updateUI();
-    await new Promise(r => setTimeout(r, 1000));
-    retrievedDocs = findSimilarDocuments(queryEmbedding, indexedDocuments); currentStep = 4; updateUI();
-    await new Promise(r => setTimeout(r, 800));
-    builtPrompt = buildPrompt(retrievedDocs, query); currentStep = 5; updateUI();
-    await new Promise(r => setTimeout(r, 1000));
-    generatedResponse = generateResponse(retrievedDocs, query); currentStep = 6; updateUI();
-    isRunning = false; updateUI();
-  }
-
-  document.getElementById('runSimulationButton').addEventListener('click', runSimulation);
-  document.getElementById('nextStepButton').addEventListener('click', runStep);
-  document.getElementById('queryInput').addEventListener('input', function(e) { query = e.target.value; updateUI(); });
-  document.getElementById('embedDocumentsButton').addEventListener('click', function() { indexDocuments(); updateDocVisual(); if (typeof lucide !== 'undefined') lucide.createIcons(); });
-  document.getElementById('toggleAccordionButton').addEventListener('click', function() { document.getElementById('docVisualContainer').classList.toggle('hidden'); });
-  document.querySelectorAll('.sampleQuery').forEach(button => {
-    button.addEventListener('click', function() {
-      query = this.getAttribute('data-query');
-      document.getElementById('queryInput').value = query;
-      currentStep = 0; queryEmbedding = null; retrievedDocs = []; generatedResponse = ''; builtPrompt = '';
-      updateUI();
-    });
+function renderRankList(){
+  if(!state.retrieved.length) return '';
+  const any = topIds().length>0;
+  let html = '';
+  if(!any) html += '<div class="rank-item dim">Brak dokumentów powyżej progu podobieństwa ('+(THRESHOLD*100)+'%).</div>';
+  state.retrieved.forEach(d=>{
+    const pct=Math.max(0,d.sim*100);
+    const dim = d.sim<THRESHOLD ? ' dim':'';
+    html += '<div class="rank-item'+dim+'"><div>Dok '+d.id+' — '+d.title+'</div>'+
+      '<div style="font-size:11px;color:#666">podobieństwo: '+pct.toFixed(0)+'%</div>'+
+      '<div class="rank-bar"><div class="rank-bar-fill" style="width:'+Math.max(0,Math.min(100,pct)).toFixed(0)+'%"></div></div></div>';
   });
+  return html;
+}
 
-  function resetSimulation() {
-    currentStep = 0; queryEmbedding = null; retrievedDocs = []; generatedResponse = ''; builtPrompt = ''; indexedDocuments = [];
-    query = "What is the standard protocol for treating acute myocardial infarction?";
-    document.getElementById('queryInput').value = query;
-    updateDocVisual(); updateDocumentStore(); updateUI();
-    if (typeof lucide !== 'undefined') lucide.createIcons();
+function renderStepper(){
+  document.querySelectorAll('.step-pill').forEach(p=>{
+    const s=+p.getAttribute('data-stage');
+    p.classList.toggle('active', s===state.stage);
+    p.classList.toggle('done', s<state.stage);
+  });
+}
+
+function render(){
+  renderStepper();
+  renderStage();
+  document.getElementById('narratorText').textContent = NARRATION[state.stage];
+  document.getElementById('nextStepButton').disabled = state.running || state.stage>=5;
+  document.getElementById('runSimulationButton').disabled = state.running;
+  if(typeof lucide!=='undefined') lucide.createIcons();
+}
+
+function nextStep(){ if(state.running) return; if(state.stage<5){ state.stage++; render(); } }
+function reset(){ if(state.running) return; setQuery(document.getElementById('queryInput').value); }
+
+async function runAll(){
+  if(state.running) return;
+  state.running=true; state.stage=0; render();
+  for(let s=1;s<=5;s++){
+    await new Promise(r=>setTimeout(r, s===1?400:900));
+    state.stage=s; render();
   }
+  state.running=false; render();
+}
 
-  document.getElementById('resetButton').addEventListener('click', resetSimulation);
-  updateDocumentStore(); updateDocVisual(); updateUI();
+document.getElementById('nextStepButton').addEventListener('click', nextStep);
+document.getElementById('runSimulationButton').addEventListener('click', runAll);
+document.getElementById('resetButton').addEventListener('click', reset);
+document.getElementById('queryInput').addEventListener('input', e=>setQuery(e.target.value));
+document.querySelectorAll('.sampleQuery').forEach(b=>b.addEventListener('click', ()=>{
+  document.getElementById('queryInput').value = b.getAttribute('data-query');
+  setQuery(b.getAttribute('data-query'));
+}));
+
+setQuery(document.getElementById('queryInput').value);   // inicjalizacja
+
+function specialtyIcon(spec){
+  const m={'kardiologia':'heart-pulse','choroby zakaźne':'bug','intensywna terapia':'activity',
+           'endokrynologia':'flask-conical','neurologia':'brain','pulmonologia':'wind'};
+  return m[spec]||'clipboard-list';
+}
+
+/* opts: { showQuery:bool, showLines:bool, topIds:[ids] } */
+function renderVectorMap(opts){
+  const o = Object.assign({showQuery:false, showLines:false, topIds:[]}, opts||{});
+  const P = v => [ (v[0]*100).toFixed(1), (-v[1]*100).toFixed(1) ];
+  let svg = '<svg viewBox="-120 -120 240 240" role="img" aria-label="Mapa wektorowa">';
+  // osie
+  svg += '<line x1="-115" y1="0" x2="115" y2="0" stroke="#ddd" stroke-width="1.5"/>';
+  svg += '<line x1="0" y1="-115" x2="0" y2="115" stroke="#ddd" stroke-width="1.5"/>';
+  svg += '<circle cx="0" cy="0" r="100" fill="none" stroke="#e6ddd0" stroke-width="1.5" stroke-dasharray="4 4"/>';
+  // linie podobieństwa (rysowane pod punktami)
+  if(o.showLines && state.qVec){
+    const [qx,qy]=P(state.qVec);
+    DOCS.forEach(d=>{
+      const sim=cosineSim(state.qVec,d.vec);
+      const [dx,dy]=P(d.vec);
+      const w=Math.max(0.4, sim*5).toFixed(2);
+      const op=Math.max(0.08, Math.min(1, sim)).toFixed(2);
+      const hot=o.topIds.includes(d.id);
+      svg += `<line x1="${qx}" y1="${qy}" x2="${dx}" y2="${dy}" stroke="${hot?'#1a1a2e':'#4D96FF'}" stroke-width="${hot?Math.max(1.5,parseFloat(w)):parseFloat(w)}" stroke-opacity="${op}"/>`;
+    });
+  }
+  // punkty dokumentów
+  DOCS.forEach(d=>{
+    const [dx,dy]=P(d.vec);
+    const color=SPECIALTY_COLORS[d.specialty]||'#999';
+    const hot=o.topIds.includes(d.id);
+    svg += `<circle cx="${dx}" cy="${dy}" r="${hot?9:7}" fill="${color}" stroke="#1a1a2e" stroke-width="${hot?3:2}"/>`;
+    svg += `<text x="${dx}" y="${dy-12}" font-size="9" font-weight="800" text-anchor="middle" fill="#1a1a2e">${d.id}</text>`;
+  });
+  // gwiazdka zapytania
+  if(o.showQuery && state.qVec){
+    const [qx,qy]=P(state.qVec);
+    svg += `<polygon points="${qx},${(+qy-10).toFixed(1)} ${(+qx+3).toFixed(1)},${(+qy-3).toFixed(1)} ${(+qx+10).toFixed(1)},${(+qy-3).toFixed(1)} ${(+qx+4).toFixed(1)},${(+qy+2).toFixed(1)} ${(+qx+6).toFixed(1)},${(+qy+9).toFixed(1)} ${qx},${(+qy+4).toFixed(1)} ${(+qx-6).toFixed(1)},${(+qy+9).toFixed(1)} ${(+qx-4).toFixed(1)},${(+qy+2).toFixed(1)} ${(+qx-10).toFixed(1)},${(+qy-3).toFixed(1)} ${(+qx-3).toFixed(1)},${(+qy-3).toFixed(1)}" fill="#FFD93D" stroke="#1a1a2e" stroke-width="2"/>`;
+  }
+  svg += '</svg>';
+  return svg;
+}
 </script>
 </body>
 </html>
