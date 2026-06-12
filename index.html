@@ -750,7 +750,44 @@ function renderStage(){
       '<div class="vmap-caption">Grubość linii = podobieństwo. Wyróżnione = 3 najlepsze</div></div>'+
       '<div class="rank-list">'+renderRankList()+'</div></div>';
   }
-  if(typeof lucide!=='undefined') lucide.createIcons();
+  else if(state.stage===4){
+    let blocks='';
+    state.promptBlocks.forEach(b=>{
+      blocks += '<div class="prompt-block"><span class="prompt-tag" style="background:'+b.color+'">'+b.tag+'</span><div class="prompt-body">'+escapeHtml(b.body)+'</div></div>';
+    });
+    area.innerHTML = '<div class="stage-heading">Krok 4 — Budowa promptu</div>'+
+      '<div class="stage-caption">Tak wygląda wejście przekazywane do modelu językowego.</div>'+blocks;
+  }
+  else if(state.stage===5){
+    area.innerHTML = '<div class="stage-heading">Krok 5 — Odpowiedź</div>'+
+      '<div class="stage-caption">W prawdziwym systemie ten krok wykonuje model językowy. Tutaj składamy odpowiedź z fragmentów dokumentów, aby pokazać zasadę.</div>'+
+      '<div class="answer-panel" id="answerPanel"></div>';
+    streamAnswer();
+  }
+}
+
+function escapeHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function highlightCitations(s){
+  return s.replace(/\[(\d+)\]/g, '<span class="answer-cite">[$1]</span>');
+}
+function streamAnswer(){
+  const el=document.getElementById('answerPanel');
+  if(!el) return;
+  const full=state.answer;
+  const hasDisc = full.includes('nie jest poradą medyczną');
+  const main = hasDisc ? full.split('\n\nUwaga:')[0] : full;
+  const words = main.split(' ');
+  let i=0;
+  el.innerHTML='';
+  (function tick(){
+    if(state.stage!==5) return;
+    i++;
+    el.innerHTML = highlightCitations(escapeHtml(words.slice(0,i).join(' ')));
+    if(i<words.length){ setTimeout(tick, 35); }
+    else if(hasDisc){ el.innerHTML += '<div class="answer-disclaimer">Demonstracja edukacyjna — nie jest poradą medyczną.</div>'; }
+  })();
 }
 
 function renderRankList(){
